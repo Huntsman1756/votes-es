@@ -1,0 +1,414 @@
+[
+ {
+  "file": "vanguard_proxytable_18mb.xml",
+  "spanish_tables": 0,
+  "match_rules": {},
+  "by_isin_issuer": {},
+  "meetings": {},
+  "proposals": 0,
+  "vote_records": 0,
+  "how_voted": {},
+  "dissent": 0,
+  "dissent_applicable": 0,
+  "series": {},
+  "issuers": {},
+  "n_meetings": 0,
+  "n_issuers": 0,
+  "wall_s": 0.36
+ },
+ {
+  "file": "blackrock_ishares_70mb.xml",
+  "spanish_tables": 579,
+  "match_rules": {
+   "es_isin": 46,
+   "known_isin": 404,
+   "name": 129
+  },
+  "by_isin_issuer": {},
+  "meetings": {
+   "CONSTRUCCIONES Y AUXILIAR DE FERROCARRILES SA": [
+    "06/13/2026"
+   ],
+   "BBVA": [
+    "03/19/2026"
+   ],
+   "Santander": [
+    "03/26/2026"
+   ],
+   "Cellnex": [
+    "04/29/2026"
+   ],
+   "TELEFONICA BRASIL SA": [
+    "01/09/2026",
+    "03/12/2026",
+    "04/16/2026"
+   ],
+   "Telefonica": [
+    "03/25/2026"
+   ],
+   "Repsol": [
+    "05/13/2026"
+   ],
+   "Grifols": [
+    "06/17/2026"
+   ],
+   "AENA SME SA": [
+    "04/16/2026"
+   ],
+   "Iberdrola": [
+    "05/29/2026"
+   ],
+   "ArcelorMittal": [
+    "05/05/2026"
+   ],
+   "Enagas": [
+    "03/25/2026"
+   ],
+   "Endesa": [
+    "04/28/2026"
+   ],
+   "Naturgy": [
+    "03/24/2026"
+   ],
+   "Redeia": [
+    "05/12/2026"
+   ],
+   "KOTAK MAHINDRA BANK LTD": [
+    "03/04/2026",
+    "04/24/2026",
+    "08/02/2025",
+    "12/26/2025"
+   ],
+   "MAHINDRA & MAHINDRA LTD": [
+    "07/31/2025"
+   ],
+   "TECH MAHINDRA LTD": [
+    "07/17/2025"
+   ],
+   "Sabadell": [
+    "05/05/2026"
+   ],
+   "Bankinter": [
+    "03/26/2026"
+   ],
+   "CaixaBank": [
+    "03/26/2026"
+   ],
+   "Logista": [
+    "02/04/2026"
+   ],
+   "Mapfre": [
+    "03/13/2026"
+   ],
+   "UNICAJA BANCO S.A.": [
+    "04/09/2026"
+   ],
+   "BANCO SANTANDER-CHILE": [
+    "01/27/2026",
+    "04/28/2026"
+   ],
+   "BANCO BBVA PERU": [
+    "03/26/2026"
+   ],
+   "Ferrovial": [
+    "04/09/2026"
+   ],
+   "AEROVIRONMENT, INC.": [
+    "09/25/2025"
+   ],
+   "PACS GROUP, INC.": [
+    "06/10/2026",
+    "12/19/2025"
+   ]
+  },
+  "proposals": 0,
+  "vote_records": 562,
+  "how_voted": {
+   "FOR": 535,
+   "AGAINST": 21,
+   "ABSTAIN": 5,
+   "1 YEAR": 1
+  },
+  "dissent": 15,
+  "dissent_applicable": 562,
+  "series": {
+   "S000077884": 10,
+   "S000004326": 39,
+   "S000004373": 60,
+   "S000004359": 17,
+   "S000004372": 17,
+   "S000019356": 40,
+   "S000008884": 19,
+   "S000008883": 80,
+   "S000022341": 36,
+   "S000017777": 168,
+   "S000004348": 42,
+   "S000024426": 18,
+   "S000088432": 17,
+   "S000009423": 7,
+   "S000009418": 9
+  },
+  "issuers": {
+   "CONSTRUCCIONES Y AUXILIAR DE FERROCARRILES SA": 10,
+   "BBVA": 17,
+   "Santander": 22,
+   "Cellnex": 28,
+   "TELEFONICA BRASIL SA": 34,
+   "Telefonica": 30,
+   "Repsol": 34,
+   "Grifols": 17,
+   "AENA SME SA": 17,
+   "Iberdrola": 46,
+   "ArcelorMittal": 19,
+   "Enagas": 32,
+   "Endesa": 15,
+   "Naturgy": 26,
+   "Redeia": 26,
+   "KOTAK MAHINDRA BANK LTD": 16,
+   "MAHINDRA & MAHINDRA LTD": 12,
+   "TECH MAHINDRA LTD": 8,
+   "Sabadell": 17,
+   "Bankinter": 14,
+   "CaixaBank": 17,
+   "Logista": 13,
+   "Mapfre": 14,
+   "UNICAJA BANCO S.A.": 19,
+   "BANCO SANTANDER-CHILE": 25,
+   "BANCO BBVA PERU": 18,
+   "Ferrovial": 17,
+   "AEROVIRONMENT, INC.": 7,
+   "PACS GROUP, INC.": 9
+  },
+  "n_meetings": 36,
+  "n_issuers": 29,
+  "wall_s": 1.27
+ },
+ {
+  "file": "blackrock_ishares_185mb.xml",
+  "spanish_tables": 1019,
+  "match_rules": {
+   "name": 299,
+   "known_isin": 624,
+   "es_isin": 96
+  },
+  "by_isin_issuer": {},
+  "meetings": {
+   "AEROVIRONMENT, INC.": [
+    "09/25/2025"
+   ],
+   "PROVIDENT FINANCIAL SERVICES, INC.": [
+    "05/21/2026"
+   ],
+   "Colonial": [
+    "06/17/2026"
+   ],
+   "Merlin": [
+    "04/28/2026"
+   ],
+   "EDP RENOVAVEIS, SA": [
+    "04/13/2026"
+   ],
+   "Iberdrola": [
+    "05/29/2026"
+   ],
+   "Acciona Energia": [
+    "06/04/2026"
+   ],
+   "Solaria": [
+    "06/29/2026"
+   ],
+   "ZHEJIANG PROVINCIAL NEW ENERGY INVESTMENT GROUP CO": [
+    "05/19/2026",
+    "07/23/2025",
+    "09/05/2025",
+    "12/19/2025"
+   ],
+   "ZHEJIANG PROVINCIAL NEW ENERGY INVESTMENT GROUP CO., LTD.": [
+    "06/24/2026"
+   ],
+   "Amadeus": [
+    "06/02/2026"
+   ],
+   "Inditex": [
+    "07/15/2025"
+   ],
+   "BBVA": [
+    "03/19/2026"
+   ],
+   "Sabadell": [
+    "05/05/2026",
+    "08/05/2025"
+   ],
+   "Santander": [
+    "03/26/2026"
+   ],
+   "BANCO SANTANDER-CHILE": [
+    "01/27/2026",
+    "04/28/2026"
+   ],
+   "CaixaBank": [
+    "03/26/2026"
+   ],
+   "ACS": [
+    "05/07/2026"
+   ],
+   "AENA SME SA": [
+    "04/16/2026"
+   ],
+   "Ferrovial": [
+    "04/09/2026"
+   ],
+   "HIDROVIAS DO BRASIL SA": [
+    "04/13/2026"
+   ],
+   "ECOVACS ROBOTICS CO., LTD.": [
+    "04/15/2026",
+    "05/15/2026"
+   ],
+   "Endesa": [
+    "04/28/2026"
+   ],
+   "Redeia": [
+    "05/12/2026"
+   ],
+   "Repsol": [
+    "05/13/2026"
+   ],
+   "Bankinter": [
+    "03/26/2026"
+   ],
+   "Mapfre": [
+    "03/13/2026"
+   ],
+   "Acciona": [
+    "06/24/2026"
+   ],
+   "KOTAK MAHINDRA BANK LTD": [
+    "03/04/2026",
+    "04/24/2026",
+    "08/02/2025",
+    "12/26/2025"
+   ],
+   "MAHINDRA & MAHINDRA LTD": [
+    "07/31/2025",
+    "11/26/2025"
+   ],
+   "TECH MAHINDRA LTD": [
+    "07/17/2025"
+   ],
+   "Indra": [
+    "06/29/2026"
+   ],
+   "Naturgy": [
+    "03/24/2026"
+   ],
+   "AMREST HOLDINGS SE": [
+    "05/07/2026"
+   ],
+   "SANTANDER BANK POLSKA SPOLKA AKCYJNA": [
+    "01/22/2026",
+    "04/15/2026"
+   ],
+   "EASTERN PROVINCE CEMENT CO.": [
+    "05/07/2026"
+   ],
+   "SOUTHERN PROVINCE CEMENT CO.": [
+    "06/15/2026"
+   ]
+  },
+  "proposals": 0,
+  "vote_records": 1023,
+  "how_voted": {
+   "FOR": 936,
+   "AGAINST": 56,
+   "ABSTAIN": 31
+  },
+  "dissent": 45,
+  "dissent_applicable": 1023,
+  "series": {
+   "S000004307": 7,
+   "S000004313": 6,
+   "S000004340": 7,
+   "S000069536": 6,
+   "S000077112": 34,
+   "S000048311": 32,
+   "S000022498": 74,
+   "S000008880": 31,
+   "S000004370": 100,
+   "S000008882": 47,
+   "S000045649": 34,
+   "S000018146": 34,
+   "S000028677": 48,
+   "S000074555": 11,
+   "S000031837": 112,
+   "S000027327": 103,
+   "S000053601": 33,
+   "S000034702": 38,
+   "S000047504": 119,
+   "S000028556": 104,
+   "S000047939": 20,
+   "S000004308": 7,
+   "S000004316": 6,
+   "S000069740": 6
+  },
+  "issuers": {
+   "AEROVIRONMENT, INC.": 21,
+   "PROVIDENT FINANCIAL SERVICES, INC.": 24,
+   "Colonial": 45,
+   "Merlin": 57,
+   "EDP RENOVAVEIS, SA": 36,
+   "Iberdrola": 69,
+   "Acciona Energia": 15,
+   "Solaria": 16,
+   "ZHEJIANG PROVINCIAL NEW ENERGY INVESTMENT GROUP CO": 32,
+   "ZHEJIANG PROVINCIAL NEW ENERGY INVESTMENT GROUP CO., LTD.": 2,
+   "Amadeus": 21,
+   "Inditex": 30,
+   "BBVA": 34,
+   "Sabadell": 38,
+   "Santander": 44,
+   "BANCO SANTANDER-CHILE": 25,
+   "CaixaBank": 68,
+   "ACS": 13,
+   "AENA SME SA": 34,
+   "Ferrovial": 17,
+   "HIDROVIAS DO BRASIL SA": 48,
+   "ECOVACS ROBOTICS CO., LTD.": 11,
+   "Endesa": 30,
+   "Redeia": 26,
+   "Repsol": 17,
+   "Bankinter": 14,
+   "Mapfre": 28,
+   "Acciona": 15,
+   "KOTAK MAHINDRA BANK LTD": 16,
+   "MAHINDRA & MAHINDRA LTD": 14,
+   "TECH MAHINDRA LTD": 8,
+   "Indra": 14,
+   "Naturgy": 13,
+   "AMREST HOLDINGS SE": 26,
+   "SANTANDER BANK POLSKA SPOLKA AKCYJNA": 78,
+   "EASTERN PROVINCE CEMENT CO.": 11,
+   "SOUTHERN PROVINCE CEMENT CO.": 9
+  },
+  "n_meetings": 48,
+  "n_issuers": 37,
+  "wall_s": 4.33
+ },
+ {
+  "file": "kingdon_small.xml",
+  "spanish_tables": 0,
+  "match_rules": {},
+  "by_isin_issuer": {},
+  "meetings": {},
+  "proposals": 0,
+  "vote_records": 0,
+  "how_voted": {},
+  "dissent": 0,
+  "dissent_applicable": 0,
+  "series": {},
+  "issuers": {},
+  "n_meetings": 0,
+  "n_issuers": 0,
+  "wall_s": 0.0
+ }
+]
