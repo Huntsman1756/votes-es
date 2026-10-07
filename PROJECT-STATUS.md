@@ -1,19 +1,30 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-07 · Phase: **G1+G2 complete → G3 (CLI hardening) / G4 (API)**
+Updated: 2026-10-07 · Phase: **G6 N-PX bulk semantics — in progress**
 
 ## Current state
 
 ```
 G0 reconnaissance           PASS → GO_FULL
-G1 canonical schema + N-PX  PASS (schema + provider + universe via OI gen-0004)
-G2 Spanish source adapters  PASS (IssVdsAdapter live-verified, both customers)
-G3 CLI + QA                 PASS (votes cmd suite; validate all-PASS on real data)
-G4 API                      PASS (FastAPI /api/v1, verified on real gold + tests)
-G5 frontend                 PASS (React/Vite SPA, proposal×reporter pivot works)
-G6 hardening                IN PROGRESS (CI wired; more QA checks optional)
-G7 deploy                   SCAFFOLDED (Dockerfile + compose + Caddyfile;
-                                      needs host + gold data volume)
+G1 canonical schema + N-PX  PASS
+G2 Spanish source adapters  PASS
+G3 CLI + QA                 PASS
+G4 API                      PASS
+G5 frontend                 PASS
+G6 bulk semantics           IN PROGRESS
+    semantic audit          PASS (alignment vs recommendation direction —
+                                 see docs/findings/NPX-MANAGEMENT-SEMANTICS.md)
+    amendments              PASS (RESTATEMENT supersedes / ADDITIVE adds;
+                                 unknown stays flagged)
+    split votes             PASS (components kept + is_split flag)
+    joint reporting         CAPTURED (voting_managers + summary-page list)
+    bulk 2026               RUNNING (manifest 11,952 filings; resumable)
+    coverage QA             PASS (all checks; new semantic gates green)
+    reuse gate              DOCUMENTED (VOTES_PUBLISH_VOTE_SOURCES;
+                                       VDS rows excluded by default)
+G7 deploy                   SCAFFOLDED (Coolify/Traefik on h1756 VPS is the
+                              target — see h1756.es baseline; wildcard
+                              *.h1756.es already resolves. Not deployed.)
 ```
 
 ## What was built (this session)
