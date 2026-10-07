@@ -14,20 +14,26 @@ others publish itemized or summary data on their own domains.
 ## Classification
 
 ```text
-A = itemized/proposal-level + published on manager's own domain
-    → adapter candidate; still review site terms before redistribution
-B = itemized detail only via ISS VDS
-    → same bottleneck as CaixaBank/BBVA; do not ingest or republish yet
-C = summary/qualitative only (annual PDF, CNMV periodic reports)
-    → keep as source metadata/rationale; not a complete vote record
+A-TECHNICAL   = proposal-level + own-domain source + deterministically
+                extractable
+A-PUBLISHABLE = A-TECHNICAL + reuse sufficiently defensible
+B             = itemized detail only via ISS VDS
+                → same bottleneck as CaixaBank/BBVA; do not ingest or
+                  republish yet
+C             = summary/qualitative only (annual PDF, CNMV reports)
+                → keep as source metadata/rationale; not a vote record
 ```
 
 ## Matrix
 
 | Manager | Group | Itemized? | Where | Evidence |
 |---|---|---|---|---|
-| MAPFRE AM | **A (candidate)** | YES — per-meeting, per-item rows with `Proposed by / Vote / Management Recommendation / For-Against Management` | `mapfream.com` PDF, 181 pp, FY2025 (`ES-actividades-implicacion-y-ejercicio-politica-voto-2025.pdf`), annual series 2023–2025 | Anexo 2 = full vote detail; columns look like an ISS vote-record export but hosted by MAPFRE |
-| Amundi group → Sabadell AM | A? | YES via own "Proxy Voting Records" portal, votes published ~30d post-meeting; annual Voting Report + Appendix (significant votes + rationale) | `about.amundi.com/proxy-voting-records` | Sabadell AM voting is executed by Amundi's central Voting & CorpGov team — Sabadell funds are covered by group records. Portal is JS-driven; machine-readability/exports TBD |
+| MAPFRE AM | **A-TECHNICAL** | YES — per-meeting, per-item rows with `Proposed by / Vote / Management Recommendation / For-Against Management` | `mapfream.com` PDF, 181 pp, FY2025 (`ES-actividades-implicacion-y-ejercicio-politica-voto-2025.pdf`), annual series 2023–2025 | Anexo 2 = full vote detail; columns look like an ISS vote-record export but hosted by MAPFRE |
+| Amundi group → Sabadell AM | **B** (not A) | YES via own "Proxy Voting Records" portal, votes published ~30d post-meeting; annual Voting Report + Appendix (significant votes + rationale) | `about.amundi.com/proxy-voting-records` | **Reclassified B (2026-10-07):** `about.amundi.com/proxy-voting-records`
+is an iframe to `vds.issgovernance.com/vds/#/Mjg1OA==/` (VDS customer
+2858) — same ISS bottleneck. Records are Amundi-consolidated: Sabadell AM
+delegates voting to Amundi's central team, so `reporter=SABADELL_AM` is
+**not demonstrable**; at best `reporter=AMUNDI, scope=GROUP_CONSOLIDATED`. |
 | Santander AM + Santander Pensiones | B | detail only via VDS | `vds.issgovernance.com/vds/#/MTI3NzI=` (customer 12772) | annual report PDFs (own domain, summary only) point to VDS for detail |
 | Bankinter Gestión | B | detail via VDS (observed) | bankinter.com "Información anual del voto" → VDS | user-verified; VDS customer id TBD (bankinter.com blocks non-browser fetch) |
 | CaixaBank AM | B | VDS | `vds/#/MTEwMDY=` (11006) | already catalogued (G1–G6) |
@@ -66,12 +72,11 @@ C = summary/qualitative only (annual PDF, CNMV periodic reports)
    vote facts themselves are not copyrightable subject matter, but EU/ES
    database-right caution applies — same conservative posture as before.
 
-3. **Amundi covers Sabadell AM.** Sabadell AM belongs to Amundi group and
-   its votes are exercised by Amundi's central team; Amundi publishes its
-   own records portal (own domain, ~30-day lag). If the portal exposes a
-   download/API it is a second group-A candidate — and Amundi is one of
-   the largest voters in Spanish AGMs. Needs a probe of the JS app's data
-   endpoint + legal notices.
+3. **Amundi covers Sabadell AM — but through VDS.** Amundi's public
+   "Proxy Voting Records" portal is cosmetically own-domain but technically
+   an ISS VDS embed (customer 2858); Amundi declares ~30-day post-meeting
+   publication. Same reuse problem as the rest of group B, plus
+   consolidated-group attribution (no per-entity Sabadell label).
 
 4. **The long tail is summary-only.** Most boutiques (Magallanes, EDM,
    GVC, Azvalor, Singular, Renta 4, Mutuactivos…) publish qualitative
@@ -87,8 +92,8 @@ C = summary/qualitative only (annual PDF, CNMV periodic reports)
 ## Recommended G8 continuation
 
 1. Probe MAPFRE PDF parser feasibility (one meeting → structured rows).
-2. Probe Amundi records portal data endpoint (network inspector or
-   `curl` against the app's JSON); map Sabadell AM fund coverage.
+2. ~~Probe Amundi records portal~~ DONE — it is ISS VDS (customer 2858)
+   in an iframe; group-consolidated records only.
 3. Write ISS VDS reuse analysis **once** — it unlocks ≥4 big gestoras at
    once (CaixaBank, BBVA, Santander, Bankinter) and the panel data already
    ingested locally; cover: VDS terms, whether manager-authorized
