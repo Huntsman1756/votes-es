@@ -276,7 +276,8 @@ def meeting_agenda(meeting_id: str):
                         "(run `votes reconcile canonical`)"}
     agenda = rows(con, """
         SELECT a.item_number, a.parent_item_number, a.item_order,
-               a.title_raw, a.votable_status, a.source_type, a.source_url,
+               a.title_raw, a.concept_id, a.votable_status,
+               a.source_type, a.source_url,
                c.canonical_proposal_id, c.identity_basis,
                count(DISTINCT v.vote_id) votes,
                count(DISTINCT v.reporting_unit_id) units
@@ -295,11 +296,30 @@ def meeting_agenda(meeting_id: str):
           ON p.proposal_id = l.legacy_proposal_id
         WHERE p.meeting_id = ? GROUP BY relation_type""", [meeting_id])
     con.close()
+    # publication gate (docs/legal/OFFICIAL-AGENDA-REUSE.md):
+    # BORME wording is reusable with AEBOE attribution; issuer-site and
+    # CNMV items serve identity + short factual label, not verbatim text
+    attribution = None
+    for a_ in agenda:
+        st = a_["source_type"]
+        if st == "BORME":
+            attribution = ("Basado en datos de la Agencia Estatal "
+                           "Boletín Oficial del Estado")
+            a_["official_title"] = a_.pop("title_raw")
+            a_["label"] = a_["concept_id"]
+        else:
+            a_["official_title"] = None
+            a_["label"] = a_["concept_id"]
+            a_.pop("title_raw")
+        a_["title_reuse"] = ("VERBATIM+ATTRIBUTION" if st == "BORME"
+                             else "METADATA_ONLY")
     return {"meeting_id": meeting_id, "agenda": agenda,
             "link_relations": {r["relation_type"]: r["links"]
                                for r in stats},
+            "attribution": attribution,
             "note": "votes shown only through SAME/SUBITEM_OF links; "
-                    "MAPFRE rows are publication-gated"}
+                    "MAPFRE rows are publication-gated; "
+                    "official titles follow the source-rights gate"}
 
 
 # ----------------------------------------------------------------- reporters
@@ -480,48 +500,97 @@ def compare_canonical(a: str = Query(...), b: str = Query(...),
              {season_clause})
         SELECT issuer, meeting_date, canonical_proposal_id,
                canonical_title,
-               max(CASE WHEN reporter_id IN (SELECT * FROM ra)
-                        THEN direction END) AS vote_a,
-               max(CASE WHEN reporter_id IN (SELECT * FROM rb)
-                        THEN direction END) AS vote_b
+               -- a reporter group may file several distinct directions
+               -- (different units disagree) plus UNKNOWN/noise rows —
+               -- surface the real directions, never an arbitrary max
+               array_sort(list(DISTINCT direction)
+                    FILTER (reporter_id IN (SELECT * FROM ra)
+                             AND direction<>'UNKNOWN')) AS dirs_a,
+               array_sort(list(DISTINCT direction)
+                    FILTER (reporter_id IN (SELECT * FROM rb)
+                             AND direction<>'UNKNOWN')) AS dirs_b,
+               any_value(CASE WHEN reporter_id IN (SELECT * FROM ra)
+                          THEN direction END) AS any_a,
+               any_value(CASE WHEN reporter_id IN (SELECT * FROM rb)
+                          THEN direction END) AS any_b
         FROM mine GROUP BY ALL""", params)
+    for r in out:
+        r["vote_a"] = r["dirs_a"] if r["dirs_a"] else (
+            [r["any_a"]] if r["any_a"] else None)
+        r["vote_b"] = r["dirs_b"] if r["dirs_b"] else (
+            [r["any_b"]] if r["any_b"] else None)
+        del r["dirs_a"], r["dirs_b"], r["any_a"], r["any_b"]
     both = [r for r in out if r["vote_a"] and r["vote_b"]]
     same = sum(1 for r in both if r["vote_a"] == r["vote_b"])
+    cps = {r["canonical_proposal_id"] for r in both}
+    obs = con.execute("""
+        SELECT count(DISTINCT CASE WHEN v.reporter_id IN
+               (SELECT reporter_id FROM reporters
+                WHERE canonical_name ILIKE ? OR reporter_id = ?
+                OR parent_group ILIKE ?) THEN v.vote_id END) obs_a,
+               count(DISTINCT CASE WHEN v.reporter_id IN
+               (SELECT reporter_id FROM reporters
+                WHERE canonical_name ILIKE ? OR reporter_id = ?
+                OR parent_group ILIKE ?) THEN v.vote_id END) obs_b,
+               count(DISTINCT CASE WHEN v.reporter_id IN
+               (SELECT reporter_id FROM reporters
+                WHERE canonical_name ILIKE ? OR reporter_id = ?
+                OR parent_group ILIKE ?) THEN v.reporting_unit_id END) units_a,
+               count(DISTINCT CASE WHEN v.reporter_id IN
+               (SELECT reporter_id FROM reporters
+                WHERE canonical_name ILIKE ? OR reporter_id = ?
+                OR parent_group ILIKE ?) THEN v.reporting_unit_id END) units_b
+        FROM v_canonical_votes v
+        WHERE v.canonical_proposal_id IN
+              (SELECT unnest(?))""",
+        [f"%{a}%", a, f"%{a}%", f"%{b}%", b, f"%{b}%"] * 2
+        + [sorted(cps)]).fetchone() if cps else (0, 0, 0, 0)
     # coverage: proposals observed for either side but excluded from the
-    # comparable denominator by relation type
+    # comparable denominator by relation type or votable_status
     e_params: list[Any] = [f"%{a}%", a, f"%{a}%", f"%{b}%", b, f"%{b}%"]
     if season:
         e_params.append(season)
     excl = rows(con, f"""
-        SELECT l.relation_type, count(*) links
+        SELECT CASE WHEN l.relation_type NOT IN ('SAME','SUBITEM_OF')
+                    THEN l.relation_type
+                    WHEN cp.votable_status = 'INFORMATION_ONLY'
+                    THEN 'INFORMATION_ONLY' END AS reason,
+               count(DISTINCT l.legacy_proposal_id) proposals
         FROM proposal_anchor_links l
         JOIN proposals p ON p.proposal_id = l.legacy_proposal_id
         JOIN votes v ON v.proposal_id = p.proposal_id
         JOIN meetings m USING(meeting_id)
         JOIN reporters r ON v.reporter_id = r.reporter_id
-        WHERE l.relation_type NOT IN ('SAME','SUBITEM_OF')
+        LEFT JOIN canonical_proposals cp
+          ON cp.canonical_proposal_id = l.canonical_proposal_id
+        WHERE (l.relation_type NOT IN ('SAME','SUBITEM_OF')
+           OR cp.votable_status = 'INFORMATION_ONLY')
           AND ((r.canonical_name ILIKE ? OR r.reporter_id = ?
             OR r.parent_group ILIKE ?)
            OR (r.canonical_name ILIKE ? OR r.reporter_id = ?
             OR r.parent_group ILIKE ?))
           {season_clause}
-        GROUP BY l.relation_type""", e_params)
+        GROUP BY reason""", e_params)
     con.close()
-    excl_map = {r["relation_type"]: r["links"] for r in excl}
+    excl_map = {r["reason"]: r["proposals"] for r in excl if r["reason"]}
     return {
         "a": a, "b": b, "season": season,
-        "common_canonical_proposals": len(both),
+        "shared_proposals": len(cps),
+        "shared_observations": {"a": obs[0], "b": obs[1]},
+        "shared_units": {"a": obs[2], "b": obs[3]},
         "same_direction": same, "different_direction": len(both) - same,
         "observed_agreement": (same / len(both)) if both else None,
-        "possible_shared_proposals": len(out),
+        "proposals_observed_either_side": len(out),
         "coverage_rate": (len(both) / len(out)) if out else None,
-        "excluded_by_relation": excl_map,
+        "excluded": excl_map,
         "meetings_compared": len({r["meeting_date"] for r in both}),
         "issuers_compared": len({r["issuer"] for r in both}),
         "proposals": both,
         "caveat": ("Same-official-item votes only (SAME/SUBITEM_OF). "
-                   "Bundle-level votes are never fanned out; excluded "
-                   "relations reported in excluded_by_relation."),
+                   "Bundle-level votes are never fanned out; "
+                   "information-only items are excluded unless an "
+                   "official source proves they were put to a vote; "
+                   "exclusions are reported, not dropped."),
     }
 
 

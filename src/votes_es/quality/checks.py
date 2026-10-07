@@ -250,6 +250,19 @@ def canonical_checks(canonical_dir: Path | None = None) -> list[Check]:
                        AND c.canonical_proposal_id IS NULL""")
     checks.append(Check("anchor_link_orphan_canonical",
                         "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    # filers recording dispositions on officially information-only items:
+    # kept observable (links + canonical carry the status) but they must
+    # never enter comparable denominators — REVIEW, never auto-promote
+    bad = scalar(f"""SELECT count(DISTINCT c.canonical_proposal_id)
+                     FROM '{c}/canonical_proposals.parquet' c
+                     JOIN '{c}/proposal_anchor_links.parquet' l
+                       ON l.canonical_proposal_id=c.canonical_proposal_id
+                     WHERE c.votable_status='INFORMATION_ONLY'""")
+    checks.append(Check("information_only_with_reported_vote",
+                        "WARN" if bad else "PASS",
+                        f"{bad} info-only canonical(s) carry reported votes "
+                        "(excluded from comparisons)"))
     con.close()
     return checks
 

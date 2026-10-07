@@ -89,6 +89,7 @@ class DisclosureLevel(StrEnum):
 
 class ReuseStatus(StrEnum):
     OPEN_REUSE_CONFIRMED = "OPEN_REUSE_CONFIRMED"
+    NORMALIZED_FACTS_ALLOWED = "NORMALIZED_FACTS_ALLOWED"
     PUBLIC_ACCESS_REUSE_UNCLEAR = "PUBLIC_ACCESS_REUSE_UNCLEAR"
     PERMISSION_REQUIRED = "PERMISSION_REQUIRED"
     BLOCKED_PENDING_WRITTEN_PERMISSION = "BLOCKED_PENDING_WRITTEN_PERMISSION"
@@ -111,6 +112,10 @@ class ExtractionTerms(StrEnum):
     """Whether the site's terms prohibit automated extraction. This is a
     different question from whether the data may be republished."""
     PERMITTED = "PERMITTED"                  # no prohibition observed
+    # facts (votes, items, dates) may be extracted and normalized, but the
+    # document itself — layout, structure, expressive text — may not be
+    # reproduced; the typical class for mandatory-disclosure PDFs
+    PERMITTED_FACTS_ONLY = "PERMITTED_FACTS_ONLY"
     PROHIBITED_BY_TERMS = "PROHIBITED_BY_TERMS"
     UNKNOWN = "UNKNOWN"
 
@@ -119,8 +124,21 @@ class PublicationStatus(StrEnum):
     """May normalized vote rows be republished? Decoupled from technical
     feasibility and from ingestion for local research."""
     OPEN = "OPEN"
+    # publish our own normalized facts (identity, direction, provenance);
+    # never the source document or its structure
+    NORMALIZED_FACTS_ALLOWED = "NORMALIZED_FACTS_ALLOWED"
+    # identity/linking only (item numbers, ids, urls) — no titles
+    METADATA_ONLY = "METADATA_ONLY"
     PERMISSION_REQUIRED = "PERMISSION_REQUIRED"
     PROHIBITED = "PROHIBITED"
+    UNKNOWN = "UNKNOWN"
+
+
+class TextReuse(StrEnum):
+    """May the source's own wording be republished?"""
+    FULL = "FULL"                     # explicit licence / public domain
+    SHORT_LABELS = "SHORT_LABELS"     # only minimal factual labels
+    NONE = "NONE"                     # our own titles only, always
     UNKNOWN = "UNKNOWN"
 
 

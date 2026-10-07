@@ -35,7 +35,7 @@ identity_basis: {'SOURCE_CONSENSUS': 4862, 'OFFICIAL_AGENDA': 2, 'UNRESOLVED': 8
 ```text
 votes:                          194167 — canonical build is additive,
                                 vote count/direction/shares untouched
-canonical comparable votes:     193445 (SAME/SUBITEM_OF links only)
+canonical comparable votes:     193385 (information-only excluded) (SAME/SUBITEM_OF links only)
 publication leak:               PASS — VOTES_PUBLISH_VOTE_SOURCES=sec_npx
 ```
 

@@ -27,12 +27,14 @@ import duckdb
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-from votes_es import __version__  # noqa: E402
+from votes_es import __version__, SCHEMA_VERSION  # noqa: E402
 from votes_es.config import (  # noqa: E402
     PUBLISH_VOTE_SOURCES, SILVER_DIR)
 from votes_es.quality.checks import run_checks  # noqa: E402
 from votes_es.storage.gold import build_gold  # noqa: E402
 from votes_es.storage.schemas import SILVER_SCHEMAS  # noqa: E402
+
+CANONICAL_DIR = REPO / "data" / "canonical"
 
 
 def _sha256(p: Path) -> str:
@@ -94,6 +96,15 @@ def main() -> int:
             f"COPY (SELECT * FROM '{p.as_posix()}'{where}) "
             f"TO '{(parquet_dir / f'{name}.parquet').as_posix()}' "
             "(FORMAT PARQUET, COMPRESSION ZSTD)")
+    # canonical v2 artifacts: derived, source-agnostic — shipped whole
+    for name in ("official_agenda_items", "canonical_proposals",
+                 "proposal_anchor_links"):
+        p = CANONICAL_DIR / f"{name}.parquet"
+        if p.exists():
+            con.execute(
+                f"COPY (SELECT * FROM '{p.as_posix()}') "
+                f"TO '{(parquet_dir / f'{name}.parquet').as_posix()}' "
+                "(FORMAT PARQUET, COMPRESSION ZSTD)")
     con.close()
 
     # ---- QA --------------------------------------------------------------
@@ -134,13 +145,21 @@ def main() -> int:
                             capture_output=True, text=True).stdout.strip()
     manifest = {
         "dataset_version": run_id,
-        "schema_version": "gold-1",
+        "schema_version": SCHEMA_VERSION,
         "software_version": __version__,
         "software_commit": commit,
         "created_at": datetime.now(UTC).isoformat(),
         "counts": counts,
         "source_cutoffs": cutoffs,
         "publication_vote_sources": list(PUBLISH_VOTE_SOURCES),
+        "canonical": {
+            "official_agenda_items": "official_agenda_items.parquet"
+                if (parquet_dir / "official_agenda_items.parquet").exists()
+                else None,
+            "has_canonical_layer": (parquet_dir
+                                    / "canonical_proposals.parquet")
+                .exists(),
+        },
         "vds_vote_rows_published": not PUBLISH_VOTE_SOURCES
         or any("iss_vds" in s for s in PUBLISH_VOTE_SOURCES),
         "quality_status": "PASS",

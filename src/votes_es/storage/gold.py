@@ -86,7 +86,11 @@ JOIN proposal_anchor_links l ON l.legacy_proposal_id = v.proposal_id
     AND (l.vote_id IS NULL OR l.vote_id = v.vote_id)
 LEFT JOIN canonical_proposals cp
        ON cp.canonical_proposal_id = l.canonical_proposal_id
-WHERE l.relation_type IN ('SAME','SUBITEM_OF')""" if
+WHERE l.relation_type IN ('SAME','SUBITEM_OF')
+  -- information-only official items are not votable: N-PX platforms may
+  -- record a disposition, but absent official evidence that the point
+  -- was actually put to a vote it is excluded from comparisons
+  AND (cp.votable_status IS NULL OR cp.votable_status <> 'INFORMATION_ONLY')""" if
         (cdir / "proposal_anchor_links.parquet").exists() else "SELECT 1")
     con.execute("CHECKPOINT")
     con.close()

@@ -12,6 +12,7 @@ from votes_es.domain.enums import (
     ReuseStatus,
     SourceType,
     TechnicalAccess,
+    TextReuse,
 )
 
 
@@ -28,6 +29,7 @@ class SourceDef:
     technical_access: TechnicalAccess = TechnicalAccess.UNKNOWN
     extraction_terms: ExtractionTerms = ExtractionTerms.UNKNOWN
     publication_status: PublicationStatus = PublicationStatus.UNKNOWN
+    text_reuse: TextReuse = TextReuse.UNKNOWN
     aggregation_scope: str | None = None
 
 
@@ -38,6 +40,7 @@ _VDS_ACCESS = {
     # without prior written approval — see docs/findings/VDS-REUSE-GATE.md
     "extraction_terms": ExtractionTerms.PROHIBITED_BY_TERMS,
     "publication_status": PublicationStatus.PERMISSION_REQUIRED,
+    "text_reuse": TextReuse.NONE,
 }
 
 SOURCES: dict[str, SourceDef] = {
@@ -48,6 +51,7 @@ SOURCES: dict[str, SourceDef] = {
         technical_access=TechnicalAccess.PUBLIC_DOCUMENT,
         extraction_terms=ExtractionTerms.PERMITTED,
         publication_status=PublicationStatus.OPEN,
+        text_reuse=TextReuse.FULL,          # US government work
     ),
     "iss_vds:caixabank-am": SourceDef(
         source_id="iss_vds:caixabank-am", source_type=SourceType.ISS_VDS,
@@ -85,15 +89,20 @@ SOURCES: dict[str, SourceDef] = {
         source_id="mapfre_am", source_type=SourceType.SGIIC_DIRECT,
         name="MAPFRE AM — annual vote & engagement report (itemized PDF)",
         base_url="https://www.mapfream.com/",
-        reuse_status=ReuseStatus.PERMISSION_REQUIRED,
+        reuse_status=ReuseStatus.NORMALIZED_FACTS_ALLOWED,
         reporter_key="mapfre-am",
         technical_access=TechnicalAccess.PUBLIC_DOCUMENT,
-        # Site legal notice restricts reproduction/exploitation; no explicit
-        # automated-extraction clause found. Publication of normalized rows
-        # stays gated pending written permission — see
-        # docs/legal/MAPFRE-PERMISSION-REQUEST.md
-        extraction_terms=ExtractionTerms.UNKNOWN,
-        publication_status=PublicationStatus.PERMISSION_REQUIRED,
+        # Mandatory disclosure under art. 47ter LIIC: SGIICs must publish
+        # how they voted. Facts-only extraction; we never republish the
+        # document, its structure or its expressive text. Written
+        # confirmation was requested (docs/legal/MAPFRE-PERMISSION-REQUEST)
+        # as belt-and-braces, but is not a publication dependency — see
+        # docs/legal/NORMALIZED-FACTS-POLICY.md
+        extraction_terms=ExtractionTerms.PERMITTED_FACTS_ONLY,
+        publication_status=PublicationStatus.NORMALIZED_FACTS_ALLOWED,
+        # source wording is kept as provenance in silver/bronze but the
+        # public surface shows canonical titles + short factual labels
+        text_reuse=TextReuse.SHORT_LABELS,
         aggregation_scope=(
             "Consolidated MAPFRE AM vote execution (investment funds, "
             "pension funds/EPSV and discretionary mandates incl. Grupo)"),

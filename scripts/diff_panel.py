@@ -50,7 +50,8 @@ def main(csv_gz: Path) -> int:
                  norm(r["proposal"]))
             panel[k] = r
     if not panel:
-        print("panel csv empty"); return 1
+        print("panel csv empty")
+        return 1
     accs = {k[0] for k in panel}
     print(f"panel: {len(panel)} rows, {len(accs)} accessions")
 

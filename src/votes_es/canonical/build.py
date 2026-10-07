@@ -255,8 +255,8 @@ def build(silver_dir: Path,
                     and cpid not in seen_cp:
                 _add_official(cp_rows, mid, a, aid)
 
-        from collections import Counter
-        stats.links = dict(Counter(r["relation_type"] for r in lk_rows))
+    from collections import Counter
+    stats.links = dict(Counter(r["relation_type"] for r in lk_rows))
 
     stats.canonical_proposals = len(cp_rows)
     stats.official = sum(1 for r in cp_rows

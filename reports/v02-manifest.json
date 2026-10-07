@@ -1,0 +1,32 @@
+{
+ "software_version": "0.2.0-rc1",
+ "schema_version": 2,
+ "dataset_version": "2026-10-07-v02rc1",
+ "software_commit": "d05a493",
+ "publication_vote_sources": [
+  "sec_npx"
+ ],
+ "votes": 194167,
+ "meetings": 261,
+ "official_agenda_meetings": 26,
+ "official_agenda_items": 435,
+ "canonical_proposals": 5369,
+ "identity_basis_counts": {
+  "OFFICIAL_AGENDA": 420,
+  "UNRESOLVED": 87,
+  "SOURCE_CONSENSUS": 4862
+ },
+ "anchor_relation_counts": {
+  "SAME": 5348,
+  "NOISE": 4,
+  "UNMATCHED": 7,
+  "BUNDLES": 8,
+  "AMBIGUOUS": 76
+ },
+ "rights_gate_counts": {
+  "BORME": 13,
+  "CNMV_REVIEW": 2,
+  "ISSUER_METADATA_ONLY": 11
+ },
+ "info_only_with_reported_vote": 2
+}

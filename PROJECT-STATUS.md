@@ -1,6 +1,6 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-07 · Phase: **G10 canonical proposal model v2 — core done**
+Updated: 2026-10-07 · Phase: **G11 release prep — v0.2.0-rc1 candidate built**
 
 ## Current state
 
@@ -25,7 +25,8 @@ G10 canonical model v2      DONE — official_agenda_items + canonical_proposals
                               + proposal_anchor_links bridge; v0.1 IDs stable
 
 N-PX core                   FREEZE — maintenance only
-production                  MAINTENANCE — VOTES_PUBLISH_VOTE_SOURCES=sec_npx
+production                  MAINTENANCE — v0.1.0 live, sec_npx only;
+                              v0.2.0-rc1 staged locally (schema 2 + canonical)
 NEXT                        v0.2.0 data layer when reuse unblocks MAPFRE
 ```
 

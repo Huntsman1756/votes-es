@@ -70,5 +70,9 @@ def test_registry_access_model():
     assert vds.extraction_terms == ExtractionTerms.PROHIBITED_BY_TERMS
     assert vds.publication_status == PublicationStatus.PERMISSION_REQUIRED
     m = SOURCES["mapfre_am"]
-    assert m.publication_status == PublicationStatus.PERMISSION_REQUIRED
+    # G11: facts-only model — normalized rows publishable in principle,
+    # but production still requires VOTES_PUBLISH_VOTE_SOURCES
+    assert m.extraction_terms == ExtractionTerms.PERMITTED_FACTS_ONLY
+    assert m.publication_status == PublicationStatus.NORMALIZED_FACTS_ALLOWED
     assert m.technical_access.value == "PUBLIC_DOCUMENT"
+    assert m.text_reuse.value == "SHORT_LABELS"
