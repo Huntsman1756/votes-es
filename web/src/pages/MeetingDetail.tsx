@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { api, PivotRow } from "../api";
-
-function Chip({ d, raw }: { d: string; raw: string }) {
-  const cls = d === "FOR" ? "for" : d === "AGAINST" ? "against"
-    : d === "ABSTAIN" || d === "WITHHOLD" ? "abstain" : "dim";
-  return <span className={`chip ${cls}`} title={raw}>{d}</span>;
-}
+import { Chip } from "../components/Chip";
 
 export default function MeetingDetail() {
   const { id } = useParams();
   const [m, setM] = useState<any>();
   const [rows, setRows] = useState<PivotRow[]>([]);
+  const [flat, setFlat] = useState<any[]>([]);
+  const [showFlat, setShowFlat] = useState(false);
   useEffect(() => {
     api.meeting(id!).then(setM);
     api.meetingPivot(id!).then(r => setRows(r.pivot));
   }, [id]);
+  const loadFlat = () => {
+    if (!flat.length) api.meetingVotes(id!).then(r => setFlat(r.votes));
+    setShowFlat(!showFlat);
+  };
 
   const { proposals, reporters } = useMemo(() => {
     const reps = [...new Set(rows.map(r => r.reporter))].sort();

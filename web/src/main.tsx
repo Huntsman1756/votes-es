@@ -11,6 +11,7 @@ import ReporterDetail from "./pages/ReporterDetail";
 import Compare from "./pages/Compare";
 import Sources from "./pages/Sources";
 import Methodology from "./pages/Methodology";
+import VoteExplain from "./pages/VoteExplain";
 import "./styles.css";
 
 const router = createBrowserRouter([
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: "compare", element: <Compare /> },
       { path: "sources", element: <Sources /> },
       { path: "methodology", element: <Methodology /> },
+      { path: "votes/:id", element: <VoteExplain /> },
     ],
   },
 ]);

@@ -74,4 +74,5 @@ export const api = {
     get<CompareResult>(`/compare/reporters?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}${season ? `&season=${season}` : ""}`),
   categories: () => get<{ categories: any[] }>("/categories"),
   sources: () => get<{ sources: SourceRow[] }>("/sources"),
+  vote: (id: string) => get<any>(`/votes/${id}`),
 };
