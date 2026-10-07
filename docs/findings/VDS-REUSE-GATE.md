@@ -48,5 +48,34 @@ If ISS/managers confirm reuse later, flip the env — no schema change.
 
 ## No fabricated certainty
 
-Status stays `PUBLIC_ACCESS_REUSE_UNCLEAR` in `sources.reuse_status`.
-The exit gate records this as a documented limitation, not a resolved one.
+~~Status stays `PUBLIC_ACCESS_REUSE_UNCLEAR` in `sources.reuse_status`.
+The exit gate records this as a documented limitation, not a resolved one.~~
+
+## Resolution update (2026-10-08, G8-C)
+
+The ISS STOXX Terms of Use (iss-stoxx.com/legal/terms-of-use) explicitly:
+
+- prohibit using software/systems to extract data from the site;
+- prohibit copying, distributing, publishing or exploiting information
+  obtained from the site without prior written approval.
+
+Operational classification upgraded to:
+
+```text
+technical_access       = PUBLIC_WEB_APP
+extraction_terms       = PROHIBITED_BY_TERMS
+publication_status     = PERMISSION_REQUIRED
+reuse_status           = BLOCKED_PENDING_WRITTEN_PERMISSION
+```
+
+Consequences:
+
+- **no new automated VDS acquisitions** — `ingest_vds_live` remains for
+  fixtures/already-acquired local research only;
+- existing bronze stays for QA/research, never published;
+- the gate now covers every VDS-hosted SGIIC uniformly: CaixaBank AM,
+  BBVA AM, Santander AM+Pensiones (customer 12772), Bankinter and
+  Amundi/Sabadell (customer 2858);
+- the single unblocking action is a written permission — draft request
+  at `docs/legal/ISS-VDS-PERMISSION-REQUEST.md` (do not send without
+  review).

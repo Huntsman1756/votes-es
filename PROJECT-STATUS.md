@@ -1,6 +1,6 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-07 · Phase: **G6 N-PX bulk semantics — in progress**
+Updated: 2026-10-08 · Phase: **G8-C MAPFRE adapter + reuse gates — done**
 
 ## Current state
 
@@ -11,24 +11,29 @@ G2 Spanish source adapters  PASS
 G3 CLI + QA                 PASS
 G4 API                      PASS
 G5 frontend                 PASS
-G6 bulk semantics           IN PROGRESS
-    semantic audit          PASS (alignment vs recommendation direction —
-                                 see docs/findings/NPX-MANAGEMENT-SEMANTICS.md)
-    amendments              PASS (RESTATEMENT supersedes / ADDITIVE adds;
-                                 unknown stays flagged)
-    split votes             PASS (components kept + is_split flag)
-    joint reporting         PASS (manager refs resolved to names;
-                                   series id→name from cover page)
-    bulk 2026               PASS (11,952 filings discovered, 5,623 voting
-                                   reports parsed = 25.48M components;
-                                   0 failures; 19.0GB)
-    coverage QA             PASS (all checks; new semantic gates green)
-    reuse gate              DOCUMENTED (VOTES_PUBLISH_VOTE_SOURCES;
-                                       VDS rows excluded by default)
-G7 deploy                   SCAFFOLDED (Coolify/Traefik on h1756 VPS is the
-                              target — see h1756.es baseline; wildcard
-                              *.h1756.es already resolves. Not deployed.)
+G6 bulk semantics           PASS
+G7 deploy                   PASS (https://votes.h1756.es, v0.1.0)
+G8 source census            PASS (docs/findings/ES-SOURCE-CENSUS.md;
+                                   ISS VDS = the bottleneck; MAPFRE = the
+                                   only own-domain itemized register)
+G8-B technical spikes       PASS (docs/findings/G8B-SPIKE.md)
+G8-C MAPFRE adapter         PASS (mapfre_am source, 3 publications ingested,
+                                   964 ES canonical votes, gated OFF public)
+    reuse model             DONE (4 separate fields on sources:
+                                   technical_access / extraction_terms /
+                                   publication_status / reuse_status)
+    ISS VDS                 BLOCKED_PENDING_WRITTEN_PERMISSION — ISS ToS
+                            prohibit extraction + republication; no new
+                            automated VDS acquisitions
+    N-PX core               FREEZE / maintenance only
+NEXT: G9 proposal reconciliation (corpus at reports/g9-reconciliation-corpus.parquet,
+                                 preview docs/findings/G9-PREVIEW.md)
 ```
+
+G6 detail: semantic audit PASS (alignment vs recommendation — see
+docs/findings/NPX-MANAGEMENT-SEMANTICS.md); amendments PASS; split votes
+PASS; joint reporting PASS; bulk 2026 PASS (11,952 filings, 5,623 voting
+reports = 25.48M components, 0 failures, 19.0GB); coverage QA PASS.
 
 ## What was built (this session)
 

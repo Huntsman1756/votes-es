@@ -57,6 +57,34 @@ BRONZE_VDS = pa.schema([
     ("notes", pa.string()),
 ])
 
+BRONZE_MAPFRE = pa.schema([
+    ("observation_id", pa.string()),
+    ("publication_year", pa.int64()),
+    # meeting block (ISS "Vote Summary" print)
+    ("company_raw", pa.string()),
+    ("security_raw", pa.string()),
+    ("isin", pa.string()),
+    ("ticker_raw", pa.string()),
+    ("meeting_date_raw", pa.string()),
+    ("meeting_type_raw", pa.string()),
+    ("agenda_number", pa.string()),
+    ("record_date_raw", pa.string()),
+    ("vote_deadline_raw", pa.string()),
+    ("city_country_raw", pa.string()),
+    # item row
+    ("item_raw", pa.string()),              # effective item, incl. "5.2" sub-items
+    ("parent_item_raw", pa.string()),       # parent when derived from a sub-row
+    ("proposal_text_raw", pa.string()),
+    ("proposed_by_raw", pa.string()),
+    ("vote_raw", pa.string()),
+    ("management_recommendation_raw", pa.string()),
+    ("for_against_raw", pa.string()),       # explicit alignment column
+    # provenance + quality
+    ("page", pa.int64()), ("row_top", pa.float64()), ("page_end", pa.int64()),
+    ("quarantined", pa.bool_()),
+    ("quarantine_reason", pa.string()),
+])
+
 BRONZE_FILINGS = pa.schema([
     ("accession", pa.string()),
     ("cik", pa.string()),
@@ -78,6 +106,11 @@ SOURCES = pa.schema([
     ("name", pa.string()), ("base_url", pa.string()),
     ("reuse_status", pa.string()), ("terms_checked_at", pa.string()),
     ("robots_checked_at", pa.string()), ("adapter_version", pa.string()),
+    # reuse model (four separate questions — see SourceDef)
+    ("technical_access", pa.string()),
+    ("extraction_terms", pa.string()),
+    ("publication_status", pa.string()),
+    ("aggregation_scope", pa.string()),
 ])
 
 OBSERVATIONS = pa.schema([

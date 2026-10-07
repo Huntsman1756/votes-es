@@ -117,4 +117,22 @@ Deterministic: ballot-number equality > exact normalized text > token-Jaccard
 No row = NOT_OBSERVED. `against_management` is source-aware and NULL when
 undefined — N-PX: `alignment == 'AGAINST'`; VDS: `direction != mgtRec` when
 both are meaningful. `DO_NOT_VOTE` only when the source explicitly shows
-the unit did not vote (VDS blank ClientVoteList on an attached fund).
+the unit did not vote (VDS blank ClientVoteList on an attached fund;
+MAPFRE blank Vote cell on a votable item).
+
+## Source reuse model
+
+Four separate questions — never one flag (`sources` table, registry):
+
+```text
+technical_access      PUBLIC_DOCUMENT / PUBLIC_WEB_APP / AUTHENTICATED / BLOCKED
+extraction_terms      PERMITTED / PROHIBITED_BY_TERMS / UNKNOWN
+publication_status    OPEN / PERMISSION_REQUIRED / PROHIBITED / UNKNOWN
+reuse_status          legacy summary flag (publication/export gate)
+```
+
+Current assignments: `sec_npx` OPEN/PERMITTED; `iss_vds:*` PUBLIC_WEB_APP +
+PROHIBITED_BY_TERMS + PERMISSION_REQUIRED
+(BLOCKED_PENDING_WRITTEN_PERMISSION); `mapfre_am` PUBLIC_DOCUMENT +
+PERMISSION_REQUIRED. Vote rows reach the served dataset only through
+`VOTES_PUBLISH_VOTE_SOURCES`.

@@ -37,9 +37,19 @@ from votes_es.normalization.votes import (
     normalize_mgmt_alignment,
     normalize_mgmt_rec,
 )
+from votes_es.sources.mapfre_am import provider as mapfre
+from votes_es.sources.mapfre_am.normalization import (
+    mapfre_against,
+    mapfre_alignment,
+    mapfre_direction,
+    mapfre_meeting_type,
+    mapfre_mgmt,
+    parse_mapfre_date,
+)
 from votes_es.sources.registry import NPX_PARENT_GROUPS, REPORTERS, SOURCES
 from votes_es.storage import bronze as bronze_io
 from votes_es.storage.schemas import (
+    BRONZE_MAPFRE,
     BRONZE_NPX,
     BRONZE_VDS,
     SILVER_SCHEMAS,
@@ -311,12 +321,15 @@ def build_silver(universe_path: Path, out_dir: Path,
         d.name: bronze_io.load_bronze(d.name, BRONZE_VDS)
         for d in bronze_io.BRONZE_DIR.glob("iss_vds*") if d.is_dir()
     }
+    mapfre_bronze = bronze_io.load_bronze(mapfre.SOURCE_ID, BRONZE_MAPFRE)
     # bulk-warm the identity resolver (a few OI queries total)
     warm_isins = set(npx_bronze.column("isin").drop_null().unique().to_pylist())
     warm_cusips = set(npx_bronze.column("cusip").drop_null().unique().to_pylist())
     for vt in vds_bronze_tables.values():
         warm_isins.update(vt.column("isin").drop_null().unique().to_pylist())
         warm_cusips.update(vt.column("cusip").drop_null().unique().to_pylist())
+    warm_isins.update(
+        mapfre_bronze.column("isin").drop_null().unique().to_pylist())
     resolver.warm(sorted(warm_isins), sorted(warm_cusips))
     _log(f"warmed resolver: {len(warm_isins)} isins {len(warm_cusips)} cusips")
 
@@ -450,6 +463,83 @@ def build_silver(universe_path: Path, out_dir: Path,
                 "_resolution": res,
             })
 
+    # --------------------------------------------------------- MAPFRE lane
+    # Itemized annual register on the manager's own domain. Semantics:
+    #   - 'Non-Voting' items are agenda entries, never canonical votes.
+    #   - blank Vote on a votable item = observed no-vote -> DO_NOT_VOTE.
+    #   - For/Against column is the source's own alignment flag; when blank
+    #     alignment derives from direction vs declared Mgmt Recommendation.
+    #   - quarantined rows (vocab violations, no identity, contradictions)
+    #     stay in bronze; never canonicalized.
+    n_quarantined = 0
+    n_nonvoting = 0
+    for row in mapfre_bronze.to_pylist():
+        if row["quarantined"]:
+            n_quarantined += 1
+            continue
+        direction = mapfre_direction(row["vote_raw"], row["proposed_by_raw"])
+        if direction is None:
+            n_nonvoting += 1
+            continue
+        stats.votes += 1
+        res = resolver.resolve(row["isin"], None, row["company_raw"])
+        _count_match(stats, res)
+        mdate = parse_mapfre_date(row["meeting_date_raw"])
+        key = _meeting(res, row["company_raw"] or row["isin"] or "?",
+                       mdate, mapfre_meeting_type(row["meeting_type_raw"]),
+                       row["agenda_number"], isin=row["isin"])
+        if key is None:
+            continue
+        meeting_id = ids.meeting_id(key[0], key[1].isoformat())
+
+        rid = ids.reporter_id(mapfre.REPORTER_KEY)
+        repdef = REPORTERS[mapfre.REPORTER_KEY]
+        reporters.setdefault(rid, {
+            "reporter_id": rid, "canonical_name": repdef.canonical_name,
+            "country": repdef.country,
+            "reporter_type": repdef.reporter_type.value,
+            "parent_group": repdef.parent_group, "lei": repdef.lei,
+            "source_identifiers_json": json.dumps(repdef.source_identifiers),
+        })
+        uid = ids.reporting_unit_id(rid, "self")
+        units.setdefault(uid, {
+            "unit_id": uid, "reporter_id": rid,
+            "unit_type": "REPORTER_SELF",
+            "source_identifier": "self",
+            "canonical_name": "MAPFRE AM consolidated vote execution",
+        })
+
+        inst = _Inst(
+            source_id=mapfre.SOURCE_ID, text_raw=row["proposal_text_raw"],
+            text_norm=normalize_proposal_text(row["proposal_text_raw"]),
+            ballot=row["item_raw"],
+            categories=[],
+            shareholder=(row["proposed_by_raw"] == "Shareholder"),
+        )
+        inst_by_meeting.setdefault(meeting_id, []).append(inst)
+
+        mgmt = mapfre_mgmt(row["management_recommendation_raw"])
+        alignment = mapfre_alignment(direction, mgmt, row["for_against_raw"])
+        vote_rows.append({
+            "_meeting_id": meeting_id, "_inst": inst,
+            "reporting_unit_id": uid, "reporter_id": rid,
+            "vote_raw": row["vote_raw"] or "",
+            "management_recommendation_raw": row["management_recommendation_raw"],
+            "shares_voted": None, "shares_on_loan": None,
+            "rationale": None,
+            "voting_managers": None,
+            "source_observation_id": row["observation_id"],
+            "source_id": mapfre.SOURCE_ID,
+            "report_type": None,
+            "_resolution": res,
+            "_direction": direction, "_mgmt": mgmt,
+            "_alignment": alignment,
+            "_against": mapfre_against(direction, mgmt, alignment),
+        })
+    if mapfre_bronze.num_rows:
+        _log(f"mapfre: {mapfre_bronze.num_rows} bronze rows, "
+             f"{n_quarantined} quarantined, {n_nonvoting} non-voting items")
+
     _log(f"bronze scanned: {stats.votes} rows")
 
     # -------------------------------------------- proposal canonicalization
@@ -499,19 +589,27 @@ def build_silver(universe_path: Path, out_dir: Path,
             continue
         pid = v_pid
         raw: str = v["vote_raw"] or ""
-        if v["source_id"].startswith("iss_vds") and raw == "":
+        if v["source_id"] == "mapfre_am":
+            # precomputed in the MAPFRE lane (blank vote -> DO_NOT_VOTE;
+            # explicit alignment column preferred over derivation)
+            direction = v["_direction"]
+            mgmt = v["_mgmt"]
+            alignment = v["_alignment"]
+        elif v["source_id"].startswith("iss_vds") and raw == "":
             direction = VoteDirection.DO_NOT_VOTE   # VDS blank = fund did not vote
-        else:
-            direction = normalize_direction(raw)
-        if v["source_id"] == "sec_npx":
-            # N-PX Item 1(l): the field is an ALIGNMENT flag, not the rec.
-            alignment = normalize_mgmt_alignment(v["management_recommendation_raw"])
-            mgmt = None          # rec direction is not declared by the source
-        else:
             mgmt = normalize_mgmt_rec(v["management_recommendation_raw"])
             alignment = derive_alignment(direction, mgmt)
-        against = compute_against_management(
-            direction, mgmt, alignment, source_id=v["source_id"])
+        else:
+            direction = normalize_direction(raw)
+            if v["source_id"] == "sec_npx":
+                # N-PX Item 1(l): the field is an ALIGNMENT flag, not the rec.
+                alignment = normalize_mgmt_alignment(v["management_recommendation_raw"])
+                mgmt = None      # rec direction is not declared by the source
+            else:
+                mgmt = normalize_mgmt_rec(v["management_recommendation_raw"])
+                alignment = derive_alignment(direction, mgmt)
+        against = v.get("_against", compute_against_management(
+            direction, mgmt, alignment, source_id=v["source_id"]))
         vres: Resolution = v["_resolution"]
         votes_out.append({
             # direction+raw+shares in the key: filers do emit the same
@@ -594,8 +692,12 @@ def build_silver(universe_path: Path, out_dir: Path,
         "source_id": s.source_id, "source_type": s.source_type.value,
         "name": s.name, "base_url": s.base_url,
         "reuse_status": s.reuse_status.value,
-        "terms_checked_at": "2026-10-06", "robots_checked_at": "2026-10-06",
+        "terms_checked_at": "2026-10-08", "robots_checked_at": "2026-10-08",
         "adapter_version": ADAPTER_VERSION,
+        "technical_access": s.technical_access.value,
+        "extraction_terms": s.extraction_terms.value,
+        "publication_status": s.publication_status.value,
+        "aggregation_scope": s.aggregation_scope,
     } for s in SOURCES.values()]
 
     observations = bronze_io.load_observations()
@@ -672,6 +774,11 @@ def _disclosure_seasons(votes_out: list[dict], meetings_out: list[dict],
                              "EU/NA >0.07%; >EUR 12M delegated investment; "
                              "strategic sectors >0.04%/EUR 10M."),
                     "url": "https://www.bbvaassetmanagement.com/"},
+        # MAPFRE reports votes consolidated at manager level — the register
+        # is one execution record across all vehicles under MAPFRE AM.
+        "mapfre-am": {"level": DisclosureLevel.ITEMIZED, "doc": True,
+                      "text": (SOURCES["mapfre_am"].aggregation_scope or ""),
+                      "url": "https://www.mapfream.com/"},
     }
     by_rep_year: dict[tuple[str, int], dict] = {}
     for v in votes_out:
@@ -689,7 +796,10 @@ def _disclosure_seasons(votes_out: list[dict], meetings_out: list[dict],
             "significance_criteria_documented": p["doc"],
             "significance_criteria_text": p["text"],
             "significance_criteria_source": p["url"],
-            "aggregation_scope": None, "update_frequency": None,
+            "aggregation_scope": (SOURCES.get(
+                "mapfre_am", SOURCES["sec_npx"]).aggregation_scope
+                if key == "mapfre-am" else None),
+            "update_frequency": None,
             "source_lag_days": None, "reuse_status": None,
             "source_url": None,
         }

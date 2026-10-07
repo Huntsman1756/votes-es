@@ -423,7 +423,8 @@ def sources():
     con = db()
     out = rows(con, """
         SELECT s.source_id, s.source_type, s.name, s.base_url, s.reuse_status,
-               s.adapter_version,
+               s.adapter_version, s.technical_access, s.extraction_terms,
+               s.publication_status, s.aggregation_scope,
                (SELECT count(*) FROM votes v WHERE v.source_id = s.source_id)
                  AS votes_ingested,
                (SELECT max(o.retrieved_at) FROM observations o
@@ -471,13 +472,19 @@ def vote_explain(vote_id: str):
         [v["proposal_id"], v["reporting_unit_id"], v["source_observation_id"],
          vote_id]) if v.get("is_split") else []
     con.close()
-    v["semantics_note"] = (
-        "SEC N-PX: management_alignment = whether the vote was cast for/against "
-        "management's recommendation; the recommendation direction itself is "
-        "not declared by N-PX."
-        if v.get("source_id") == "sec_npx"
-        else "VDS: management_recommendation is the direction declared in the "
-             "register.")
+    v["semantics_note"] = {
+        "sec_npx":
+            "SEC N-PX: management_alignment = whether the vote was cast "
+            "for/against management's recommendation; the recommendation "
+            "direction itself is not declared by N-PX.",
+        "mapfre_am":
+            "MAPFRE: management_recommendation is the direction declared in "
+            "the register; management_alignment comes from the source's own "
+            "For/Against-Management column. Blank vote on a votable item is "
+            "an observed no-vote (DO_NOT_VOTE).",
+    }.get(v.get("source_id") or "",
+          "VDS: management_recommendation is the direction declared in the "
+          "register.")
     return v
 
 # Static frontend (production): serve web/dist if present. Registered AFTER

@@ -45,6 +45,7 @@ _MGMT_MAP = {
     "ABSTAIN": MgmtRecommendation.ABSTAIN,
     "ABSTENTION": MgmtRecommendation.ABSTAIN,
     "WITHHOLD": MgmtRecommendation.WITHHOLD,
+    "WITHHELD": MgmtRecommendation.WITHHOLD,
     "NONE": MgmtRecommendation.NONE,
     "N/A": MgmtRecommendation.NONE,
 }

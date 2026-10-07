@@ -127,6 +127,21 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
                         f"{bad_against} votes violating source-aware dissent "
                         "semantics"))
 
+    # MAPFRE: explicit For/Against column must agree with direction vs the
+    # declared management recommendation when all three exist.
+    mapfre_contra = scalar(
+        f"SELECT count(*) FROM {T('votes')} WHERE source_id='mapfre_am' "
+        f"AND direction IN ('FOR','AGAINST') "
+        f"AND management_recommendation IN ('FOR','AGAINST') "
+        f"AND management_alignment IN ('FOR','AGAINST') "
+        f"AND management_alignment <> CASE WHEN "
+        f"direction = management_recommendation THEN 'FOR' "
+        f"ELSE 'AGAINST' END") if has_table("votes") else 0
+    checks.append(Check("mapfre_management_semantics",
+                        "PASS" if mapfre_contra == 0 else "FAIL",
+                        f"{mapfre_contra} votes where the source's own "
+                        "alignment flag contradicts direction vs rec"))
+
     # N-PX must never claim a management-rec direction
     npx_rec = scalar(
         f"SELECT count(*) FROM {T('votes')} WHERE source_id='sec_npx' "

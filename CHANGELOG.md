@@ -1,5 +1,38 @@
 # Changelog
 
+## [Unreleased] — G8-C: MAPFRE AM adapter + source rights gates
+
+- New `mapfre_am` source adapter (`sources/mapfre_am/`): deterministic
+  pdfplumber parser for the ISS "Vote Summary" annex embedded in MAPFRE
+  AM's annual reports — document-level vocabulary calibration absorbs the
+  ~10pt column drift between the 2023/2024/2025 prints; handles bundled
+  director sub-items, vertically-centred markers, page-break rows and
+  header-bleed artifacts (quarantine, never silent repair).
+- Semantics: MAPFRE carries vote + declared management-recommendation
+  direction + explicit For/Against-Management alignment — richer than
+  N-PX. Non-Voting items never canonicalize; blank vote on a votable item
+  = DO_NOT_VOTE; contradictions quarantine; new quality check
+  `mapfre_management_semantics`.
+- Reuse model split into four fields on `sources`: `technical_access`,
+  `extraction_terms`, `publication_status`, `reuse_status`. VDS sources
+  reclassified `BLOCKED_PENDING_WRITTEN_PERMISSION`
+  (PROHIBITED_BY_TERMS extraction) after the ISS ToS review; no new
+  automated VDS acquisitions. MAPFRE: PUBLIC_DOCUMENT / PERMISSION_REQUIRED
+  — rows ingested locally, excluded from the public build.
+- Registry: `iss_vds:santander-am` (customer 12772) and `iss_vds:amundi`
+  (customer 2858, group-consolidated records) catalogued as metadata.
+- Ingested 2023/2024/2025 publications: 9,552 bronze rows, 221/246/220
+  meeting blocks, 6 quarantined, 301 non-voting items → 964 canonical
+  votes on 35 ES issuers / 98 meetings. Identity finding: 8 ES-ISIN
+  meetings dropped = universe gaps (GCO, Applus, Olimpo, Funespaña) +
+  legit out-of-universe (EDP Renováveis, old Ferrovial ES ISIN).
+- G9 preview corpus: 26 shared MAPFRE×N-PX meetings
+  (reports/g9-reconciliation-corpus.parquet).
+- Permission-request drafts: docs/legal/{MAPFRE,ISS-VDS}-PERMISSION-REQUEST.md
+  (not sent).
+- Fixture `fixtures/mapfre/vote_summary_sample.pdf` (synthetic) + golden
+  tests for every hard layout case.
+
 ## [0.1.0a1] - 2026-10-07 — G1/G2: canonical pipeline + both source tracks working
 
 - Package `votes_es`: domain, normalization, identity, sources, storage,

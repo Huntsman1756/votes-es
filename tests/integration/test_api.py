@@ -46,4 +46,6 @@ def test_compare_intersection_only(client):
 def test_sources_reuse_status(client):
     srcs = client.get("/api/v1/sources").json()["sources"]
     vds = [s for s in srcs if s["source_type"] == "ISS_VDS"]
-    assert all(s["reuse_status"] == "PUBLIC_ACCESS_REUSE_UNCLEAR" for s in vds)
+    assert all(s["reuse_status"] == "BLOCKED_PENDING_WRITTEN_PERMISSION"
+               for s in vds)
+    assert all(s["extraction_terms"] == "PROHIBITED_BY_TERMS" for s in vds)

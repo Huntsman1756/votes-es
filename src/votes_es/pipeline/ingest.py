@@ -17,10 +17,11 @@ from votes_es.config import RAW_DIR
 from votes_es.domain.models import IngestRun
 from votes_es.sources.iss_vds import adapter as vds
 from votes_es.sources.iss_vds.client import VdsClient
+from votes_es.sources.mapfre_am import provider as mapfre
 from votes_es.sources.registry import SOURCES
 from votes_es.sources.sec_npx import provider as npx
 from votes_es.storage import bronze
-from votes_es.storage.schemas import BRONZE_NPX, BRONZE_VDS
+from votes_es.storage.schemas import BRONZE_MAPFRE, BRONZE_NPX, BRONZE_VDS
 
 
 def _run(source_id: str) -> IngestRun:
@@ -109,6 +110,47 @@ def ingest_vds_capture(source_id: str, meetings_path: Path | None,
             key = f"capture_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
             bronze.write_rows(all_rows, BRONZE_VDS,
                               bronze.bronze_path(source_id, key))
+    except Exception as e:  # noqa: BLE001
+        run.errors.append(f"{type(e).__name__}: {e}")
+    return _finish(run, not run.errors)
+
+
+def ingest_mapfre_pdf(pdf_path: Path, publication_year: int,
+                      document_url: str = "",
+                      retrieved_at: datetime | None = None) -> IngestRun:
+    """Parse one MAPFRE annual report PDF into bronze.
+
+    Idempotent on (year, sha256): the bronze batch file and the
+    observation are deterministic per document, so re-ingesting the same
+    file overwrites in place and appends no duplicate observation."""
+    run = _run(mapfre.SOURCE_ID)
+    try:
+        entry = mapfre.register_document(
+            pdf_path, publication_year,
+            document_url or mapfre.DOCUMENT_URLS.get(publication_year, ""),
+            retrieved_at)
+        rows, stats = mapfre.parse_pdf(Path(entry.local_path))
+        run.records_seen = stats.rows
+        bronze_rows = mapfre.rows_to_bronze(rows, entry, stats)
+        run.records_parsed = len(bronze_rows)
+        # one batch per document — deterministic key, overwrite in place
+        bronze.write_rows(bronze_rows, BRONZE_MAPFRE,
+                          bronze.bronze_path(mapfre.SOURCE_ID,
+                                             f"pub{entry.publication_year}"))
+        obs = mapfre.observation_for(entry)
+        bronze.append_observation(
+            obs.model_dump(mode="json"),
+            bronze.observations_log(mapfre.SOURCE_ID))
+        run.records_matched = run.records_parsed
+        run.records_rejected = stats.quarantined
+        for w in stats.warnings:
+            run.warnings.append(w)
+        run.warnings.append(
+            f"meetings={stats.meetings} empty_vote={stats.empty_vote} "
+            f"non_voting={stats.non_voting} split_pages={stats.split_page_rows} "
+            f"missing_proposal={stats.missing_proposal} "
+            f"missing_company={stats.missing_company} "
+            f"quarantined={stats.quarantined}")
     except Exception as e:  # noqa: BLE001
         run.errors.append(f"{type(e).__name__}: {e}")
     return _finish(run, not run.errors)

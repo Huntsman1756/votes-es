@@ -90,8 +90,37 @@ class DisclosureLevel(StrEnum):
 class ReuseStatus(StrEnum):
     OPEN_REUSE_CONFIRMED = "OPEN_REUSE_CONFIRMED"
     PUBLIC_ACCESS_REUSE_UNCLEAR = "PUBLIC_ACCESS_REUSE_UNCLEAR"
+    PERMISSION_REQUIRED = "PERMISSION_REQUIRED"
+    BLOCKED_PENDING_WRITTEN_PERMISSION = "BLOCKED_PENDING_WRITTEN_PERMISSION"
     DISPLAY_ONLY = "DISPLAY_ONLY"
     RESTRICTED = "RESTRICTED"
+    UNKNOWN = "UNKNOWN"
+
+
+class TechnicalAccess(StrEnum):
+    """How the source record can be obtained — independent of what may be
+    done with it afterwards."""
+    PUBLIC_DOCUMENT = "PUBLIC_DOCUMENT"      # static public document (PDF/XML)
+    PUBLIC_WEB_APP = "PUBLIC_WEB_APP"        # public interactive application
+    AUTHENTICATED = "AUTHENTICATED"
+    BLOCKED = "BLOCKED"
+    UNKNOWN = "UNKNOWN"
+
+
+class ExtractionTerms(StrEnum):
+    """Whether the site's terms prohibit automated extraction. This is a
+    different question from whether the data may be republished."""
+    PERMITTED = "PERMITTED"                  # no prohibition observed
+    PROHIBITED_BY_TERMS = "PROHIBITED_BY_TERMS"
+    UNKNOWN = "UNKNOWN"
+
+
+class PublicationStatus(StrEnum):
+    """May normalized vote rows be republished? Decoupled from technical
+    feasibility and from ingestion for local research."""
+    OPEN = "OPEN"
+    PERMISSION_REQUIRED = "PERMISSION_REQUIRED"
+    PROHIBITED = "PROHIBITED"
     UNKNOWN = "UNKNOWN"
 
 

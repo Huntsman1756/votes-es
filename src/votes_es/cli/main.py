@@ -74,6 +74,23 @@ def ingest_npx_season(season: int = 2026,
     con.print(stats)
 
 
+@ingest_app.command("mapfre-pdf")
+def ingest_mapfre_cmd(
+    pdf: Path = typer.Argument(..., exists=True),
+    year: int = typer.Option(..., "--year", help="publication year (2023/2024/2025)"),
+    url: str = typer.Option("", "--url", help="canonical document URL"),
+) -> None:
+    """Ingest a MAPFRE AM annual report PDF (itemized vote register)."""
+    from votes_es.pipeline.ingest import ingest_mapfre_pdf
+    run = ingest_mapfre_pdf(pdf, year, url)
+    con.print(f"{run.status}: parsed={run.records_parsed} "
+              f"quarantined={run.records_rejected} errors={len(run.errors)}")
+    for w in run.warnings:
+        con.print(f"  [dim]{w}[/dim]")
+    for e in run.errors:
+        con.print(f"  [red]{e}[/red]")
+
+
 @ingest_app.command("vds-capture")
 def ingest_vds_capture_cmd(
     source: str = typer.Argument(..., help="e.g. iss_vds:caixabank-am"),

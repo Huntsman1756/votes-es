@@ -33,6 +33,31 @@ BBVA AM (7216). Legal basis: Ley 35/2003 art. 47 ter (SRD II).
 "fund did not vote" → `DO_NOT_VOTE`. A fund absent from the meeting row =
 NOT_OBSERVED (no row emitted).
 
+### MAPFRE AM (source_id `mapfre_am`)
+
+MAPFRE AM's annual engagement report embeds an ISS "Vote Summary" annex —
+per-meeting itemized records on the manager's own domain: company, ISIN,
+meeting, item, proposal, proposer, **vote**, **management-recommendation
+direction** and the source's own **For/Against-Management** alignment flag
+(richer than N-PX, which declares only alignment). Annual publications:
+2023/2024/2025; reporting unit is consolidated MAPFRE AM vote execution
+(`REPORTER_SELF`) — the register does not decompose by fund/mandate.
+
+Semantics:
+
+- `Non-Voting` items are agenda entries, never canonical votes (kept in
+  bronze only).
+- Blank `Vote` on a votable item = observed no-vote → `DO_NOT_VOTE`
+  (same convention as VDS blank ClientVoteList).
+- `management_alignment` prefers the source's explicit For/Against column;
+  when blank it derives from direction vs declared recommendation.
+- Contradicting vote/rec/alignment triples and vocabulary violations
+  (header bleed) → quarantined in bronze, never canonicalized.
+
+Publication: `PERMISSION_REQUIRED` — the site legal notice restricts
+reproduction; rows stay out of the public build pending written
+permission (see docs/legal/MAPFRE-PERMISSION-REQUEST.md).
+
 ### Ibercaja
 
 Summary-only image PDFs; no itemized disclosure. Reporter profile exists with
