@@ -5,16 +5,21 @@ Institutional voting at Spanish listed companies.
 Search how asset managers and institutional investors publicly disclosed their
 votes at shareholder meetings of Spanish issuers.
 
-**Sources:** SEC Form N-PX · Spanish asset-manager SRD II disclosures
-(ISS VDS registers).
+**Sources:** SEC Form N-PX (public release). Spanish asset-manager SRD II
+disclosures (ISS VDS registers) are supported experimentally but their vote
+rows are **not redistributed** in the public deployment while reuse
+conditions remain under review — their metadata and source links are shown.
 
 Coverage is source-dependent. An undisclosed vote does not mean that no vote
 was cast.
 
 ## Status
 
-`v0.1.0a1` — **G0→GO_FULL · G1/G2 complete** (canonical pipeline + both source
-tracks working; 29,579 votes / 85 meetings / 78 issuers ingested locally).
+`v0.1.0` — **LIVE at https://votes.h1756.es** · N-PX 2026 season ingested
+through SEC index cutoff 2026-10-07: **165,544 canonical votes · 179
+meetings · 4,416 proposals · 105/127 issuers resolved · 947 N-PX reporters ·
+1,330 split components · 171 superseded amendments**. 11,952 filings
+discovered, 0 ingest failures.
 
 See [docs/G0-DECISION.md](docs/G0-DECISION.md) for gate evidence,
 [PROJECT-STATUS.md](PROJECT-STATUS.md) for live state,

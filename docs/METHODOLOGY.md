@@ -54,14 +54,34 @@ listing venue*, not nationality rhetoric.
 
 - `direction`: see `normalization/votes.py` mapping table; frequency answers → OTHER; raw preserved always.
 - `management_recommendation`: NULL when the source gives none — never fabricate.
-- `against_management`: defined only when BOTH sides carry values; NULL otherwise (never false-by-default).
+- `management_alignment` (N-PX only): whether the cast vote was FOR or AGAINST *management's recommendation* — the SEC field `managementRecommendation` is this alignment flag, NOT the recommendation direction (see docs/findings/NPX-MANAGEMENT-SEMANTICS.md). Displayed as "Relative to management".
+- `against_management`: source-aware — for N-PX it equals `management_alignment == AGAINST`; for VDS it compares direction vs the declared recommendation. NULL whenever either side is non-meaningful (never false-by-default).
 - `proposal_categories`: source verbatim + VOTES_ES deterministic high-level crosswalk (keyword rules on normalized text, listed in `normalization/categories.py`).
+
+## Amendments
+
+N-PX/A `amendmentType`: `RESTATEMENT` supersedes earlier filings of the same
+(filer CIK, period); `NEW PROXY` adds entries alongside. Unknown/absent types
+stay flagged, never guessed. Superseded rows remain in bronze but do not
+enter silver (`npx_filings.materialization`).
+
+## Split votes
+
+A filer may report several vote records per (series, proposal) — pass-through
+sub-lots or ballot splits. Every component row is preserved; `is_split` is
+set when >1 real position (FOR/AGAINST/ABSTAIN/WITHHOLD) appears for one
+unit+proposal+observation. Never collapsed to a single direction.
+
+## Joint reporting
+
+N-PX joint filings list other included managers on the summary page and
+per-record `voteManager`/`otherManagers` refs. `voting_managers` resolves
+refs to `number:name`; units get series names from the cover page.
 
 ## Dissent
 
-`against_management = direction != management_recommendation` where both are
-canonical and meaningful (FOR/AGAINST/ABSTAIN/WITHHOLD). NULL for OTHER/UNKNOWN
-sides, DO_NOT_VOTE, or missing management recommendation.
+`against_management` is defined per source (above). NULL for OTHER/UNKNOWN
+sides, DO_NOT_VOTE, missing recommendations, or missing alignment.
 
 ## Significance filtering
 
