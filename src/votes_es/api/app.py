@@ -193,8 +193,9 @@ def meeting_votes(meeting_id: str, pivot: bool = False,
                     WHERE c.proposal_id=p.proposal_id AND c.taxonomy='VOTES_ES')
                     AS category,
                    r.canonical_name reporter, r.parent_group reporter_group,
-                   v.direction, v.management_recommendation, v.against_management,
-                   v.vote_raw
+                   v.direction, v.management_recommendation,
+                   v.management_alignment, v.against_management, v.is_split,
+                   v.vote_raw, v.source_id
             FROM proposals p
             JOIN votes v ON v.proposal_id = p.proposal_id
             JOIN reporters r USING(reporter_id)
@@ -209,7 +210,8 @@ def meeting_votes(meeting_id: str, pivot: bool = False,
                u.canonical_name unit, r.canonical_name reporter,
                r.parent_group reporter_group,
                v.direction, v.vote_raw, v.management_recommendation,
-               v.management_recommendation_raw, v.against_management,
+               v.management_recommendation_raw, v.management_alignment,
+               v.against_management, v.is_split, v.voting_managers,
                CAST(v.shares_voted AS DOUBLE) shares_voted,
                CAST(v.shares_on_loan AS DOUBLE) shares_on_loan,
                o.source_id, o.source_url, o.accession, o.retrieved_at
@@ -417,3 +419,44 @@ if _dist.exists():
         if full_path and f.is_file():
             return FileResponse(f)
         return FileResponse(_dist / "index.html")
+
+
+@app.get("/api/v1/votes/{vote_id}")
+def vote_explain(vote_id: str):
+    """Explain view: canonical row + raw + provenance + identity evidence."""
+    con = db()
+    v = one(con, """
+        SELECT v.*, p.proposal_title_normalized, p.proposal_number,
+               m.meeting_date, m.meeting_type, i.canonical_name issuer,
+               u.canonical_name unit, u.unit_type, u.source_identifier,
+               r.canonical_name reporter, r.reporter_type, r.parent_group,
+               o.source_document, o.source_url, o.accession,
+               o.published_at, o.retrieved_at, o.parser_version, o.content_hash
+        FROM votes v
+        JOIN proposals p USING(proposal_id)
+        JOIN meetings m ON p.meeting_id = m.meeting_id
+        JOIN issuers i ON m.issuer_id = i.issuer_id
+        JOIN reporting_units u ON v.reporting_unit_id = u.unit_id
+        JOIN reporters r ON v.reporter_id = r.reporter_id
+        LEFT JOIN observations o ON v.source_observation_id = o.observation_id
+        WHERE v.vote_id = ?""", [vote_id])
+    if not v:
+        con.close()
+        raise HTTPException(404, "vote not found")
+    v["split_components"] = rows(con, """
+        SELECT vote_id, direction, vote_raw,
+               CAST(shares_voted AS DOUBLE) shares_voted
+        FROM votes
+        WHERE proposal_id = ? AND reporting_unit_id = ?
+          AND source_observation_id = ? AND vote_id <> ?""",
+        [v["proposal_id"], v["reporting_unit_id"], v["source_observation_id"],
+         vote_id]) if v.get("is_split") else []
+    con.close()
+    v["semantics_note"] = (
+        "SEC N-PX: management_alignment = whether the vote was cast for/against "
+        "management's recommendation; the recommendation direction itself is "
+        "not declared by N-PX."
+        if v.get("source_id") == "sec_npx"
+        else "VDS: management_recommendation is the direction declared in the "
+             "register.")
+    return v

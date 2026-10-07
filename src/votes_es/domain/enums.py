@@ -21,6 +21,10 @@ class VoteDirection(StrEnum):
 
 
 class MgmtRecommendation(StrEnum):
+    """An actual management-recommendation DIRECTION (the source states what
+    management recommended). NULL in canonical rows unless the source declares
+    one (e.g. VDS MgtRecVote). N-PX does NOT provide this — its
+    `managementRecommendation` field is an alignment flag, see MgmtAlignment."""
     FOR = "FOR"
     AGAINST = "AGAINST"
     ABSTAIN = "ABSTAIN"
@@ -28,6 +32,30 @@ class MgmtRecommendation(StrEnum):
     NONE = "NONE"
     OTHER = "OTHER"
     UNKNOWN = "UNKNOWN"
+
+
+class MgmtAlignment(StrEnum):
+    """SEC N-PX `managementRecommendation` element (Form N-PX Item 1(l)):
+    whether the vote was cast FOR or AGAINST management's recommendation —
+    an alignment flag, NOT the recommendation's direction.
+
+    FOR     = vote followed management's recommendation
+    AGAINST = vote opposed management's recommendation  → real dissent
+    NONE    = management made no recommendation (per Item 1(l) instruction 8)
+    """
+    FOR = "FOR"
+    AGAINST = "AGAINST"
+    NONE = "NONE"
+    OTHER = "OTHER"
+    UNKNOWN = "UNKNOWN"
+
+
+class AmendmentType(StrEnum):
+    """N-PX/A amendment semantics (primary_doc amendmentInfo)."""
+    ORIGINAL = "ORIGINAL"                       # plain N-PX submission
+    RESTATEMENT = "RESTATEMENT"                 # replaces the prior report
+    ADDS_NEW_PROXY_VOTING_ENTRIES = "ADDS_NEW_PROXY_VOTING_ENTRIES"
+    OTHER = "OTHER"
 
 
 class ReportType(StrEnum):

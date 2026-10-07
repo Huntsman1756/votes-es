@@ -57,6 +57,20 @@ BRONZE_VDS = pa.schema([
     ("notes", pa.string()),
 ])
 
+BRONZE_FILINGS = pa.schema([
+    ("accession", pa.string()),
+    ("cik", pa.string()),
+    ("submission_type", pa.string()),        # N-PX / N-PX/A
+    ("report_type", pa.string()),
+    ("reporting_person", pa.string()),
+    ("reporting_person_lei", pa.string()),
+    ("period_of_report", pa.string()),
+    ("amendment_no", pa.int64()),
+    ("amendment_type", pa.string()),         # RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES
+    ("other_managers_json", pa.string()),    # joint-reporting manager list
+    ("retrieved_at", pa.string()),
+])
+
 # ------------------------------------------------------------------- silver
 
 SOURCES = pa.schema([
@@ -147,14 +161,36 @@ VOTES = pa.schema([
     ("vote_id", pa.string()), ("proposal_id", pa.string()),
     ("reporting_unit_id", pa.string()), ("reporter_id", pa.string()),
     ("direction", pa.string()), ("vote_raw", pa.string()),
+    # real management-recommendation direction — NULL unless the source
+    # declares one (VDS). N-PX carries alignment instead.
     ("management_recommendation", pa.string()),
     ("management_recommendation_raw", pa.string()),
+    # N-PX Item 1(l): vote cast for/against mgmt's recommendation
+    ("management_alignment", pa.string()),
+    # derived, source-aware: N-PX → alignment=='AGAINST';
+    # VDS → direction != mgtRec. NULL = not defined.
     ("against_management", pa.bool_()),
+    # TRUE when the unit split this vote across >1 direction; the components
+    # are the individual rows sharing (proposal, unit, observation)
+    ("is_split", pa.bool_()),
+    # joint reporting: other-manager refs declared on the proxyTable
+    ("voting_managers", pa.string()),
     ("shares_voted", pa.decimal128(38, 6)), ("shares_on_loan", pa.decimal128(38, 6)),
     ("rationale", pa.string()), ("source_observation_id", pa.string()),
     ("source_id", pa.string()), ("report_type", pa.string()),
     ("match_method", pa.string()), ("review_status", pa.string()),
     ("match_evidence", pa.string()),
+])
+
+NPX_FILINGS = pa.schema([
+    ("accession", pa.string()), ("cik", pa.string()),
+    ("submission_type", pa.string()), ("report_type", pa.string()),
+    ("reporting_person", pa.string()), ("reporting_person_lei", pa.string()),
+    ("period_of_report", pa.string()),
+    ("amendment_no", pa.int64()), ("amendment_type", pa.string()),
+    ("other_managers_json", pa.string()),
+    # materialization state decided at silver build: EFFECTIVE | SUPERSEDED
+    ("materialization", pa.string()),
 ])
 
 INGEST_RUNS = pa.schema([
@@ -174,5 +210,5 @@ SILVER_SCHEMAS = {
     "meetings": MEETINGS, "proposals": PROPOSALS,
     "proposal_instances": PROPOSAL_INSTANCES,
     "proposal_categories": PROPOSAL_CATEGORIES, "votes": VOTES,
-    "ingest_runs": INGEST_RUNS,
+    "npx_filings": NPX_FILINGS, "ingest_runs": INGEST_RUNS,
 }

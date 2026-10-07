@@ -12,6 +12,7 @@ from votes_es.domain.enums import (
     DisclosureLevel,
     MatchMethod,
     MeetingType,
+    MgmtAlignment,
     MgmtRecommendation,
     ReporterType,
     ReuseStatus,
@@ -165,9 +166,16 @@ class Vote(Strict):
     reporter_id: str
     direction: VoteDirection
     vote_raw: str
+    # actual management-recommendation direction — NULL unless the source
+    # declares one (VDS MgtRecVote). N-PX provides alignment instead.
     management_recommendation: MgmtRecommendation | None = None
     management_recommendation_raw: str | None = None
-    against_management: bool | None = None   # NULL when either side missing
+    # N-PX Item 1(l): "was the vote cast for/against management's
+    # recommendation" — the field is an alignment flag, not a direction.
+    management_alignment: MgmtAlignment | None = None
+    against_management: bool | None = None   # source-aware; NULL = not defined
+    is_split: bool = False            # unit split shares across directions
+    voting_managers: str | None = None  # joint-reporting manager refs
     shares_voted: Decimal | None = None
     shares_on_loan: Decimal | None = None
     rationale: str | None = None
@@ -196,7 +204,7 @@ class NpxFilingMeta(Strict):
     """Metadata parsed from an N-PX primary document."""
     accession: str
     cik: str
-    submission_type: str = "N-PX"
+    submission_type: str = "N-PX"           # N-PX / N-PX/A
     registrant_type: str | None = None      # IM / fund filing
     report_type: str | None = None          # FUND VOTING REPORT / INSTITUTIONAL MANAGER VOTING REPORT
     reporting_person: str | None = None
@@ -205,6 +213,11 @@ class NpxFilingMeta(Strict):
     report_calendar_year: int | None = None
     file_number: str | None = None
     series_ids: list[str] = Field(default_factory=list)
+    # N-PX/A amendment semantics (cover-page amendmentInfo block)
+    amendment_no: int | None = None
+    amendment_type: str | None = None       # RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES
+    # joint reporting (summary page): managers whose voting is included
+    other_included_managers: list[dict] = Field(default_factory=list)
 
 
 class NpxVoteRecord(Strict):

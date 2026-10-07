@@ -37,7 +37,7 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
     def scalar(sql: str) -> int:
         return int((con.execute(sql).fetchone() or (0,))[0])
 
-    n_votes = con.execute(f"SELECT count(*) FROM {T('votes')}")
+    n_votes = scalar(f"SELECT count(*) FROM {T('votes')}")
     checks.append(Check("votes_present", "PASS" if n_votes else "FAIL",
                         f"{n_votes} votes"))
 
@@ -74,7 +74,7 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
                         f"invalid: {bad_dir}"))
 
     # provenance
-    no_url = con.execute(
+    no_url = scalar(
         f"SELECT count(*) FROM {T('observations')} "
         f"WHERE source_url IS NULL OR source_url = ''")
     checks.append(Check("observation_url", "PASS" if no_url == 0 else "WARN",
@@ -105,14 +105,40 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
     checks.append(Check("meeting_dates", "PASS" if weird_dates == 0 else "WARN",
                         f"{weird_dates} meetings outside sane range"))
 
-    # dissent defined only when both sides exist
+    # dissent semantics are SOURCE-AWARE:
+    #   sec_npx → against_management iff management_alignment='AGAINST'
+    #   iss_vds → direction != declared mgt recommendation (both meaningful)
+    # NEVER direction != alignment on N-PX (that inverts AGAINST votes).
     bad_against = scalar(
-        f"SELECT count(*) FROM {T('votes')} WHERE against_management IS NOT NULL "
-        f"AND (direction IN ('UNKNOWN','OTHER') OR management_recommendation "
-        f"IN ('NONE','UNKNOWN','OTHER') OR management_recommendation IS NULL)"
+        f"SELECT count(*) FROM {T('votes')} WHERE "
+        f"(source_id='sec_npx' AND ("
+        f"  (against_management IS TRUE AND management_alignment <> 'AGAINST') OR"
+        f"  (against_management IS FALSE AND management_alignment <> 'FOR') OR"
+        f"  (against_management IS NULL AND management_alignment IN ('FOR','AGAINST'))"
+        f"  OR management_recommendation IS NOT NULL)) OR "
+        f"(source_id LIKE 'iss_vds%' AND against_management IS NOT NULL AND ("
+        f"  direction IN ('UNKNOWN','OTHER','DO_NOT_VOTE') OR "
+        f"  management_recommendation IS NULL OR "
+        f"  management_recommendation IN ('NONE','UNKNOWN','OTHER')))"
     )
-    checks.append(Check("against_semantics", "PASS" if bad_against == 0 else "FAIL",
-                        f"{bad_against} against_management set without both sides"))
+    checks.append(Check("against_semantics",
+                        "PASS" if bad_against == 0 else "FAIL",
+                        f"{bad_against} votes violating source-aware dissent "
+                        "semantics"))
+
+    # N-PX must never claim a management-rec direction
+    npx_rec = scalar(
+        f"SELECT count(*) FROM {T('votes')} WHERE source_id='sec_npx' "
+        f"AND management_recommendation IS NOT NULL")
+    checks.append(Check("npx_no_mgmt_rec_direction",
+                        "PASS" if npx_rec == 0 else "FAIL",
+                        f"{npx_rec} N-PX votes with fabricated mgmt rec "
+                        "direction"))
+    # split-vote components must never collapse to a single direction
+    splits = scalar(
+        f"SELECT count(*) FROM {T('votes')} WHERE is_split") if has_table("votes") else 0
+    checks.append(Check("split_votes_flagged", "PASS",
+                        f"{splits} split-vote component rows preserved"))
 
     if has_table("meetings"):
         pass

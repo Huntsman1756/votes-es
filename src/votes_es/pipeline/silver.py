@@ -32,7 +32,9 @@ from votes_es.normalization.text import (
 )
 from votes_es.normalization.votes import (
     compute_against_management,
+    derive_alignment,
     normalize_direction,
+    normalize_mgmt_alignment,
     normalize_mgmt_rec,
 )
 from votes_es.sources.registry import NPX_PARENT_GROUPS, REPORTERS, SOURCES
@@ -246,6 +248,38 @@ def build_silver(universe_path: Path, out_dir: Path,
             meet_source_ids.setdefault(key, set()).add(src_meeting_id)
         return key
 
+    # ----------------------------------------------------- N-PX amendments
+    # A RESTATEMENT filing supersedes every earlier filing for the same
+    # (filer CIK, period_of_report). ADDITIVE (ADDS_NEW_PROXY_VOTING_ENTRIES)
+    # filings add rows — earlier ones remain effective. Unknown/None
+    # amendment_type on N-PX/A → keep rows but flag in stats.
+    filings = bronze_io.load_filings("sec_npx")
+    superseded: set[str] = set()
+    filings_out: list[dict] = []
+    by_entity_period: dict[tuple, list[dict]] = {}
+    for f in filings:
+        by_entity_period.setdefault(
+            (f["cik"], f.get("period_of_report")), []).append(f)
+    for _k, group in by_entity_period.items():
+        group.sort(key=lambda f: (f.get("amendment_no") or 0,
+                                  f.get("retrieved_at") or ""))
+        # a restatement kills everything strictly before it (no-op before idx)
+        latest_rest = max(
+            (i for i, f in enumerate(group)
+             if (f.get("amendment_type") or "").upper() == "RESTATEMENT"),
+            default=-1)
+        for i, f in enumerate(group):
+            eff = "EFFECTIVE"
+            if i < latest_rest:
+                superseded.add(f["accession"])
+                eff = "SUPERSEDED"
+            elif (f.get("submission_type") or "").upper().endswith("/A") \
+                    and not f.get("amendment_type"):
+                stats.warnings.append(
+                    f"N-PX/A {f['accession']} without amendment_type — "
+                    "kept as additive (conservative: no rows dropped)")
+            filings_out.append({**f, "materialization": eff})
+
     # ------------------------------------------------------------- N-PX lane
     npx_bronze = bronze_io.load_bronze("sec_npx", BRONZE_NPX)
     vds_bronze_tables = {
@@ -261,8 +295,12 @@ def build_silver(universe_path: Path, out_dir: Path,
     resolver.warm(sorted(warm_isins), sorted(warm_cusips))
     _log(f"warmed resolver: {len(warm_isins)} isins {len(warm_cusips)} cusips")
 
+    n_superseded = 0
     for row in npx_bronze.to_pylist():
         stats.votes += 1
+        if row["accession"] in superseded:
+            n_superseded += 1     # source rows preserved in bronze; canonical
+            continue              # state decided by amendment semantics
         res = resolver.resolve(row["isin"], row["cusip"], row["issuer_name_raw"])
         _count_match(stats, res)
         mdate = parse_npx_date(row["meeting_date_raw"])
@@ -315,6 +353,7 @@ def build_silver(universe_path: Path, out_dir: Path,
             "shares_voted": parse_number(row["shares_voted_raw"]),
             "shares_on_loan": parse_number(row["shares_on_loan_raw"]),
             "rationale": None,
+            "voting_managers": row["other_managers"] or None,
             "source_observation_id": row["observation_id"],
             "source_id": "sec_npx",
             "report_type": row["report_type"],
@@ -374,6 +413,7 @@ def build_silver(universe_path: Path, out_dir: Path,
                 "shares_voted": parse_number(row["shares_voted_raw"]),
                 "shares_on_loan": parse_number(row["shares_on_loan_raw"]),
                 "rationale": row["notes"] if row["notes"] not in (None, "", "NA") else None,
+                "voting_managers": None,
                 "source_observation_id": row["observation_id"],
                 "source_id": src.source_id,
                 "report_type": None,
@@ -433,8 +473,15 @@ def build_silver(universe_path: Path, out_dir: Path,
             direction = VoteDirection.DO_NOT_VOTE   # VDS blank = fund did not vote
         else:
             direction = normalize_direction(raw)
-        mgmt = normalize_mgmt_rec(v["management_recommendation_raw"])
-        against = compute_against_management(direction, mgmt)
+        if v["source_id"] == "sec_npx":
+            # N-PX Item 1(l): the field is an ALIGNMENT flag, not the rec.
+            alignment = normalize_mgmt_alignment(v["management_recommendation_raw"])
+            mgmt = None          # rec direction is not declared by the source
+        else:
+            mgmt = normalize_mgmt_rec(v["management_recommendation_raw"])
+            alignment = derive_alignment(direction, mgmt)
+        against = compute_against_management(
+            direction, mgmt, alignment, source_id=v["source_id"])
         vres: Resolution = v["_resolution"]
         votes_out.append({
             # direction+raw+shares in the key: filers do emit the same
@@ -450,7 +497,10 @@ def build_silver(universe_path: Path, out_dir: Path,
             "direction": direction.value, "vote_raw": raw,
             "management_recommendation": mgmt.value if mgmt else None,
             "management_recommendation_raw": v["management_recommendation_raw"],
+            "management_alignment": alignment.value if alignment else None,
             "against_management": against,
+            "is_split": False,          # set below, after dedup
+            "voting_managers": v["voting_managers"],
             "shares_voted": v["shares_voted"], "shares_on_loan": v["shares_on_loan"],
             "rationale": v["rationale"],
             "source_observation_id": v["source_observation_id"],
@@ -474,6 +524,27 @@ def build_silver(universe_path: Path, out_dir: Path,
         stats.warnings.append(
             f"{dup_count} exact-duplicate source vote rows collapsed")
     votes_out = deduped
+    if n_superseded:
+        stats.warnings.append(
+            f"{n_superseded} bronze rows superseded by restatement filings")
+
+    # split votes: one unit voted >1 direction on the same proposal+observation
+    # (share splits across ballot lots). Every component row is kept and
+    # flagged — never collapsed to a single direction.
+    split_groups: dict[tuple, set] = {}
+    for v in votes_out:
+        k = (v["proposal_id"], v["reporting_unit_id"], v["source_observation_id"])
+        split_groups.setdefault(k, set()).add(v["direction"])
+    n_split = 0
+    for k, dirs in split_groups.items():
+        if len(dirs) > 1:
+            for v in votes_out:
+                if (v["proposal_id"], v["reporting_unit_id"],
+                        v["source_observation_id"]) == k:
+                    v["is_split"] = True
+                    n_split += 1
+    if n_split:
+        _log(f"split-vote components flagged: {n_split}")
 
     meetings_out = []
     for key, mdate in meet_date.items():
@@ -519,6 +590,7 @@ def build_silver(universe_path: Path, out_dir: Path,
             {"proposal_id": p, "taxonomy": t, "category": c}
             for p, t, c in sorted(prop_categories)],
         "votes": votes_out,
+        "npx_filings": filings_out,
     }
 
     _log(f"writing {len(votes_out)} votes")

@@ -12,7 +12,11 @@ from __future__ import annotations
 
 import re
 
-from votes_es.domain.enums import MgmtRecommendation, VoteDirection
+from votes_es.domain.enums import (
+    MgmtAlignment,
+    MgmtRecommendation,
+    VoteDirection,
+)
 
 _WS = re.compile(r"\s+")
 
@@ -64,7 +68,8 @@ def normalize_direction(raw: str | None) -> VoteDirection:
 
 
 def normalize_mgmt_rec(raw: str | None) -> MgmtRecommendation | None:
-    """None when the source gives no recommendation at all (empty/NA)."""
+    """A real management-recommendation DIRECTION (VDS MgtRecVote).
+    None when the source gives no recommendation at all (empty/NA)."""
     k = _key(raw)
     if not k or k in {"NA", "N/A", "NONE REPORTED", "NO RECOMMENDATION"}:
         return MgmtRecommendation.NONE if k in {"N/A", "NA"} else None
@@ -75,22 +80,75 @@ def normalize_mgmt_rec(raw: str | None) -> MgmtRecommendation | None:
     return MgmtRecommendation.OTHER
 
 
+_ALIGNMENT_MAP = {
+    "FOR": MgmtAlignment.FOR,
+    "AGAINST": MgmtAlignment.AGAINST,
+    "NONE": MgmtAlignment.NONE,        # mgmt made no recommendation (Item 1(l) i8)
+    "N/A": MgmtAlignment.NONE,
+    "NA": MgmtAlignment.NONE,
+}
+
+
+def normalize_mgmt_alignment(raw: str | None) -> MgmtAlignment | None:
+    """SEC N-PX `managementRecommendation` element → alignment flag.
+
+    Item 1(l): 'whether the vote was cast for or against management's
+    recommendation'. This is NOT the recommendation's direction — the matrix
+    is: vote FOR + alignment AGAINST ⇒ mgmt recommended AGAINST; vote AGAINST +
+    alignment AGAINST ⇒ mgmt recommended FOR."""
+    if raw is None:
+        return None                      # element absent in the record
+    k = _key(raw)
+    if not k:
+        return None
+    return _ALIGNMENT_MAP.get(k, MgmtAlignment.OTHER)
+
+
+def derive_alignment(direction: VoteDirection,
+                     rec: MgmtRecommendation | None) -> MgmtAlignment | None:
+    """For sources that state the recommendation direction (VDS MgtRecVote),
+    derive the alignment flag for a uniform interface. NULL-safe."""
+    if direction in (VoteDirection.UNKNOWN, VoteDirection.OTHER,
+                     VoteDirection.DO_NOT_VOTE):
+        return None
+    if rec in (None, MgmtRecommendation.NONE, MgmtRecommendation.UNKNOWN,
+               MgmtRecommendation.OTHER):
+        return None
+    if direction == VoteDirection.FOR and rec == MgmtRecommendation.FOR:
+        return MgmtAlignment.FOR
+    if direction == VoteDirection.AGAINST and rec == MgmtRecommendation.AGAINST:
+        return MgmtAlignment.FOR
+    if rec in (MgmtRecommendation.FOR, MgmtRecommendation.AGAINST):
+        return MgmtAlignment.AGAINST
+    return None
+
+
 def compute_against_management(
     direction: VoteDirection,
-    mgmt: MgmtRecommendation | None,
+    mgmt: MgmtRecommendation | None = None,
+    alignment: MgmtAlignment | None = None,
+    source_id: str | None = None,
 ) -> bool | None:
-    """Dissent is only defined when BOTH sides carry a real value.
+    """Source-aware dissent.
 
-    NULL is the honest answer when either is missing — never default False.
-    Frequency-style OTHER comparisons are also NULL (semantics unclear)."""
+    sec_npx:  `managementRecommendation` is already the alignment flag —
+              AGAINST means the filer voted AGAINST management's rec
+              (independent of the vote's own direction). NEVER compare
+              direction != alignment: that inverts dissent for AGAINST votes.
+    iss_vds:  real MgtRecVote direction → compare against vote direction.
+    NULL when the fact is not established — never default False."""
+    if direction in (VoteDirection.UNKNOWN, VoteDirection.OTHER,
+                     VoteDirection.DO_NOT_VOTE):
+        return None
+    if source_id == "sec_npx":
+        if alignment == MgmtAlignment.AGAINST:
+            return True
+        if alignment == MgmtAlignment.FOR:
+            return False
+        return None
+    # declared-recommendation sources
     if mgmt in (None, MgmtRecommendation.NONE, MgmtRecommendation.UNKNOWN,
                 MgmtRecommendation.OTHER):
         return None
-    if direction in (VoteDirection.UNKNOWN, VoteDirection.OTHER):
-        return None
-    if direction == VoteDirection.DO_NOT_VOTE:
-        return None
-    # FOR vs FOR → False; anything else vs a management rec → True.
     same = direction.value == mgmt.value
-    # WITHHOLD vs FOR is a real divergence (director elections).
     return not same

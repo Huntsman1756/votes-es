@@ -38,6 +38,28 @@ def observations_log(source: str) -> Path:
     return BRONZE_DIR / src_dir_name(source) / "_observations.jsonl"
 
 
+def filings_log(source: str) -> Path:
+    return BRONZE_DIR / src_dir_name(source) / "_filings.jsonl"
+
+
+def append_filing(row: dict, source: str) -> None:
+    """Filing-level meta (accession, amendment semantics). JSONL append —
+    deduped by accession at silver load."""
+    append_observation(row, filings_log(source))
+
+
+def load_filings(source: str = "sec_npx") -> list[dict]:
+    """Latest meta per accession (re-ingest overwrites)."""
+    out: dict[str, dict] = {}
+    f = filings_log(source)
+    if f.exists():
+        for line in f.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                row = json.loads(line)
+                out[row["accession"]] = row
+    return list(out.values())
+
+
 def load_bronze(source: str, schema: pa.Schema) -> pa.Table:
     d = BRONZE_DIR / src_dir_name(source)
     if not d.exists():

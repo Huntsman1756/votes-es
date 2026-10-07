@@ -65,10 +65,13 @@ def _meta_from_manifest(manifest: Path) -> NpxFilingMeta:
     por = m.get("period_of_report")
     return NpxFilingMeta(
         accession=m.get("accession", ""), cik=str(m.get("cik", "")),
+        submission_type=m.get("submission_type", "N-PX"),
         report_type=m.get("report_type"),
         reporting_person=m.get("reporting_person"),
         reporting_person_lei=m.get("lei"),
         period_of_report=_d.fromisoformat(por) if por else None,
+        amendment_no=m.get("amendment_no"),
+        amendment_type=m.get("amendment_type"),
     )
 
 
@@ -81,6 +84,25 @@ def _meta_from(primary: Path, filing_dir: Path) -> NpxFilingMeta:
         m = json.loads(manifest.read_text(encoding="utf-8"))
         acc, cik = m.get("accession", ""), str(m.get("cik", ""))
     return filing_mod.parse_primary_doc(primary, accession=acc, cik=cik)
+
+
+def filing_row(meta: NpxFilingMeta, retrieved_at: datetime | None = None) -> dict:
+    """Filing-level bronze record — amendment semantics live here."""
+    return {
+        "accession": meta.accession,
+        "cik": meta.cik,
+        "submission_type": meta.submission_type,
+        "report_type": meta.report_type,
+        "reporting_person": meta.reporting_person,
+        "reporting_person_lei": meta.reporting_person_lei,
+        "period_of_report": meta.period_of_report.isoformat()
+        if meta.period_of_report else None,
+        "amendment_no": meta.amendment_no,
+        "amendment_type": meta.amendment_type,
+        "other_managers_json": __import__("json").dumps(
+            meta.other_included_managers),
+        "retrieved_at": (retrieved_at or datetime.now(UTC)).isoformat(),
+    }
 
 
 def bronze_rows(meta: NpxFilingMeta, vote_doc: Path,

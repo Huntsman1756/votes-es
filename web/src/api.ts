@@ -21,7 +21,9 @@ export type PivotRow = {
   proposal_title_normalized: string; category: string | null;
   reporter: string; reporter_group: string | null;
   direction: string; management_recommendation: string | null;
-  against_management: boolean | null; vote_raw: string;
+  management_alignment: string | null;
+  against_management: boolean | null; is_split: boolean | null;
+  vote_raw: string; source_id: string;
 };
 export type ReporterRow = {
   reporter_id: string; canonical_name: string; reporter_type: string;

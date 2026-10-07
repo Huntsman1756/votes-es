@@ -50,6 +50,7 @@ def ingest_npx_dir(filing_dir: Path, source_url: str = "") -> IngestRun:
                               bronze.bronze_path("sec_npx", key))
         bronze.append_observation(
             obs.model_dump(mode="json"), bronze.observations_log("sec_npx"))
+        bronze.append_filing(npx.filing_row(meta), "sec_npx")
         run.records_matched = n
     except Exception as e:  # noqa: BLE001 — ingest must record, not crash silently
         run.errors.append(f"{type(e).__name__}: {e}")

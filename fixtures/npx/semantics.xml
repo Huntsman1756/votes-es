@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--VoteTableSchemaVersion:X0300-->
+<!-- Semantic golden fixture — exercises the N-PX Item 1(l) alignment matrix,
+     split votes (two voteRecords, same series, different directions),
+     joint-reporting manager refs, say-on-pay frequency values, missing
+     identifiers, sharesOnLoan. Derived from real 2026 filings. -->
+<proxyVoteTable xmlns="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+  <!-- aligned AGAINST vote: mgmt recommended AGAINST, filer voted AGAINST.
+       Old buggy code (direction != field) marked this dissent → WRONG. -->
+  <proxyTable>
+    <issuerName>IBERDROLA SA</issuerName>
+    <cusip>E6165F166</cusip>
+    <isin>ES0144580Y14</isin>
+    <meetingDate>05/29/2026</meetingDate>
+    <voteDescription>Approve the consolidated annual accounts</voteDescription>
+    <voteCategories><voteCategory><categoryType>Audit/Financials</categoryType></voteCategory></voteCategories>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>1000</sharesVoted>
+    <sharesOnLoan>200</sharesOnLoan>
+    <vote><voteRecord>
+      <howVoted>AGAINST</howVoted>
+      <sharesVoted>1000</sharesVoted>
+      <managementRecommendation>AGAINST</managementRecommendation>
+    </voteRecord></vote>
+    <voteSeries><seriesId>S000001</seriesId></voteSeries>
+  </proxyTable>
+  <!-- dissent: filer voted FOR, AGAINST management's recommendation -->
+  <proxyTable>
+    <issuerName>IBERDROLA SA</issuerName>
+    <cusip>E6165F166</cusip>
+    <isin>ES0144580Y14</isin>
+    <meetingDate>05/29/2026</meetingDate>
+    <voteDescription>Advisory vote on remuneration report</voteDescription>
+    <voteCategories><voteCategory><categoryType>Compensation</categoryType></voteCategory>
+                    <voteCategory><categoryType>Corporate Governance</categoryType></voteCategory></voteCategories>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>1000</sharesVoted>
+    <vote><voteRecord>
+      <howVoted>FOR</howVoted>
+      <sharesVoted>1000</sharesVoted>
+      <managementRecommendation>AGAINST</managementRecommendation>
+    </voteRecord></vote>
+    <voteSeries><seriesId>S000001</seriesId></voteSeries>
+  </proxyTable>
+  <!-- aligned AGAINST-the-proposal vote: field FOR means filer followed mgmt
+       (whose rec was AGAINST). Buggy code inverted this to dissent. -->
+  <proxyTable>
+    <issuerName>IBERDROLA SA</issuerName>
+    <cusip>E6165F166</cusip>
+    <isin>ES0144580Y14</isin>
+    <meetingDate>05/29/2026</meetingDate>
+    <voteDescription>Shareholder proposal: publish transition plan</voteDescription>
+    <voteSource>SHAREHOLDER</voteSource>
+    <sharesVoted>1000</sharesVoted>
+    <vote><voteRecord>
+      <howVoted>AGAINST</howVoted>
+      <sharesVoted>1000</sharesVoted>
+      <managementRecommendation>FOR</managementRecommendation>
+    </voteRecord></vote>
+    <voteSeries><seriesId>S000001</seriesId></voteSeries>
+  </proxyTable>
+  <!-- NONE: management made no recommendation → alignment NONE, dissent NULL -->
+  <proxyTable>
+    <issuerName>IBERDROLA SA</issuerName>
+    <cusip>E6165F166</cusip>
+    <isin>ES0144580Y14</isin>
+    <meetingDate>05/29/2026</meetingDate>
+    <voteDescription>Contested director election</voteDescription>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>500</sharesVoted>
+    <vote><voteRecord>
+      <howVoted>WITHHOLD</howVoted>
+      <sharesVoted>500</sharesVoted>
+      <managementRecommendation>NONE</managementRecommendation>
+    </voteRecord></vote>
+    <voteSeries><seriesId>S000001</seriesId></voteSeries>
+  </proxyTable>
+  <!-- SPLIT: same series splits shares FOR + AGAINST on one proposal -->
+  <proxyTable>
+    <issuerName>BANCO SANTANDER SA</issuerName>
+    <cusip>05964H105</cusip>
+    <isin>ES0113900J37</isin>
+    <meetingDate>03/31/2026</meetingDate>
+    <voteDescription>Re-elect director A</voteDescription>
+    <voteCategories><voteCategory><categoryType>Director Elections</categoryType></voteCategory></voteCategories>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>2500</sharesVoted>
+    <vote>
+      <voteRecord>
+        <howVoted>FOR</howVoted>
+        <sharesVoted>1500</sharesVoted>
+        <managementRecommendation>FOR</managementRecommendation>
+      </voteRecord>
+      <voteRecord>
+        <howVoted>AGAINST</howVoted>
+        <sharesVoted>1000</sharesVoted>
+        <managementRecommendation>AGAINST</managementRecommendation>
+      </voteRecord>
+    </vote>
+    <voteSeries><seriesId>S000002</seriesId></voteSeries>
+  </proxyTable>
+  <!-- joint reporting: voteManager lists included manager refs -->
+  <proxyTable>
+    <issuerName>FERROVIAL SE</issuerName>
+    <cusip>N3168P103</cusip>
+    <isin>NL0015001FS8</isin>
+    <meetingDate>04/23/2026</meetingDate>
+    <voteDescription>Approve remuneration policy</voteDescription>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>700</sharesVoted>
+    <vote><voteRecord>
+      <howVoted>FOR</howVoted>
+      <sharesVoted>700</sharesVoted>
+      <managementRecommendation>FOR</managementRecommendation>
+    </voteRecord></vote>
+    <voteManager><otherManagers><otherManager>1</otherManager><otherManager>2</otherManager></otherManagers></voteManager>
+    <voteSeries><seriesId>S000003</seriesId></voteSeries>
+  </proxyTable>
+  <!-- missing identifiers entirely (CUSIP-only issuer row) -->
+  <proxyTable>
+    <issuerName>SMALLCAP XYZ HOLDINGS</issuerName>
+    <cusip>12345X000</cusip>
+    <meetingDate>06/01/2026</meetingDate>
+    <voteDescription>Say on pay: frequency</voteDescription>
+    <voteSource>ISSUER</voteSource>
+    <sharesVoted>50</sharesVoted>
+    <vote><voteRecord>
+      <howVoted>1 YEAR</howVoted>
+      <sharesVoted>50</sharesVoted>
+      <managementRecommendation>NONE</managementRecommendation>
+    </voteRecord></vote>
+    <voteSeries><seriesId>S000004</seriesId></voteSeries>
+  </proxyTable>
+</proxyVoteTable>

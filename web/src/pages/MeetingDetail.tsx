@@ -57,11 +57,16 @@ export default function MeetingDetail() {
             {reporters.map(rep => {
               const c = p.cells[rep];
               if (!c) return <td key={rep} className="dir dim">·</td>;
+              const tip = c.source_id === "sec_npx"
+                ? `relative to mgmt rec: ${c.management_alignment ?? "n/a"}`
+                : `mgmt rec: ${c.management_recommendation ?? "n/a"}`;
               return (
                 <td key={rep}
                   className={`dir ${c.against_management ? "dissent-cell" : ""}`}
-                  title={`mgmt: ${c.management_recommendation ?? "n/a"}`}>
-                  <Chip d={c.direction} raw={c.vote_raw} />
+                  title={tip}>
+                  {c.is_split
+                    ? <span className="chip abstain">SPLIT</span>
+                    : <Chip d={c.direction} raw={c.vote_raw} />}
                 </td>);
             })}
           </tr>))}

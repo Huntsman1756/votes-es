@@ -52,42 +52,23 @@ def ingest_npx_file(path: Path = typer.Argument(..., exists=True),
 
 
 @ingest_app.command("npx-season")
-def ingest_npx_season(season: int, start: str = f"{date.today().year}-08-01",
-                      end: str = str(date.today()), limit: int = 25,
-                      keep_files: bool = False) -> None:
-    """Discover + download N-PX filings for a season window (live EDGAR)."""
-    import httpx
-
-    from votes_es.config import RAW_DIR
-    from votes_es.pipeline.ingest import ingest_npx_dir
-    from votes_es.sources.sec_npx.edgar import (
-        UA,
-        download_filing,
-        season_index,
-    )
-
-    client = httpx.Client(headers={"User-Agent": UA}, timeout=120,
-                          follow_redirects=True)
-    refs = season_index(season, date.fromisoformat(start),
-                        date.fromisoformat(end), client)
-    con.print(f"{len(refs)} N-PX filings in window; ingesting <={limit}")
-    done = 0
-    for ref in refs[:limit]:
-        try:
-            dest = RAW_DIR / "sec" / "filings"
-            meta = download_filing(ref, dest, client)
-            run = ingest_npx_dir(dest / ref.accession_nodash,
-                                 source_url=ref.folder_url)
-            con.print(f"  {ref.accession} {ref.company_name[:40]:40} "
-                      f"{run.status} rows={run.records_parsed}")
-            if not keep_files:
-                for v in meta.values():
-                    if isinstance(v, dict) and v.get("path"):
-                        Path(v["path"]).unlink(missing_ok=True)
-            done += 1
-        except Exception as e:  # noqa: BLE001
-            con.print(f"  {ref.accession} [red]{e}[/red]")
-    con.print(f"ingested {done} filings")
+def ingest_npx_season(season: int = 2026,
+                      manifest_only: bool = False,
+                      max_files: int | None = None,
+                      max_rps: float = 3.0,
+                      retry_failed: bool = True,
+                      keep_xml: bool = False) -> None:
+    """Full-season N-PX bulk: quarterly form.idx manifest → fair-access
+    per-filing fetch+parse. Resume-safe (manifest + per-accession bronze)."""
+    from votes_es.sources.sec_npx.bulk import FairClient, ingest_season
+    c = FairClient(rps=max_rps)
+    try:
+        stats = ingest_season(season, client=c, manifest_only=manifest_only,
+                              max_files=max_files, retry_failed=retry_failed,
+                              keep_xml=keep_xml, progress=con.print)
+    finally:
+        c.close()
+    con.print(stats)
 
 
 @ingest_app.command("vds-capture")

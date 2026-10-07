@@ -56,10 +56,27 @@ categories_raw.
 VOTES_ES high-level crosswalk) × category. 1:N by design.
 
 `votes` — vote_id, proposal_id, reporting_unit_id, reporter_id, direction,
-vote_raw, management_recommendation(+_raw), against_management (NULL when
-either side absent), shares_voted / shares_on_loan (nullable Decimal),
-rationale, source_observation_id, source_id, report_type,
+vote_raw, management_recommendation(+_raw) — the *declared* recommendation
+direction, NULL unless the source states one (VDS only; N-PX never declares
+it); management_alignment — N-PX Item 1(l) flag (FOR/AGAINST/NONE);
+against_management — source-aware derived flag, NULL when undefined;
+is_split — reporting unit divided shares across >1 direction for this
+proposal+observation (component rows all preserved); voting_managers —
+joint-reporting manager refs; shares_voted / shares_on_loan (nullable
+Decimal), rationale, source_observation_id, source_id, report_type,
 match_method/review_status/match_evidence (identity evidence).
+
+`npx_filings` — one row per N-PX accession: submission_type (N-PX/N-PX/A),
+report_type, reporting_person(+lei), period_of_report, amendment_no,
+amendment_type (RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES),
+other_managers_json (summary-page joint-reporting list),
+materialization = EFFECTIVE | SUPERSEDED (decided at silver build).
+
+Amendment materialization: within one (filer CIK, period_of_report), the
+latest RESTATEMENT supersedes every earlier filing (its bronze rows remain
+for audit but do not enter silver); ADDS_NEW_PROXY_VOTING_ENTRIES adds rows
+alongside; N-PX/A without a parseable amendment_type is kept as additive and
+flagged in build warnings.
 
 `ingest_runs` — run metadata per ingestion (records seen/parsed/rejected,
 errors, warnings, adapter_version).
@@ -71,7 +88,14 @@ UNKNOWN. Say-on-pay frequency values (`1 YEAR`, `THREE YEARS`, `1.0`…) →
 OTHER. Raw always preserved.
 
 MgmtRecommendation: FOR / AGAINST / ABSTAIN / WITHHOLD / NONE / OTHER /
-UNKNOWN (+ NULL when the source gives none).
+UNKNOWN (+ NULL when the source gives none). This is the direction
+management recommended — populated only by sources that declare it (VDS).
+
+MgmtAlignment: FOR / AGAINST / NONE / OTHER / UNKNOWN. N-PX Item 1(l):
+whether the *vote* was cast for/against management's recommendation — an
+alignment flag, NOT the rec direction. See
+docs/findings/NPX-MANAGEMENT-SEMANTICS.md for the evidence and the inversion
+bug this prevents.
 
 ## Identity resolution order
 
@@ -90,6 +114,7 @@ Deterministic: ballot-number equality > exact normalized text > token-Jaccard
 
 ## Absence semantics
 
-No row = NOT_OBSERVED. `against_management=NULL` when vote or management
-recommendation is missing. `DO_NOT_VOTE` only when the source explicitly shows
+No row = NOT_OBSERVED. `against_management` is source-aware and NULL when
+undefined — N-PX: `alignment == 'AGAINST'`; VDS: `direction != mgtRec` when
+both are meaningful. `DO_NOT_VOTE` only when the source explicitly shows
 the unit did not vote (VDS blank ClientVoteList on an attached fund).
