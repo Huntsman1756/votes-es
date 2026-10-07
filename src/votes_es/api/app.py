@@ -494,7 +494,8 @@ if _dist and _dist.exists():
     app.mount("/assets", StaticFiles(directory=_dist / "assets"),
               name="assets")
 
-    @app.get("/{full_path:path}", include_in_schema=False)
+    @app.api_route("/{full_path:path}", methods=["GET", "HEAD"],
+                   include_in_schema=False)
     def spa(full_path: str):
         f = _dist / full_path
         if full_path and f.is_file():
