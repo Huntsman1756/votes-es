@@ -13,28 +13,39 @@ was cast.
 
 ## Status
 
-`v0.0.1` — **G0 reconnaissance complete; decision GO_FULL.**
+`v0.1.0a1` — **G0→GO_FULL · G1/G2 complete** (canonical pipeline + both source
+tracks working; 29,579 votes / 85 meetings / 78 issuers ingested locally).
 
-See [docs/G0-DECISION.md](docs/G0-DECISION.md) for the gate evidence and
-[PROJECT-STATUS.md](PROJECT-STATUS.md) for the live state.
+See [docs/G0-DECISION.md](docs/G0-DECISION.md) for gate evidence,
+[PROJECT-STATUS.md](PROJECT-STATUS.md) for live state,
+[docs/METHODOLOGY.md](docs/METHODOLOGY.md) for definitions.
 
-## What exists today
+## Quick start
 
-- `data/coverage/2026.parquet` — 2,102 vote records on 62 Spanish issuers
-  extracted from sampled N-PX 2026 filings (provenance per row).
-- Verified ingestion paths: streaming N-PX parser (60 MB/s, bounded memory),
-  ISS VDS API adapter pattern for CaixaBank AM + BBVA AM.
-- `tools/sec.exe` v0.0.2 pinned for EDGAR daily-index discovery.
+```bash
+uv pip install -e .
+votes universe-build                       # issuer universe (OpenInstrument + seed)
+votes ingest npx-file data/raw/sec/filings/<dir>
+votes ingest vds iss_vds:caixabank-am --from 2026-01-01 --to 2026-10-06
+votes build                                # bronze -> silver -> gold (DuckDB)
+votes validate
+votes coverage
+votes meetings Iberdrola
+votes meeting <id>                         # proposal x reporter pivot
+votes compare "CaixaBank" "BBVA"
+votes sources
+votes export --format parquet              # OPEN_REUSE_CONFIRMED only
+```
 
 ## Layout
 
 ```
-src/votes_es/        domain + adapters + pipeline (G1)
+src/votes_es/        domain + adapters + pipeline + CLI
 scripts/             G0 probes & benchmarks
-data/raw/            source artifacts (not committed)
-data/coverage/       coverage artifacts
-docs/              gates, methodology, source memos
-tools/               pinned external binaries
+data/                raw/bronze/silver/gold artifacts (gitignored)
+fixtures/            committed golden inputs (real-derived)
+docs/                gates, methodology, source memos
+tools/               pinned external binaries (sec-cli for discovery)
 ```
 
 ## Principles
@@ -43,3 +54,8 @@ tools/               pinned external binaries
 - `shares_voted` is never compared across source types.
 - Disclosure level + significance criteria are first-class per reporter/season.
 - Every fact carries provenance (source URL, document, retrieved_at, hash).
+
+## License
+
+Code MIT ([LICENSE](LICENSE)). **Data is not MIT** — see
+[DATA-NOTICE.md](DATA-NOTICE.md).

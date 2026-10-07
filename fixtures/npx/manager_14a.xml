@@ -1,0 +1,1094 @@
+<inf:proxyVoteTable xmlns:inf="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+  <inf:proxyTable>
+  <inf:issuerName>Aldeyra Therapeutics, Inc.</inf:issuerName>
+  <inf:cusip>01438T106</inf:cusip>
+  <inf:meetingDate>06/09/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on a non-binding, advisory basis, the compensation of Aldeyra Therapeutics, Inc.'s named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1841541.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>1841541.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>American Healthcare REIT, Inc.</inf:issuerName>
+  <inf:cusip>398182303</inf:cusip>
+  <inf:meetingDate>06/24/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory (non-binding) basis, the compensation paid to our named executive officers for the year ended December 31, 2025.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>135.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>135.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>APi Group Corporation</inf:issuerName>
+  <inf:cusip>00187Y100</inf:cusip>
+  <inf:meetingDate>05/15/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory basis, the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>400000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>400000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>APi Group Corporation</inf:issuerName>
+  <inf:cusip>00187Y100</inf:cusip>
+  <inf:meetingDate>05/15/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory basis, the frequency of future advisory votes to approve the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>400000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>400000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Axon Enterprise, Inc.</inf:issuerName>
+  <inf:cusip>05464C101</inf:cusip>
+  <inf:meetingDate>05/28/2026</inf:meetingDate>
+  <inf:voteDescription>Proposal No. 2 requests that shareholders vote to approve, on an advisory basis, the compensation of the Company's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>4622.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>4622.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Brookdale Senior Living Inc.</inf:issuerName>
+  <inf:cusip>112463104</inf:cusip>
+  <inf:meetingDate>06/22/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory approval of named executive officer compensation</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>233.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>233.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Carrier Global Corporation</inf:issuerName>
+  <inf:cusip>14448C104</inf:cusip>
+  <inf:meetingDate>04/15/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory Vote To Approve Named Executive Officer Compensation</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>274.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>274.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Cognex Corporation</inf:issuerName>
+  <inf:cusip>192422103</inf:cusip>
+  <inf:meetingDate>04/29/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory basis, the compensation of Cognex's named executive officers, as described in the proxy statement including the Compensation Discussion and Analysis, compensation tables and narrative discussion (say-on-pay).</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>175000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>175000.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Compass Therapeutics, Inc.</inf:issuerName>
+  <inf:cusip>20454B104</inf:cusip>
+  <inf:meetingDate>06/10/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on a non-binding, advisory basis, the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>500000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>500000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Compass Therapeutics, Inc.</inf:issuerName>
+  <inf:cusip>20454B104</inf:cusip>
+  <inf:meetingDate>06/10/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on a non-binding, advisory basis, the holding of future advisory votes on the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>500000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>500000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Compass, Inc.</inf:issuerName>
+  <inf:cusip>20464U100</inf:cusip>
+  <inf:meetingDate>05/14/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory Vote to Approve 2025 Named Executive Officer Compensation ("Say-on-Pay Vote")</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>300000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>300000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Crane Company</inf:issuerName>
+  <inf:cusip>224408104</inf:cusip>
+  <inf:meetingDate>04/27/2026</inf:meetingDate>
+  <inf:voteDescription>Say On Pay - An Advisory Vote To Approve The Compensation Paid To Certain Executive Officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>60000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>60000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Darling Ingredients Inc.</inf:issuerName>
+  <inf:cusip>237266101</inf:cusip>
+  <inf:meetingDate>05/07/2026</inf:meetingDate>
+  <inf:voteDescription>Approve, on an advisory basis, executive compensation.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>190000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>190000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>enVVeno Medical Corporation</inf:issuerName>
+  <inf:cusip>29415J106</inf:cusip>
+  <inf:meetingDate>12/11/2025</inf:meetingDate>
+  <inf:voteDescription>To approve on a non-binding, advisory basis the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1359255.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>1359255.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Everus Construction Group, Inc.</inf:issuerName>
+  <inf:cusip>300426103</inf:cusip>
+  <inf:meetingDate>05/12/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory Vote to Approve the Compensation Paid to the Company's Named Executive Officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>125000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>125000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Flex Ltd.</inf:issuerName>
+  <inf:cusip>Y2573F102</inf:cusip>
+  <inf:meetingDate>08/06/2025</inf:meetingDate>
+  <inf:voteDescription>NON-BINDING, ADVISORY RESOLUTION. To approve the compensation of the Company's named executive officers, as disclosed pursuant to Item 402 of Regulation S-K, set forth in "Compensation Discussion and Analysis" and in the compensation tables and the accompanying narrative disclosure under "Executive Compensation" in the Company's proxy statement relating to its 2025 Annual General Meeting.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>270000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>270000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Garrett Motion Inc.</inf:issuerName>
+  <inf:cusip>366505105</inf:cusip>
+  <inf:meetingDate>05/28/2026</inf:meetingDate>
+  <inf:voteDescription>The approval, on an advisory non-binding basis, of the compensation of the Company's named executive officers as disclosed in the Proxy Statement.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>536199.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>536199.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Great Elm Group, Inc.</inf:issuerName>
+  <inf:cusip>39037G109</inf:cusip>
+  <inf:meetingDate>12/05/2025</inf:meetingDate>
+  <inf:voteDescription>Approval, on an advisory basis, of the compensation of the Corporation's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1168907.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>1168907.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>GXO Logistics, Inc.</inf:issuerName>
+  <inf:cusip>36262G101</inf:cusip>
+  <inf:meetingDate>05/20/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory Vote to Approve Executive Compensation to conduct an advisory vote to approve the executive compensation of the company's named executive officers ("NEOs") as disclosed in this Proxy Statement.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>150000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>150000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>HEICO Corporation</inf:issuerName>
+  <inf:cusip>422806109</inf:cusip>
+  <inf:meetingDate>03/13/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory Approval Of The Company's Executive Compensation</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>30000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>30000.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Itron, Inc.</inf:issuerName>
+  <inf:cusip>465741106</inf:cusip>
+  <inf:meetingDate>05/07/2026</inf:meetingDate>
+  <inf:voteDescription>Proposal to approve the advisory (non-binding) resolution relating to executive compensation.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>2359.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>2359.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Jasper Therapeutics, Inc.</inf:issuerName>
+  <inf:cusip>471871202</inf:cusip>
+  <inf:meetingDate>07/03/2025</inf:meetingDate>
+  <inf:voteDescription>Advisory vote on approval of the compensation of the named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>440000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>440000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Jasper Therapeutics, Inc.</inf:issuerName>
+  <inf:cusip>471871202</inf:cusip>
+  <inf:meetingDate>07/03/2025</inf:meetingDate>
+  <inf:voteDescription>Advisory vote on the frequency of future advisory votes on executive compensation.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>440000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>440000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Keysight Technologies, Inc.</inf:issuerName>
+  <inf:cusip>49338L103</inf:cusip>
+  <inf:meetingDate>03/19/2026</inf:meetingDate>
+  <inf:voteDescription>Approve, on a non-binding advisory basis, the compensation of Keysight's Named Executive Officers</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>746.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>746.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Maplebear Inc.</inf:issuerName>
+  <inf:cusip>565394103</inf:cusip>
+  <inf:meetingDate>05/22/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on a non-binding, advisory basis, the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>35449.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>35449.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Microsoft Corporation</inf:issuerName>
+  <inf:cusip>594918104</inf:cusip>
+  <inf:meetingDate>12/05/2025</inf:meetingDate>
+  <inf:voteDescription>Advisory Vote to Approve Named Executive Officer Compensation ("say-on-pay vote")</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>27500.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>27500.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Molson Coors Beverage Company</inf:issuerName>
+  <inf:cusip>60871R209</inf:cusip>
+  <inf:meetingDate>05/06/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, in a non-binding advisory vote, the compensation of Molson Coors Beverage Company's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1630.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>1630.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>NioCorp Developments Ltd.</inf:issuerName>
+  <inf:cusip>654484609</inf:cusip>
+  <inf:meetingDate>04/06/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on a nonbinding, advisory basis, the compensation of the Company's named executive officers as described in the Company's Management Information and Proxy Circular in respect of the annual general meeting of shareholders of the Company held on April 6, 2026.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>450000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>450000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>NVIDIA Corporation</inf:issuerName>
+  <inf:cusip>67066G104</inf:cusip>
+  <inf:meetingDate>06/24/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory approval of our executive compensation.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>190916.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>190916.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Olema Pharmaceuticals, Inc.</inf:issuerName>
+  <inf:cusip>68062P106</inf:cusip>
+  <inf:meetingDate>06/17/2026</inf:meetingDate>
+  <inf:voteDescription>Approval, on an advisory basis, of the compensation of the Company's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>855000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>855000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Palo Alto Networks, Inc.</inf:issuerName>
+  <inf:cusip>697435105</inf:cusip>
+  <inf:meetingDate>12/09/2025</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory basis, the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>45000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>45000.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Ralliant Corporation</inf:issuerName>
+  <inf:cusip>750940108</inf:cusip>
+  <inf:meetingDate>06/05/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory vote to approve Ralliant's named executive officer compensation in fiscal 2025.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>250000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>250000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Ralliant Corporation</inf:issuerName>
+  <inf:cusip>750940108</inf:cusip>
+  <inf:meetingDate>06/05/2026</inf:meetingDate>
+  <inf:voteDescription>Advisory vote on the frequency of future advisory votes to approve Ralliant's named executive officer compensation.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>250000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>250000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>SCYNEXIS, Inc.</inf:issuerName>
+  <inf:cusip>811292200</inf:cusip>
+  <inf:meetingDate>06/25/2026</inf:meetingDate>
+  <inf:voteDescription>To vote, on an advisory basis, on the compensation paid to SCYNEXIS's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1982491.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>1982491.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>SCYNEXIS, Inc.</inf:issuerName>
+  <inf:cusip>811292200</inf:cusip>
+  <inf:meetingDate>06/25/2026</inf:meetingDate>
+  <inf:voteDescription>To vote, on an advisory basis, on the frequency of future advisory voting on the compensation paid to SCYNEXIS's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>1982491.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>1982491.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Syndax Pharmaceuticals, Inc.</inf:issuerName>
+  <inf:cusip>87164F105</inf:cusip>
+  <inf:meetingDate>06/10/2026</inf:meetingDate>
+  <inf:voteDescription>To approve, on an advisory basis, the compensation of the Company's named executive officers, as disclosed in the 2026 proxy statement.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>2333573.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>2333573.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>The RealReal, Inc</inf:issuerName>
+  <inf:cusip>88339P101</inf:cusip>
+  <inf:meetingDate>06/10/2026</inf:meetingDate>
+  <inf:voteDescription>Approval, on an advisory basis, of the compensation of our named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>680000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>680000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>VSE Corporation</inf:issuerName>
+  <inf:cusip>918284100</inf:cusip>
+  <inf:meetingDate>05/07/2026</inf:meetingDate>
+  <inf:voteDescription>Approval, on a non-binding advisory basis, of the compensation of the Company's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>42685.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>42685.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Warby Parker Inc.</inf:issuerName>
+  <inf:cusip>93403J106</inf:cusip>
+  <inf:meetingDate>06/08/2026</inf:meetingDate>
+  <inf:voteDescription>Approval, on an advisory (non-binding) basis, of the compensation of the Company's named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>24919.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>24919.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Waystar Holding Corp.</inf:issuerName>
+  <inf:cusip>946784105</inf:cusip>
+  <inf:meetingDate>06/01/2026</inf:meetingDate>
+  <inf:voteDescription>Indicate, on a non-binding advisory basis, the frequency of future advisory votes to approve the compensation of our Named Executive Officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>25.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>1 YEAR</inf:howVoted>
+      <inf:sharesVoted>25.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Welltower Inc.</inf:issuerName>
+  <inf:cusip>95040Q104</inf:cusip>
+  <inf:meetingDate>05/21/2026</inf:meetingDate>
+  <inf:voteDescription>The approval, on an advisory basis, of the compensation of the named executive officers.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>21021.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>AGAINST</inf:howVoted>
+      <inf:sharesVoted>21021.0</inf:sharesVoted>
+      <inf:managementRecommendation>AGAINST</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+  <inf:proxyTable>
+  <inf:issuerName>Western Digital Corporation</inf:issuerName>
+  <inf:cusip>958102105</inf:cusip>
+  <inf:meetingDate>11/20/2025</inf:meetingDate>
+  <inf:voteDescription>Approval on an advisory basis of the named executive officer compensation disclosed in the Proxy Statement.</inf:voteDescription>
+  <inf:voteCategories>
+    <inf:voteCategory>
+      <inf:categoryType>SECTION 14A SAY-ON-PAY VOTES</inf:categoryType>
+    </inf:voteCategory>
+  </inf:voteCategories>
+  <inf:voteSource>ISSUER</inf:voteSource>
+  <inf:sharesVoted>95000.0</inf:sharesVoted>
+  <inf:sharesOnLoan>0.0</inf:sharesOnLoan>
+  <inf:vote>
+    <inf:voteRecord>
+      <inf:howVoted>FOR</inf:howVoted>
+      <inf:sharesVoted>95000.0</inf:sharesVoted>
+      <inf:managementRecommendation>FOR</inf:managementRecommendation>
+    </inf:voteRecord>
+  </inf:vote>
+  <inf:voteManager>
+    <inf:otherManagers>
+      <inf:otherManager>1</inf:otherManager>
+    </inf:otherManagers>
+  </inf:voteManager>
+</inf:proxyTable>
+</inf:proxyVoteTable>

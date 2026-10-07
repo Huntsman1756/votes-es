@@ -10,7 +10,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 sys.path.insert(0, str(Path(__file__).parent))
-from coverage_probe import KNOWN_ISIN, local  # noqa: E402
+from coverage_probe import KNOWN_ISIN, local
 
 SOURCES = {
     "vanguard_proxytable_18mb.xml": ("VANGUARD INDEX FUNDS", "36405", "0001104659-26-102001"),

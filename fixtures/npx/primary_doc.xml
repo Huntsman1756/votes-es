@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xmlns="http://www.sec.gov/edgar/npx" xmlns:com="http://www.sec.gov/edgar/common">
+  <headerData>
+    <submissionType>N-PX</submissionType>
+    <filerInfo>
+      <registrantType>IM</registrantType>
+      <liveTestFlag>LIVE</liveTestFlag>
+      <filer>
+        <issuerCredentials>
+          <cik>0001000097</cik>
+          <ccc>XXXXXXXX</ccc>
+        </issuerCredentials>
+      </filer>
+      <flags>
+        <overrideInternetFlag>false</overrideInternetFlag>
+        <confirmingCopyFlag>false</confirmingCopyFlag>
+      </flags>
+      <investmentCompanyType/>
+      <periodOfReport>06/30/2026</periodOfReport>
+    </filerInfo>
+  </headerData>
+  <formData>
+    <coverPage>
+      <yearOrQuarter>YEAR</yearOrQuarter>
+      <reportCalendarYear>2026</reportCalendarYear>
+      <reportingPerson>
+        <name>KINGDON CAPITAL MANAGEMENT, L.L.C.</name>
+        <phoneNumber>(212) 333-0121</phoneNumber>
+        <address>
+          <com:street1>152 WEST 57TH STREET</com:street1>
+          <com:street2>50TH FLOOR</com:street2>
+          <com:city>NEW YORK</com:city>
+          <com:stateOrCountry>NY</com:stateOrCountry>
+          <com:zipCode>10019</com:zipCode>
+        </address>
+      </reportingPerson>
+      <agentForService>
+        <name>David Paretti</name>
+        <address>
+          <com:street1>152 W 57th St</com:street1>
+          <com:street2>Floor 50</com:street2>
+          <com:city>New York City</com:city>
+          <com:stateOrCountry>NY</com:stateOrCountry>
+          <com:zipCode>10019</com:zipCode>
+        </address>
+      </agentForService>
+      <reportInfo>
+        <reportType>INSTITUTIONAL MANAGER VOTING REPORT</reportType>
+        <confidentialTreatment>N</confidentialTreatment>
+      </reportInfo>
+      <fileNumber>028-04575</fileNumber>
+      <reportingCrdNumber>157509</reportingCrdNumber>
+      <reportingSecFileNumber>801-73482</reportingSecFileNumber>
+      <leiNumber>9EV9M07GEQXRWF831Q10</leiNumber>
+      <explanatoryInformation>
+        <explanatoryChoice>N</explanatoryChoice>
+      </explanatoryInformation>
+    </coverPage>
+    <summaryPage>
+      <otherIncludedManagersCount>0</otherIncludedManagersCount>
+    </summaryPage>
+    <signaturePage>
+      <reportingPerson>KINGDON CAPITAL MANAGEMENT, L.L.C.</reportingPerson>
+      <txSignature>William Walsh</txSignature>
+      <txPrintedSignature>William Walsh</txPrintedSignature>
+      <txTitle>CFO</txTitle>
+      <txAsOfDate>08/31/2026</txAsOfDate>
+    </signaturePage>
+  </formData>
+</edgarSubmission>

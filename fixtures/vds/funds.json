@@ -1,0 +1,25 @@
+{
+ "data": [
+  {
+   "fundID": 67114,
+   "FootnoteText": "",
+   "FundFamilyID": 1211,
+   "FundFamilyName": "BBVA Asset Management SA SGIIC",
+   "fundName": "ACCION EUROSTOXX 50 ETF, FI COTIZ ARMONI "
+  },
+  {
+   "fundID": 59242,
+   "FootnoteText": "",
+   "FundFamilyID": 1211,
+   "FundFamilyName": "BBVA Asset Management SA SGIIC",
+   "fundName": "ACCION EUROSTOXX 50 ETF, FI COTIZADO ARMONIZADO "
+  },
+  {
+   "fundID": 59243,
+   "FootnoteText": "",
+   "FundFamilyID": 1211,
+   "FundFamilyName": "BBVA Asset Management SA SGIIC",
+   "fundName": "ACCION IBEX 35 ETF, FI COTIZADO ARMONIZADO "
+  }
+ ]
+}

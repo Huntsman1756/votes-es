@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 data/raw/
+data/bronze/
+data/silver/
+data/gold/
+data/reference/universe.parquet
 *.tmp.js
 tools/sec-cli.zip
 .DS_Store

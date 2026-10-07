@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<proxyVoteTable xmlns="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Banco Santander SA</ns0:issuerName>
+    <ns0:cusip>E19790109</ns0:cusip>
+    <ns0:isin>ES0113900J37</ns0:isin>
+    <ns0:meetingDate>03/26/2026</ns0:meetingDate>
+    <ns0:voteDescription>Approve Consolidated and Standalone Financial Statements</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>CORPORATE GOVERNANCE</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>11411418.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>11411418.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Banco Santander SA</ns0:issuerName>
+    <ns0:cusip>E19790109</ns0:cusip>
+    <ns0:isin>ES0113900J37</ns0:isin>
+    <ns0:meetingDate>03/26/2026</ns0:meetingDate>
+    <ns0:voteDescription>Approve Non-Financial Information Statement</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>CORPORATE GOVERNANCE</ns0:categoryType>
+      </ns0:voteCategory>
+      <ns0:voteCategory>
+        <ns0:categoryType>ENVIRONMENT OR CLIMATE</ns0:categoryType>
+      </ns0:voteCategory>
+      <ns0:voteCategory>
+        <ns0:categoryType>HUMAN RIGHTS OR HUMAN CAPITAL/WORKFORCE</ns0:categoryType>
+      </ns0:voteCategory>
+      <ns0:voteCategory>
+        <ns0:categoryType>DIVERSITY, EQUITY, AND INCLUSION</ns0:categoryType>
+      </ns0:voteCategory>
+      <ns0:voteCategory>
+        <ns0:categoryType>OTHER SOCIAL ISSUES</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>11411418.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>11411418.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Ferrovial SE</ns0:issuerName>
+    <ns0:cusip>N3168P101</ns0:cusip>
+    <ns0:isin>NL0015001FS8</ns0:isin>
+    <ns0:meetingDate>04/09/2026</ns0:meetingDate>
+    <ns0:voteDescription>Approve Remuneration Report</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>COMPENSATION</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>358217.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>358217.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Ferrovial SE</ns0:issuerName>
+    <ns0:cusip>N3168P101</ns0:cusip>
+    <ns0:isin>NL0015001FS8</ns0:isin>
+    <ns0:meetingDate>04/09/2026</ns0:meetingDate>
+    <ns0:voteDescription>Adopt Financial Statements and Statutory Reports</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>CORPORATE GOVERNANCE</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>358217.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>358217.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Iberdrola SA</ns0:issuerName>
+    <ns0:cusip>E6165F166</ns0:cusip>
+    <ns0:isin>ES0144580Y14</ns0:isin>
+    <ns0:meetingDate>05/29/2026</ns0:meetingDate>
+    <ns0:voteDescription>Approve Consolidated and Standalone Financial Statements</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>CORPORATE GOVERNANCE</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>5294386.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>5294386.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+<ns0:proxyTable xmlns:ns0="http://www.sec.gov/edgar/document/npxproxy/informationtable">
+    <ns0:issuerName>Iberdrola SA</ns0:issuerName>
+    <ns0:cusip>E6165F166</ns0:cusip>
+    <ns0:isin>ES0144580Y14</ns0:isin>
+    <ns0:meetingDate>05/29/2026</ns0:meetingDate>
+    <ns0:voteDescription>Approve Consolidated and Standalone Management Reports</ns0:voteDescription>
+    <ns0:voteCategories>
+      <ns0:voteCategory>
+        <ns0:categoryType>CORPORATE GOVERNANCE</ns0:categoryType>
+      </ns0:voteCategory>
+    </ns0:voteCategories>
+    <ns0:voteSource>ISSUER</ns0:voteSource>
+    <ns0:sharesVoted>5294386.000000</ns0:sharesVoted>
+    <ns0:sharesOnLoan>0</ns0:sharesOnLoan>
+    <ns0:vote>
+      <ns0:voteRecord>
+        <ns0:howVoted>FOR</ns0:howVoted>
+        <ns0:sharesVoted>5294386.000000</ns0:sharesVoted>
+        <ns0:managementRecommendation>FOR</ns0:managementRecommendation>
+      </ns0:voteRecord>
+    </ns0:vote>
+    <ns0:voteSeries>S000022482</ns0:voteSeries>
+  </ns0:proxyTable>
+  
+</proxyVoteTable>

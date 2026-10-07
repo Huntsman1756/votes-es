@@ -23,9 +23,30 @@ dev = [
     "mypy>=1.13",
 ]
 
+[project.scripts]
+votes = "votes_es.cli.main:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/votes_es"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/votes_es/reference" = "votes_es/reference"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "B", "C", "UP", "DTZ", "PYI"]
+ignore = ["E501", "C901", "F403"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/votes_es/cli/main.py" = ["B008", "DTZ011"]   # Typer defaults are idiomatic
+"tests/**" = ["B", "DTZ"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

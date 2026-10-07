@@ -1,0 +1,30 @@
+{
+ "data": [
+  {
+   "VoteFlag": "",
+   "CompanyName": "Iberdrola SA",
+   "HasSignProp": "No",
+   "ISINList": "ES0144580Y14",
+   "MeetingDate": "2026-05-29 00:00:00.0",
+   "TotalRows": 277,
+   "PageNumber": 1,
+   "CountryList": "   Spain",
+   "MeetingID": 2055129,
+   "SecurityID": "ES0144580Y14",
+   "MultipleFundIDs": "59154",
+   "AllSignProposal": "No",
+   "SignificantMeeting": "No",
+   "Ticker": "IBE",
+   "MeetingTypeList": "   Annual",
+   "VotedList": "   Voted",
+   "CUSIPList": "E6165F166",
+   "MeetingFootnoteText": "",
+   "RowNumber": 1,
+   "FundName": "",
+   "MultipleBallotIDs": "0",
+   "MeetingType": "Annual",
+   "IsWFTSignMeeting": "No",
+   "Country": "Spain"
+  }
+ ]
+}

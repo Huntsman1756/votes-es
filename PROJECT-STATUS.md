@@ -1,62 +1,82 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-06 · Phase: **G0 complete → GO_FULL decision**
+Updated: 2026-10-07 · Phase: **G1+G2 complete → G3 (CLI hardening) / G4 (API)**
 
 ## Current state
 
 ```
-G0-A (N-PX coverage)        PASS
-G0-B (Spanish disclosures)  PASS (CaixaBank ✓ BBVA ✓ Ibercaja summary-only)
-Decision                    GO_FULL → G1 (canonical schema + ingest)
+G0 reconnaissance           PASS → GO_FULL
+G1 canonical schema + N-PX  PASS (schema + provider + universe via OI gen-0004)
+G2 Spanish source adapters  PASS (IssVdsAdapter live-verified, both customers)
+G3 CLI                      IN PROGRESS (works; cosmetics pending)
+G4 API                      pending
 ```
 
-## What was built
+## What was built (this session)
 
-- Repo skeleton (`src/votes_es`, `data/{raw,coverage}`, `docs`, `fixtures`).
-- `scripts/bench_npx.py` — streaming N-PX proxyTable parser + benchmark.
-- `scripts/coverage_probe.py` — Spanish-issuer coverage probe.
-- `scripts/extract_spanish.py` — → `data/coverage/2026.parquet` (2,102 rows).
-- `tools/sec.exe` — sec-cli v0.0.2 pinned (discovery only).
-- Evidence captures: `data/raw/vds_*.json`, `data/raw/vds_capture.txt`,
-  `data/coverage/npx_daily_count.jsonl`.
+- Full package `src/votes_es/`: domain enums+models, normalization
+  (direction/categories/text), identity (OI snapshot adapter + universe +
+  resolver w/ match evidence), sources (`sec_npx` streaming provider + EDGAR
+  discovery; `iss_vds` client+adapter), storage (bronze/silver parquet +
+  DuckDB gold), pipeline (ingest + silver build), quality checks, Typer CLI.
+- Issuer universe: 132 instrument rows = XMAD-listed equities (OI
+  generation-0004) ∪ seed CSV. Ferrovial NL / ArcelorMittal LU confirmed
+  inside via venue rule.
+- Golden fixtures (real-derived): both N-PX namespace variants, a 14A manager
+  report + primary_doc, VDS api/4/14/7 payloads (BBVA×Iberdrola, 23 proposals).
+- 20 tests green: unit / golden / contract / end-to-end integration.
 
-## What was verified
+## What was verified live
 
-- N-PX XML schema in the wild (both `inf:`-prefixed and default-namespace
-  variants; `VoteTableSchemaVersion:X0300`).
-- Streaming parse at 60 MB/s bounded RSS (185 MB file → 38 MB peak).
-- ISS VDS JSON API for CaixaBank AM (11006) and BBVA AM (7216): meetings list
-  + per-fund per-proposal votes incl. management recommendation.
-- Art. 47 ter Ley 35/2003 text (BOE consolidated): vote-direction disclosure
-  mandatory, significance exclusion permitted.
-- OpenInstrument local canonical dataset: ISIN→LEI resolution works.
+- `votes ingest vds iss_vds:caixabank-am` → 18,239 vote rows
+  (77 ES-universe meetings, 1,207 api/7 calls, zero errors).
+- `votes ingest vds iss_vds:bbva-am` → 9,348 vote rows (45 ES meetings).
+- N-PX bronze from 7 real filings (incl. 185 MB BlackRock): 751K rows.
+- `votes build`: 29,579 votes, 85 meetings, 78 issuers, 1,278 proposals;
+  identity: 29,695 EXACT_ISIN, 0 unresolved-in-universe, 21 AMBIGUOUS votes.
+- `votes validate`: all checks PASS (2 informative WARN).
+- Iberdrola AGM 2026-05-29 pivot works across sources: CaixaBank AM + BBVA AM
+  + BlackRock + Vanguard, 23 aligned proposals.
 
-## What failed / limitations
+## Bugs found & fixed during G1
 
-- sec-cli v0.0.2 unusable as N-PX parser (3 bugs — see SEC-CLI-SMOKE.md).
-- Ibercaja: no itemized disclosure (image-PDF reports only).
-- VDS API is undocumented/internal → adapter fragility risk.
-- VDS reuse status `PUBLIC_ACCESS_REUSE_UNCLEAR` → derived-facts-only policy.
-- FIGI absent in sampled 2026 N-PX filings.
-- `howVoted` non-standard values exist (`1 YEAR`, `THREE YEARS`, `2.0`…).
+- VDS api/14 `SortByColumn=MeetingDate` returns `{}` on some customers →
+  sort by CompanyName.
+- VDS per-customer date window enforced server-side (`api/2` StartDate/
+  EndDate) → client clamps from config.
+- Identity resolver never cached misses → per-row DuckDB queries (28 ms/row);
+  now negative-cached + bulk warm.
+- Identical proposal texts with different ballot items (Iberdrola 2×
+  "Approve Scrip Dividends") merged incorrectly → ballot-conflict guard.
+- vote_id collisions on source-emitted duplicate rows → key now includes
+  direction/raw/shares + exact-dup collapse (138 observed).
+- Windows: `:` illegal in dirs → source dir names sanitized; cp1252 console
+  → ASCII-only CLI output.
+
+## Known limitations
+
+- OI identifiers lack CUSIP scheme → CUSIP-resolution lane idle (ISIN coverage
+  ~100% on ES issuers anyway).
+- ~7 N-PX filings ingested (sampled giants); full-season (~8K filings) bulk
+  download not yet run.
+- Some OI-resolved issuers show ISIN as canonical_name (missing legal_name
+  upstream) — cosmetic, alias layer covers search.
+- VDS reuse remains PUBLIC_ACCESS_REUSE_UNCLEAR → exports/API emit
+  SEC-sourced rows only for now (DATA-NOTICE).
 
 ## Data counts
 
-- N-PX season-2026 filings: ≥8,000 (peak day 1,360).
-- Sample: 2,102 ES-issuer vote records from 4 fund filings; 62 issuers.
-- BBVA VDS: 7,053 meeting rows (2025–26), 504 ES meetings, 53 issuers.
-- CaixaBank VDS: 2,812 meeting rows (2026 YTD), 71 ES meetings.
+| Source | Votes | Meetings | ES issuers | Dissent |
+|---|---|---|---|---|
+| SEC N-PX (7 filings) | 2,160 | 66 | 63 | 3 |
+| CaixaBank AM (VDS live) | 18,071 | 75 | 72 | 2,042 |
+| BBVA AM (VDS live) | 9,348 | 45 | 44 | 278 |
+| **silver total** | **29,579** | **85** | **78** | |
 
-## Source/provenance status
-
-| Source | reuse_status | adapter |
-|---|---|---|
-| SEC EDGAR N-PX | OPEN (public, UA-required) | own iterparse — G1 |
-| ISS VDS (CaixaBank 11006) | PUBLIC_ACCESS_REUSE_UNCLEAR | IssVdsAdapter — G1 |
-| ISS VDS (BBVA 7216) | PUBLIC_ACCESS_REUSE_UNCLEAR | IssVdsAdapter — G1 |
-| Ibercaja | PUBLIC_ACCESS_REUSE_UNCLEAR | none (summary only) |
+Reporters/issuer observed: 16 issuers×1, 18×2, 14×3, 26×4, 3×5.
 
 ## Next decision
 
-Proceed G1: domain model + canonical schema + NpxProvider + IssVdsAdapter +
-issuer universe via OpenInstrument snapshot + golden fixtures.
+G3/G4: harden CLI (dissent/source subcommands output polish), FastAPI layer,
+then frontend. Full-season N-PX bulk ingest is a scheduled/live job, not a
+dev-blocking task.
