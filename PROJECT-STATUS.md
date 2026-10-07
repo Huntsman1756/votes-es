@@ -101,3 +101,5 @@ more Spanish SGIIC VDS customers discovery. API surfaces: status, seasons,
 issuers, issuer, meetings, meeting votes+pivot, reporters(+detail), compare,
 categories, sources. compare CaixaBank vs BBVA live: 707 common proposals,
 96.9% observed agreement.
+
+- `docs/findings/ES-SOURCE-CENSUS.md` — G8 census of Spanish manager vote disclosures (A/B/C classification; MAPFRE itemized PDF + Amundi portal identified as group-A candidates; ISS VDS is the concentrated bottleneck).
