@@ -176,6 +176,25 @@ def coverage(season: int | None = None) -> None:
     _table(f"coverage season={season or 'all'}",
            ["source", "reporters", "units", "issuers", "meetings",
             "proposals", "votes", "dissent", "unresolved"], rows)
+
+    # N-PX filing-level stats: report types, amendments, splits, matching
+    if "npx_filings" in {r[0] for r in c.execute("SHOW TABLES").fetchall()}:
+        fr = c.execute("""
+            SELECT report_type, submission_type,
+                   coalesce(amendment_type, 'ORIGINAL') amendment,
+                   materialization, count(*)
+            FROM npx_filings GROUP BY ALL ORDER BY 1,3""").fetchall()
+        if fr:
+            _table("npx filings", ["report_type", "submission",
+                                   "amendment", "materialization", "count"], fr)
+    idm = c.execute("""
+        SELECT match_method, review_status, count(*) FROM votes
+        GROUP BY ALL ORDER BY 3 DESC""").fetchall()
+    if idm:
+        _table("identity matching", ["match_method", "review_status", "votes"], idm)
+    sp = c.execute("SELECT count(*) FROM votes WHERE is_split").fetchone()[0]
+    if sp:
+        con.print(f"split-vote component rows: {sp}")
     con.print("[dim]Observed public disclosures only; coverage differs by "
               "reporter and source.[/dim]")
 

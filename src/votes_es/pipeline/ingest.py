@@ -42,7 +42,19 @@ def ingest_npx_dir(filing_dir: Path, source_url: str = "") -> IngestRun:
     """Parse one downloaded N-PX filing directory into bronze."""
     run = _run("sec_npx")
     try:
-        meta, vote_doc = npx.load_filing_dir(filing_dir)
+        try:
+            meta, vote_doc = npx.load_filing_dir(filing_dir)
+        except FileNotFoundError:
+            # NOTICE / non-voting reports: primary_doc only, no vote table —
+            # legitimate terminal state, not a parse failure.
+            meta = npx._meta_from(filing_dir / "primary_doc.xml", filing_dir)
+            rt = (meta.report_type or "").upper()
+            if "VOTING" in rt or "COMBINATION" in rt:
+                raise
+            bronze.append_filing(npx.filing_row(meta), "sec_npx")
+            run.records_seen = run.records_parsed = run.records_matched = 0
+            return _finish(run)
+
         rows, obs = npx.bronze_rows(meta, vote_doc, source_url=source_url)
         run.records_seen = run.records_parsed = len(rows)
         key = meta.accession.replace("-", "") or filing_dir.name

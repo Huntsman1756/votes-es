@@ -97,17 +97,30 @@ class FairClient:
             return None
         return None
 
-    def download(self, url: str, dest: Path) -> int | None:
-        """Stream to disk; returns byte count."""
+    def download(self, url: str, dest: Path, attempts: int = 4) -> int | None:
+        """Stream to disk under the same rate limiter; returns byte count."""
         dest.parent.mkdir(parents=True, exist_ok=True)
-        with dest.open("wb") as f, self.http.stream("GET", url) as r:
-            if r.status_code != 200:
-                return None
-            n = 0
-            for chunk in r.iter_bytes(1 << 20):
-                f.write(chunk)
-                n += len(chunk)
-        return n
+        for _ in range(attempts):
+            self.limit.wait()
+            try:
+                with self.http.stream("GET", url) as r:
+                    if r.status_code == 404:
+                        return None
+                    if r.status_code in (403, 429, 500, 502, 503):
+                        self.limit.backoff(r.headers.get("retry-after"))
+                        continue
+                    if r.status_code != 200:
+                        return None
+                    n = 0
+                    with dest.open("wb") as f:
+                        for chunk in r.iter_bytes(1 << 20):
+                            f.write(chunk)
+                            n += len(chunk)
+                    self.limit.ok()
+                    return n
+            except httpx.HTTPError:
+                self.limit.backoff()
+        return None
 
     def close(self):
         self.http.close()
@@ -272,6 +285,7 @@ def ingest_season(season: int, client: FairClient | None = None,
             entry["reporting_person"] = meta.reporting_person
             entry["period_of_report"] = (meta.period_of_report.isoformat()
                                          if meta.period_of_report else None)
+            entry["size_bytes"] = len(pdoc.content)
 
             # NOTICE / non-voting reports have no vote table — record and stop
             rt = (meta.report_type or "").upper()
@@ -304,6 +318,7 @@ def ingest_season(season: int, client: FairClient | None = None,
                 upsert_manifest(path, entry)
                 continue
             stats["downloaded"] += 1
+            entry["size_bytes"] = entry["size_bytes"] or 0
             for name in xmls:
                 n = c.download(ref.folder_url + name, fdir / name)
                 if n is None:
@@ -311,6 +326,7 @@ def ingest_season(season: int, client: FairClient | None = None,
                     entry["error"] = f"download failed: {name}"
                     break
                 stats["bytes"] += n
+                entry["size_bytes"] += n
             if entry["status"] == "FAILED":
                 stats["failed"] += 1
                 upsert_manifest(path, entry)

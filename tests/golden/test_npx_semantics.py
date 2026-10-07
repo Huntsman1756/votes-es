@@ -270,3 +270,22 @@ class TestAmendments:
         assert all(f["materialization"] == "EFFECTIVE" for f in filings)
         votes = pq.read_table(tmp_path / "silver" / "votes.parquet")
         assert votes.num_rows >= 10     # both filings' rows present
+
+
+class TestReportTypes:
+    def test_notice_report_is_clean_zero_row_ingest(self, tmp_path, monkeypatch):
+        import votes_es.config as cfg
+        import votes_es.storage.bronze as bz
+        monkeypatch.setattr(cfg, "BRONZE_DIR", tmp_path / "bronze")
+        monkeypatch.setattr(cfg, "RAW_DIR", tmp_path / "raw")
+        monkeypatch.setattr(bz, "BRONZE_DIR", tmp_path / "bronze")
+        monkeypatch.setattr(bz, "RAW_DIR", tmp_path / "raw")
+
+        from votes_es.pipeline.ingest import ingest_npx_dir
+        d = tmp_path / "notice"
+        d.mkdir()
+        shutil.copy(FIX / "primary_doc_notice.xml", d / "primary_doc.xml")
+        run = ingest_npx_dir(d)
+        assert run.status == "OK" and run.records_parsed == 0
+        filings = bz.load_filings("sec_npx")
+        assert filings and filings[0]["report_type"] == "NOTICE REPORT"

@@ -17,3 +17,12 @@ REPORTS_DIR = _REPO / "reports" / "data-quality"
 
 UNIVERSE_PARQUET = REFERENCE_DIR / "universe.parquet"
 DUCKDB_PATH = GOLD_DIR / "votes.duckdb"
+
+# Reuse gate: which source_ids may publish vote ROWS in the served dataset.
+# Empty = all (local dev). For the public deployment we keep VDS metadata
+# (reporters, meetings, source links) but not vote rows:
+#   VOTES_PUBLISH_VOTE_SOURCES="sec_npx"
+PUBLISH_VOTE_SOURCES = [
+    s.strip() for s in os.environ.get("VOTES_PUBLISH_VOTE_SOURCES", "").split(",")
+    if s.strip()
+]

@@ -9,7 +9,7 @@ from pathlib import Path
 
 import duckdb
 
-from votes_es.config import DUCKDB_PATH, SILVER_DIR
+from votes_es.config import DUCKDB_PATH, PUBLISH_VOTE_SOURCES, SILVER_DIR
 from votes_es.storage.schemas import SILVER_SCHEMAS
 
 VIEWS = """
@@ -53,9 +53,15 @@ def build_gold(silver_dir: Path | None = None,
     con = duckdb.connect(str(out))
     for name in SILVER_SCHEMAS:
         p = silver / f"{name}.parquet"
+        # reuse gate: VDS (or any restricted source) vote rows never reach the
+        # served dataset unless explicitly enabled — metadata stays.
+        where = ""
+        if name == "votes" and PUBLISH_VOTE_SOURCES:
+            allowed = ", ".join(f"'{s}'" for s in PUBLISH_VOTE_SOURCES)
+            where = f" WHERE source_id IN ({allowed})"
         if p.exists():
             sp = str(p).replace("\\", "/")
-            con.execute(f"CREATE TABLE {name} AS SELECT * FROM '{sp}'")
+            con.execute(f"CREATE TABLE {name} AS SELECT * FROM '{sp}'{where}")
         else:
             con.execute(
                 f"CREATE TABLE {name} AS SELECT * FROM "
