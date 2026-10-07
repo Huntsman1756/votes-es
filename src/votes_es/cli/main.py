@@ -289,11 +289,13 @@ def compare(a: str, b: str, season: int | None = None) -> None:
                     WHERE canonical_name ILIKE ?) THEN direction END) b_vote
         FROM x GROUP BY ALL""",
         [f"%{a}%", a, f"%{b}%", b, f"%{a}%", f"%{b}%"]).fetchall()
+    both = sum(1 for r in rows if r[3] and r[4])
     same = sum(1 for r in rows if r[3] == r[4] and r[3])
     diff = sum(1 for r in rows if r[3] and r[4] and r[3] != r[4])
-    _table(f"compare {a} vs {b}",
+    _table(f"compare {a} vs {b} (blank cell = not observed)",
            ["issuer", "meeting", "proposal", a, b], rows)
-    con.print(f"common disclosed proposals={len(rows)} same={same} diff={diff}")
+    con.print(f"proposals in observed union={len(rows)} "
+              f"both disclosed={both} same={same} diff={diff}")
 
 
 @app.command()
@@ -320,6 +322,13 @@ def export(fmt: str = "parquet", out: Path = Path("votes_export")) -> None:
         c.execute(f"COPY ({q}) TO '{p}' (FORMAT JSON)")
     con.print(f"wrote {p} - OPEN_REUSE_CONFIRMED sources only "
               "(VDS-derived rows excluded until reuse confirmed)")
+
+
+@app.command()
+def serve(host: str = "127.0.0.1", port: int = 8000):
+    """Serve the read-only API over the gold DuckDB (uvicorn)."""
+    import uvicorn
+    uvicorn.run("votes_es.api.app:app", host=host, port=port)
 
 
 def main() -> None:  # console entry point

@@ -23,10 +23,6 @@ class Check:
     detail: str
 
 
-def _q(con, sql):
-    return con.execute(sql).fetchall()
-
-
 def run_checks(silver_dir: Path | None = None) -> list[Check]:
     d = (silver_dir or SILVER_DIR).as_posix()
     con = duckdb.connect()
@@ -38,31 +34,34 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
     def T(name: str) -> str:
         return f"'{d}/{name}.parquet'"
 
-    n_votes = con.execute(f"SELECT count(*) FROM {T('votes')}").fetchone()[0]
+    def scalar(sql: str) -> int:
+        return int((con.execute(sql).fetchone() or (0,))[0])
+
+    n_votes = con.execute(f"SELECT count(*) FROM {T('votes')}")
     checks.append(Check("votes_present", "PASS" if n_votes else "FAIL",
                         f"{n_votes} votes"))
 
     # uniqueness
-    dup = con.execute(
-        f"SELECT count(*) - count(DISTINCT vote_id) FROM {T('votes')}").fetchone()[0]
+    dup = scalar(
+        f"SELECT count(*) - count(DISTINCT vote_id) FROM {T('votes')}")
     checks.append(Check("vote_id_unique", "PASS" if dup == 0 else "FAIL",
                         f"{dup} duplicate vote_id"))
 
     # orphan FK
-    orphan_p = con.execute(
+    orphan_p = scalar(
         f"SELECT count(*) FROM {T('votes')} v LEFT JOIN {T('proposals')} p "
-        f"USING (proposal_id) WHERE p.proposal_id IS NULL").fetchone()[0]
+        f"USING (proposal_id) WHERE p.proposal_id IS NULL")
     checks.append(Check("votes_proposal_fk", "PASS" if orphan_p == 0 else "FAIL",
                         f"{orphan_p} votes without proposal"))
-    orphan_m = con.execute(
+    orphan_m = scalar(
         f"SELECT count(*) FROM {T('proposals')} p LEFT JOIN {T('meetings')} m "
-        f"USING (meeting_id) WHERE m.meeting_id IS NULL").fetchone()[0]
+        f"USING (meeting_id) WHERE m.meeting_id IS NULL")
     checks.append(Check("proposals_meeting_fk", "PASS" if orphan_m == 0 else "FAIL",
                         f"{orphan_m} proposals without meeting"))
-    orphan_o = con.execute(
+    orphan_o = scalar(
         f"SELECT count(*) FROM {T('votes')} v LEFT JOIN {T('observations')} o "
         f"ON v.source_observation_id = o.observation_id "
-        f"WHERE o.observation_id IS NULL").fetchone()[0]
+        f"WHERE o.observation_id IS NULL")
     checks.append(Check("votes_observation_fk", "PASS" if orphan_o == 0 else "FAIL",
                         f"{orphan_o} votes without observation"))
 
@@ -77,41 +76,41 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
     # provenance
     no_url = con.execute(
         f"SELECT count(*) FROM {T('observations')} "
-        f"WHERE source_url IS NULL OR source_url = ''").fetchone()[0]
+        f"WHERE source_url IS NULL OR source_url = ''")
     checks.append(Check("observation_url", "PASS" if no_url == 0 else "WARN",
                         f"{no_url} observations without URL"))
 
     # identity
-    unr = con.execute(
-        f"SELECT count(*) FROM {T('issuers')} WHERE NOT in_universe").fetchone()[0]
+    unr = scalar(
+        f"SELECT count(*) FROM {T('issuers')} WHERE NOT in_universe")
     checks.append(Check("unresolved_issuers",
                         "PASS" if unr == 0 else "WARN",
                         f"{unr} unresolved issuers"))
-    amb = con.execute(
+    amb = scalar(
         f"SELECT count(*) FROM {T('votes')} WHERE review_status='AMBIGUOUS'"
-    ).fetchone()[0]
+    )
     checks.append(Check("ambiguous_matches",
                         "PASS" if amb == 0 else "WARN",
                         f"{amb} votes on AMBIGUOUS identity"))
 
     # sanity
-    neg = con.execute(
+    neg = scalar(
         f"SELECT count(*) FROM {T('votes')} WHERE shares_voted < 0 "
-        f"OR shares_on_loan < 0").fetchone()[0]
+        f"OR shares_on_loan < 0")
     checks.append(Check("shares_nonnegative", "PASS" if neg == 0 else "FAIL",
                         f"{neg} negative share counts"))
-    weird_dates = con.execute(
+    weird_dates = scalar(
         f"SELECT count(*) FROM {T('meetings')} WHERE meeting_date < '2000-01-01' "
-        f"OR meeting_date > current_date + interval 1 year").fetchone()[0]
+        f"OR meeting_date > current_date + interval 1 year")
     checks.append(Check("meeting_dates", "PASS" if weird_dates == 0 else "WARN",
                         f"{weird_dates} meetings outside sane range"))
 
     # dissent defined only when both sides exist
-    bad_against = con.execute(
+    bad_against = scalar(
         f"SELECT count(*) FROM {T('votes')} WHERE against_management IS NOT NULL "
         f"AND (direction IN ('UNKNOWN','OTHER') OR management_recommendation "
         f"IN ('NONE','UNKNOWN','OTHER') OR management_recommendation IS NULL)"
-    ).fetchone()[0]
+    )
     checks.append(Check("against_semantics", "PASS" if bad_against == 0 else "FAIL",
                         f"{bad_against} against_management set without both sides"))
 

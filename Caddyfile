@@ -1,0 +1,9 @@
+votes.h1756.es {
+	reverse_proxy api:8000
+	encode gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Permissions-Policy
+	}
+}

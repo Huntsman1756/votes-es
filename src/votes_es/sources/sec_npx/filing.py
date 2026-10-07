@@ -13,7 +13,7 @@ def parse_primary_doc(path: Path, accession: str = "", cik: str = "") -> NpxFili
     """Parse primary_doc.xml (edgarSubmission) — registrant type, reporting
     person, period, report type (FUND vs INSTITUTIONAL MANAGER)."""
     root = parse(path).getroot()
-    text = {}
+    text: dict[str, str] = {}
     series: list[str] = []
     for elem in root.iter():
         name = local(elem.tag)

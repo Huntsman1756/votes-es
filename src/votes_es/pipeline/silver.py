@@ -339,13 +339,14 @@ def build_silver(universe_path: Path, out_dir: Path,
                 continue
             meeting_id = ids.meeting_id(key[0], key[1].isoformat())
 
-            rep = REPORTERS[src.reporter_key]
-            rid = ids.reporter_id(src.reporter_key)
+            repdef = REPORTERS[src.reporter_key or row["reporter_key"]]
+            rid = ids.reporter_id(src.reporter_key or row["reporter_key"])
             reporters.setdefault(rid, {
-                "reporter_id": rid, "canonical_name": rep.canonical_name,
-                "country": rep.country, "reporter_type": rep.reporter_type.value,
-                "parent_group": rep.parent_group, "lei": rep.lei,
-                "source_identifiers_json": json.dumps(rep.source_identifiers),
+                "reporter_id": rid, "canonical_name": repdef.canonical_name,
+                "country": repdef.country,
+                "reporter_type": repdef.reporter_type.value,
+                "parent_group": repdef.parent_group, "lei": repdef.lei,
+                "source_identifiers_json": json.dumps(repdef.source_identifiers),
             })
             unit_key = str(row["fund_id"]) if row["fund_id"] is not None else "self"
             uid = ids.reporting_unit_id(rid, unit_key)
@@ -422,18 +423,19 @@ def build_silver(universe_path: Path, out_dir: Path,
     votes_out: list[dict] = []
     for v in vote_rows:
         inst = v["_inst"]
-        pid = getattr(inst, "_pid", None)
-        if pid is None:
+        v_pid: str | None = getattr(inst, "_pid", None)
+        if v_pid is None:
             stats.warnings.append("vote dropped: no proposal cluster")
             continue
-        raw = v["vote_raw"]
+        pid = v_pid
+        raw: str = v["vote_raw"] or ""
         if v["source_id"].startswith("iss_vds") and raw == "":
             direction = VoteDirection.DO_NOT_VOTE   # VDS blank = fund did not vote
         else:
             direction = normalize_direction(raw)
         mgmt = normalize_mgmt_rec(v["management_recommendation_raw"])
         against = compute_against_management(direction, mgmt)
-        res: Resolution = v["_resolution"]
+        vres: Resolution = v["_resolution"]
         votes_out.append({
             # direction+raw+shares in the key: filers do emit the same
             # series x proposal row more than once (split ballots); exact
@@ -453,9 +455,9 @@ def build_silver(universe_path: Path, out_dir: Path,
             "rationale": v["rationale"],
             "source_observation_id": v["source_observation_id"],
             "source_id": v["source_id"], "report_type": v["report_type"],
-            "match_method": res.match_method.value,
-            "review_status": res.review_status.value,
-            "match_evidence": res.evidence,
+            "match_method": vres.match_method.value,
+            "review_status": vres.review_status.value,
+            "match_evidence": vres.evidence,
         })
 
     # dedup: same vote_id = identical row emitted twice by the source
@@ -572,13 +574,14 @@ def _disclosure_seasons(votes_out: list[dict], meetings_out: list[dict],
         year = proposal_year.get(v["proposal_id"])
         if year is None:
             continue
-        key = next((k for k in REPORTERS if ids.reporter_id(k) == v["reporter_id"]), None)
-        p = profile.get(key, {"level": DisclosureLevel.ITEMIZED, "doc": False,
-                              "text": None, "url": None})
+        key = next((k for k in REPORTERS
+                    if ids.reporter_id(k) == v["reporter_id"]), None)
+        p = profile.get(key or "", {"level": DisclosureLevel.ITEMIZED,
+                                    "doc": False, "text": None, "url": None})
         by_rep_year[(v["reporter_id"], year)] = {
             "reporter_id": v["reporter_id"], "season": year,
             "coverage_start": None, "coverage_end": None,
-            "published_at": None, "disclosure_level": p["level"].value,
+            "published_at": None, "disclosure_level": str(p["level"]),
             "significance_criteria_documented": p["doc"],
             "significance_criteria_text": p["text"],
             "significance_criteria_source": p["url"],

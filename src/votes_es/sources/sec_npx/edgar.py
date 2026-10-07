@@ -122,7 +122,8 @@ def download_filing(ref: FilingRef, dest_dir: Path,
     out_dir = dest_dir / ref.accession_nodash
     out_dir.mkdir(parents=True, exist_ok=True)
     docs = filing_documents(ref, c)
-    result = {"accession": ref.accession, "cik": ref.cik, "folder": ref.folder_url}
+    result: dict[str, object] = {"accession": ref.accession, "cik": ref.cik,
+                         "folder": ref.folder_url}
     for item in docs.get("directory", {}).get("item", []):
         name = item["name"]
         if not name.lower().endswith(".xml"):

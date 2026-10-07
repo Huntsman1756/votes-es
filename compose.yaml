@@ -1,0 +1,29 @@
+# votes-es — API+web (built image) behind Caddy TLS.
+# gold data comes from a scheduled ingest/build job on the host and is
+# mounted read-only here.
+services:
+  api:
+    build: .
+    image: votes-es:latest
+    restart: unless-stopped
+    volumes:
+      - ./data:/data:ro
+    environment:
+      - VOTES_ES_DB=/data/gold/votes.duckdb
+    expose:
+      - "8000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      - api
+
+volumes:
+  caddy_data:

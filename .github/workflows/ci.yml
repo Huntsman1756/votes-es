@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: uv pip install --system -e ".[dev]" || uv pip install --system .
+        # package has no [dev] extra: install test tooling explicitly
+      - run: uv pip install --system pytest ruff
+      - run: ruff check src tests
+      - run: pytest tests -q
+        # tests run fully offline on committed fixtures; OpenInstrument
+        # integration is exercised locally, not in CI
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm install --no-audit --no-fund
+      - run: npx tsc --noEmit
+      - run: npm run build
