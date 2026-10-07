@@ -140,6 +140,18 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
     checks.append(Check("split_votes_flagged", "PASS",
                         f"{splits} split-vote component rows preserved"))
 
+    # amendment materialization: no vote may trace to a SUPERSEDED filing
+    if has_table("npx_filings"):
+        superseded_votes = scalar(
+            f"SELECT count(*) FROM {T('votes')} v "
+            f"JOIN {T('observations')} o ON v.source_observation_id=o.observation_id "
+            f"JOIN {T('npx_filings')} f ON o.accession=f.accession "
+            f"WHERE f.materialization='SUPERSEDED'")
+        checks.append(Check("amendment_materialization",
+                            "PASS" if superseded_votes == 0 else "FAIL",
+                            f"{superseded_votes} votes traced to superseded "
+                            "filings"))
+
     if has_table("meetings"):
         pass
     con.close()
