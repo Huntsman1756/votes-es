@@ -8,8 +8,12 @@ Updated: 2026-10-07 · Phase: **G1+G2 complete → G3 (CLI hardening) / G4 (API)
 G0 reconnaissance           PASS → GO_FULL
 G1 canonical schema + N-PX  PASS (schema + provider + universe via OI gen-0004)
 G2 Spanish source adapters  PASS (IssVdsAdapter live-verified, both customers)
-G3 CLI                      IN PROGRESS (works; cosmetics pending)
-G4 API                      pending
+G3 CLI + QA                 PASS (votes cmd suite; validate all-PASS on real data)
+G4 API                      PASS (FastAPI /api/v1, verified on real gold + tests)
+G5 frontend                 PASS (React/Vite SPA, proposal×reporter pivot works)
+G6 hardening                IN PROGRESS (CI wired; more QA checks optional)
+G7 deploy                   SCAFFOLDED (Dockerfile + compose + Caddyfile;
+                                      needs host + gold data volume)
 ```
 
 ## What was built (this session)
@@ -77,6 +81,9 @@ Reporters/issuer observed: 16 issuers×1, 18×2, 14×3, 26×4, 3×5.
 
 ## Next decision
 
-G3/G4: harden CLI (dissent/source subcommands output polish), FastAPI layer,
-then frontend. Full-season N-PX bulk ingest is a scheduled/live job, not a
-dev-blocking task.
+Remaining: full-season N-PX bulk ingest (scheduled/live job), real deploy
+of votes.h1756.es (needs host + mounted gold), scheduled refresh automation,
+more Spanish SGIIC VDS customers discovery. API surfaces: status, seasons,
+issuers, issuer, meetings, meeting votes+pivot, reporters(+detail), compare,
+categories, sources. compare CaixaBank vs BBVA live: 707 common proposals,
+96.9% observed agreement.
