@@ -59,6 +59,16 @@ def load_seed() -> list[dict]:
         return list(csv.DictReader(f))
 
 
+def load_historical_overrides() -> list[dict]:
+    """Temporal listing evidence — issuers that were XMAD-listed during the
+    covered period but no longer appear in a current FIRDS snapshot
+    (delisted, ISIN retired, or OI coverage gaps). OUT_OF_SCOPE rows are
+    documentation, not universe members."""
+    f = res.files("votes_es.reference").joinpath("historical_universe.csv")
+    with f.open(encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
 def build_universe(out_path: Path, oi: OiSnapshot | None = None) -> list[UniverseRow]:
     """Build the universe artifact. `oi=None` → seed-only (offline/CI mode)."""
     rows: dict[str, UniverseRow] = {}          # key: isin
@@ -106,6 +116,22 @@ def build_universe(out_path: Path, oi: OiSnapshot | None = None) -> list[Univers
                 universe_basis="SEED",
                 alias_normalized=normalize_issuer_name(s["canonical_name"]),
             )
+
+    # --- lane 3: temporal overrides (historical XMAD membership)
+    for h in load_historical_overrides():
+        if h["status"] not in ("CURRENT_LISTED", "HISTORICALLY_LISTED"):
+            continue                     # OUT_OF_SCOPE rows are documentation
+        isin = h["isin"].strip()
+        if isin in rows:
+            continue                     # already covered by OI/seed
+        lei = (h.get("lei") or "").strip() or None
+        rows[isin] = UniverseRow(
+            issuer_id=ids.issuer_id(lei, isin),
+            canonical_name=h["canonical_name"], country=h["country"] or None,
+            lei=lei, isin=isin, ticker=None,
+            universe_basis="HISTORICAL_OVERRIDE",
+            alias_normalized=normalize_issuer_name(h["canonical_name"]),
+        )
 
     out = sorted(rows.values(), key=lambda r: r.isin)
     out_path.parent.mkdir(parents=True, exist_ok=True)

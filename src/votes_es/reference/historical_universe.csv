@@ -1,0 +1,7 @@
+isin,canonical_name,lei,country,venue,valid_from,valid_to,status,evidence,source
+ES0116920333,Grupo Catalana Occidente S.A.,959800H2P9S8MS95DT42,ES,XMAD,,,CURRENT_LISTED,"XMAD SIBE listing; absent from OI snapshot (only TPIR in FIRDS) — coverage gap",CNMV registry
+ES0105022000,Applus Services S.A.,,ES,XMAD,,2025-09,HISTORICALLY_LISTED,"XMAD-listed until takeover delisting late 2025; MAPFRE voted AGM 2024-06-07",CNMV registry
+ES0140441017,Funespaña S.A.,,ES,XMAD,,,CURRENT_LISTED,"XMAD SIBE listing; absent from OI snapshot — coverage gap",CNMV registry
+ES0118900010,Ferrovial S.A.,72450022R2ZFL41Y6I04,ES,XMAD,,2023-02,HISTORICALLY_LISTED,"legacy ES ISIN before redomiciliation to NL (Ferrovial SE); ISIN retired — records still reference it",CNMV registry
+ES0127797019,EDP Renováveis S.A.,529900MUFAH07Q1TAX06,PT,XLIS,,,OUT_OF_SCOPE,"Euronext Lisbon primary; never XMAD-listed — ES ISIN does not imply XMAD membership",OI snapshot
+ES0105224002,Olimpo Real Estate SOCIMI S.A.,959800S4FGX6MTKQCY69,ES,MABX,,,OUT_OF_SCOPE,"BME Growth (MIC GROW) — outside XMAD SIBE scope per methodology",OI snapshot

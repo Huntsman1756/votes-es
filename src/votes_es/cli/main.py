@@ -327,6 +327,47 @@ def sources() -> None:
     _table("sources", ["id", "type", "name", "reuse", "adapter"], rows)
 
 
+recon_app = typer.Typer(help="G9 proposal reconciliation (local, no publication)",
+                        no_args_is_help=True)
+app.add_typer(recon_app, name="reconcile")
+
+
+@recon_app.command("proposals")
+def reconcile_proposals() -> None:
+    """Match MAPFRE items to N-PX canonical proposals on shared meetings."""
+    from votes_es.config import DUCKDB_PATH
+    from votes_es.reconcile.report import run
+    stats = run(DUCKDB_PATH, Path("reports"))
+    con.print(f"shared meetings={stats.shared_meetings} "
+              f"mapfre={stats.mapfre_instances} matched={stats.matched} "
+              f"ambiguous={stats.ambiguous} unmatched={stats.unmatched}")
+    for k, v in sorted(stats.by_method.items()):
+        con.print(f"  {k}: {v}")
+
+
+@app.command("proposal-match")
+def proposal_match_explain(match_key: str) -> None:
+    """Explain a proposal match: mapfre_key format '<meeting_id>|mapfre:<pid>'."""
+    import pyarrow.parquet as pq
+
+    p = Path("reports/proposal_matches.parquet")
+    if not p.exists():
+        con.print("[red]run `votes reconcile proposals` first[/red]")
+        return
+    t = pq.read_table(p).to_pylist()
+    row = next((r for r in t if r["mapfre_key"].startswith(match_key)), None)
+    if not row:
+        con.print(f"[red]no match row for {match_key}[/red]")
+        return
+    con.print(f"[bold]{row['issuer']} · {row['meeting_date']}[/bold]")
+    con.print(f"  MAPFRE item {row['mapfre_item']}: {row['mapfre_text']}")
+    con.print(f"  canonical:    {row['canonical_proposal_id']}")
+    con.print(f"  canonical tx: {row['canonical_text']}")
+    con.print(f"  method={row['method']} score={row['score']} "
+              f"margin={row['margin']} review={row['review_status']}")
+    con.print(f"  evidence: {row['evidence']}")
+
+
 @app.command("export")
 def export(fmt: str = "parquet", out: Path = Path("votes_export")) -> None:
     """Export votes (reuse-filtered) to csv/parquet/json."""

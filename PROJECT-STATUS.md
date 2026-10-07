@@ -1,10 +1,10 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-08 · Phase: **G8-C MAPFRE adapter + reuse gates — done**
+Updated: 2026-10-08 · Phase: **G9 proposal reconciliation — core done**
 
 ## Current state
 
-```
+```text
 G0 reconnaissance           PASS → GO_FULL
 G1 canonical schema + N-PX  PASS
 G2 Spanish source adapters  PASS
@@ -12,99 +12,77 @@ G3 CLI + QA                 PASS
 G4 API                      PASS
 G5 frontend                 PASS
 G6 bulk semantics           PASS
-G7 deploy                   PASS (https://votes.h1756.es, v0.1.0)
-G8 source census            PASS (docs/findings/ES-SOURCE-CENSUS.md;
-                                   ISS VDS = the bottleneck; MAPFRE = the
-                                   only own-domain itemized register)
-G8-B technical spikes       PASS (docs/findings/G8B-SPIKE.md)
-G8-C MAPFRE adapter         PASS (mapfre_am source, 3 publications ingested,
-                                   964 ES canonical votes, gated OFF public)
-    reuse model             DONE (4 separate fields on sources:
-                                   technical_access / extraction_terms /
-                                   publication_status / reuse_status)
-    ISS VDS                 BLOCKED_PENDING_WRITTEN_PERMISSION — ISS ToS
-                            prohibit extraction + republication; no new
-                            automated VDS acquisitions
-    N-PX core               FREEZE / maintenance only
-NEXT: G9 proposal reconciliation (corpus at reports/g9-reconciliation-corpus.parquet,
-                                 preview docs/findings/G9-PREVIEW.md)
+G7 deploy                   PASS — https://votes.h1756.es live, v0.1.0
+                              (Coolify/Traefik, atomic generations,
+                              rollback verified)
+G8 source census            PASS — docs/findings/ES-SOURCE-CENSUS.md
+G8-B technical spikes       PASS — docs/findings/G8B-SPIKE.md
+G8-C MAPFRE adapter         PASS — mapfre_am ingested locally, gated OFF
+G9 reconciliation           DONE — matcher + golden corpus + review queue
+
+N-PX core                   FREEZE — maintenance only
+production                  MAINTENANCE — VOTES_PUBLISH_VOTE_SOURCES=sec_npx
+NEXT                        v0.2.0 data layer when reuse unblocks MAPFRE
 ```
 
-G6 detail: semantic audit PASS (alignment vs recommendation — see
-docs/findings/NPX-MANAGEMENT-SEMANTICS.md); amendments PASS; split votes
-PASS; joint reporting PASS; bulk 2026 PASS (11,952 filings, 5,623 voting
-reports = 25.48M components, 0 failures, 19.0GB); coverage QA PASS.
+## Data counts (local build)
 
-## What was built (this session)
+| Layer | Value |
+|---|---|
+| N-PX bronze (raw) | 25.48M component rows, 5,623 voting reports |
+| VDS bronze | 27.4K rows — research only, publication blocked |
+| MAPFRE bronze | 9,552 rows · 2023–2025 · 6 quarantined · 301 non-voting |
+| Silver votes | 194,167 canonical (165.5K sec_npx + 27.4K vds + 964 mapfre) |
+| Meetings | 261 canonical |
+| Issuers | 143 in-universe (4 via HISTORICAL_OVERRIDE) |
+| MAPFRE×N-PX shared meetings | 26 |
+| MAPFRE instances matched | 68 auto (37 exact + 31 rule) / 65 ambig / 145 unmatched |
 
-- Full package `src/votes_es/`: domain enums+models, normalization
-  (direction/categories/text), identity (OI snapshot adapter + universe +
-  resolver w/ match evidence), sources (`sec_npx` streaming provider + EDGAR
-  discovery; `iss_vds` client+adapter), storage (bronze/silver parquet +
-  DuckDB gold), pipeline (ingest + silver build), quality checks, Typer CLI.
-- Issuer universe: 132 instrument rows = XMAD-listed equities (OI
-  generation-0004) ∪ seed CSV. Ferrovial NL / ArcelorMittal LU confirmed
-  inside via venue rule.
-- Golden fixtures (real-derived): both N-PX namespace variants, a 14A manager
-  report + primary_doc, VDS api/4/14/7 payloads (BBVA×Iberdrola, 23 proposals).
-- 20 tests green: unit / golden / contract / end-to-end integration.
+## Source rights model (four fields on `sources`)
 
-## What was verified live
+```text
+sec_npx      PUBLIC_DOCUMENT / extraction PERMITTED / OPEN
+mapfre_am    PUBLIC_DOCUMENT / extraction UNKNOWN / PERMISSION_REQUIRED
+iss_vds:*    PUBLIC_WEB_APP / PROHIBITED_BY_TERMS / PERMISSION_REQUIRED
+             reuse = BLOCKED_PENDING_WRITTEN_PERMISSION (no new crawls)
+```
 
-- `votes ingest vds iss_vds:caixabank-am` → 18,239 vote rows
-  (77 ES-universe meetings, 1,207 api/7 calls, zero errors).
-- `votes ingest vds iss_vds:bbva-am` → 9,348 vote rows (45 ES meetings).
-- N-PX bronze from 7 real filings (incl. 185 MB BlackRock): 751K rows.
-- `votes build`: 29,579 votes, 85 meetings, 78 issuers, 1,278 proposals;
-  identity: 29,695 EXACT_ISIN, 0 unresolved-in-universe, 21 AMBIGUOUS votes.
-- `votes validate`: all checks PASS (2 informative WARN).
-- Iberdrola AGM 2026-05-29 pivot works across sources: CaixaBank AM + BBVA AM
-  + BlackRock + Vanguard, 23 aligned proposals.
+Public production serves **sec_npx only**; release validation guards
+restricted-source leakage.
 
-## Bugs found & fixed during G1
+## G9 artifacts
 
-- VDS api/14 `SortByColumn=MeetingDate` returns `{}` on some customers →
-  sort by CompanyName.
-- VDS per-customer date window enforced server-side (`api/2` StartDate/
-  EndDate) → client clamps from config.
-- Identity resolver never cached misses → per-row DuckDB queries (28 ms/row);
-  now negative-cached + bulk warm.
-- Identical proposal texts with different ballot items (Iberdrola 2×
-  "Approve Scrip Dividends") merged incorrectly → ballot-conflict guard.
-- vote_id collisions on source-emitted duplicate rows → key now includes
-  direction/raw/shares + exact-dup collapse (138 observed).
-- Windows: `:` illegal in dirs → source dir names sanitized; cp1252 console
-  → ASCII-only CLI output.
+- `src/votes_es/reconcile/` — normalize / matcher / report (deterministic,
+  one-to-one, margin-gated; `UNMATCHED` is a valid outcome)
+- `reports/proposal_matches.parquet` — 278 MAPFRE instances, evidence per pair
+- `reports/proposal-match-review.csv` — review queue, lowest confidence first
+- `tests/golden/proposal_matching/reviewed_matches.csv` — 68 manually
+  REVIEWED=SAME + 210 UNRESOLVED; auto-match precision on corpus = 100%
+- `scripts/g9_compare.py` → `docs/findings/G9-COMPARISON.md` — local-only
+  MAPFRE vs reporter comparison (BlackRock 81 pairs, ~99% agreement;
+  Vanguard votes exist on shared meetings but land on unmatched proposals)
+- `docs/PROPOSAL-IDENTITY.md` — the frozen match model
+- `docs/prior-art/PROPOSAL-MATCHING.md` — baseline critique
 
-## Known limitations
+## Key semantics (do not regress)
 
-- OI identifiers lack CUSIP scheme → CUSIP-resolution lane idle (ISIN coverage
-  ~100% on ES issuers anyway).
-- ~7 N-PX filings ingested (sampled giants); full-season (~8K filings) bulk
-  download not yet run.
-- Some OI-resolved issuers show ISIN as canonical_name (missing legal_name
-  upstream) — cosmetic, alias layer covers search.
-- VDS reuse remains PUBLIC_ACCESS_REUSE_UNCLEAR → exports/API emit
-  SEC-sourced rows only for now (DATA-NOTICE).
+- N-PX `managementRecommendation` = alignment flag, not recommendation
+  direction. MAPFRE carries the direction — comparable metric between them
+  is `against_management`, never a reconstructed N-PX direction.
+- MAPFRE `Non-Voting` = agenda entry, never a canonical vote; blank vote on
+  a votable item = DO_NOT_VOTE (observed abstention-from-vote).
+- Absence of data = NOT_OBSERVED, never inferred "did not vote".
+- Amundi/Sabadell, Santander, Bankinter votes live behind ISS VDS and stay
+  blocked; Amundi attribution is group-level only.
 
-## Data counts
+## Ops / files
 
-| Source | Votes | Meetings | ES issuers | Dissent |
-|---|---|---|---|---|
-| SEC N-PX (7 filings) | 2,160 | 66 | 63 | 3 |
-| CaixaBank AM (VDS live) | 18,071 | 75 | 72 | 2,042 |
-| BBVA AM (VDS live) | 9,348 | 45 | 44 | 278 |
-| **silver total** | **29,579** | **85** | **78** | |
-
-Reporters/issuer observed: 16 issuers×1, 18×2, 14×3, 26×4, 3×5.
-
-## Next decision
-
-Remaining: full-season N-PX bulk ingest (scheduled/live job), real deploy
-of votes.h1756.es (needs host + mounted gold), scheduled refresh automation,
-more Spanish SGIIC VDS customers discovery. API surfaces: status, seasons,
-issuers, issuer, meetings, meeting votes+pivot, reporters(+detail), compare,
-categories, sources. compare CaixaBank vs BBVA live: 707 common proposals,
-96.9% observed agreement.
-
-- `docs/findings/ES-SOURCE-CENSUS.md` — G8 census of Spanish manager vote disclosures (A/B/C classification; MAPFRE itemized PDF + Amundi portal identified as group-A candidates; ISS VDS is the concentrated bottleneck).
+- Rebuild: `votes build` (~10 min; 19 GB N-PX bronze — acceptable, no need
+  to optimize). `votes reconcile proposals` runs in seconds over gold.
+- Docs: ARCHITECTURE, METHODOLOGY, DATA-MODEL, PROVENANCE, DEPLOY,
+  PROPOSAL-IDENTITY; findings under docs/findings/; permission drafts under
+  docs/legal/ (unsent).
+- Scratch: `F:\Temp\g8-census\` (spike scripts, MAPFRE PDFs — purgable).
+- Identity gaps: universe is a *current-listing* photo — temporal overrides
+  live in `src/votes_es/reference/historical_universe.csv` (evidence-
+  stamped, not seed-blind).
