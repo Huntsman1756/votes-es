@@ -1,6 +1,6 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-08 · Phase: **G9 proposal reconciliation — core done**
+Updated: 2026-10-07 · Phase: **G9-R official-agenda anchoring — core done**
 
 ## Current state
 
@@ -19,6 +19,8 @@ G8 source census            PASS — docs/findings/ES-SOURCE-CENSUS.md
 G8-B technical spikes       PASS — docs/findings/G8B-SPIKE.md
 G8-C MAPFRE adapter         PASS — mapfre_am ingested locally, gated OFF
 G9 reconciliation           DONE — matcher + golden corpus + review queue
+G9-R agenda anchoring       DONE — 26/26 official agendas sourced; canonical
+                              identity = issuer agenda, not reporter wording
 
 N-PX core                   FREEZE — maintenance only
 production                  MAINTENANCE — VOTES_PUBLISH_VOTE_SOURCES=sec_npx
@@ -36,7 +38,9 @@ NEXT                        v0.2.0 data layer when reuse unblocks MAPFRE
 | Meetings | 261 canonical |
 | Issuers | 143 in-universe (4 via HISTORICAL_OVERRIDE) |
 | MAPFRE×N-PX shared meetings | 26 |
-| MAPFRE instances matched | 68 auto (37 exact + 31 rule) / 65 ambig / 145 unmatched |
+| Official agenda corpus | 26 meetings / 435 items (BORME+CNMV+issuer) |
+| MAPFRE→official | 278/278 auto-anchored, 0 ambiguous, 0 unmatched |
+| N-PX→official | 352 wordings → 258 auto / 82 ambiguous / 12 unmatched |
 
 ## Source rights model (four fields on `sources`)
 
@@ -58,9 +62,14 @@ restricted-source leakage.
 - `reports/proposal-match-review.csv` — review queue, lowest confidence first
 - `tests/golden/proposal_matching/reviewed_matches.csv` — 68 manually
   REVIEWED=SAME + 210 UNRESOLVED; auto-match precision on corpus = 100%
-- `scripts/g9_compare.py` → `docs/findings/G9-COMPARISON.md` — local-only
-  MAPFRE vs reporter comparison (BlackRock 81 pairs, ~99% agreement;
-  Vanguard votes exist on shared meetings but land on unmatched proposals)
+- `src/votes_es/reconcile/anchor.py` + `proposal_semantics.csv` +
+  `report_anchor.py` — official-agenda anchoring layer (G9-R)
+- `scripts/build_official_agendas.py` + `scripts/fetch_borme.py` — agenda
+  corpus builder (26 meetings, `data/reference/official_agendas/`)
+- `reports/official_anchor_{mapfre,npx}.parquet` + `official-anchor-review.csv`
+- `scripts/g9_compare_anchors.py` → `docs/findings/G9R-COMPARISON.md` —
+  anchored comparison: BlackRock 298 pairs / Vanguard 120 / State Street 96;
+  Inditex-2025 item 8 divergence preserved (MAPFRE FOR, BlackRock AGAINST)
 - `docs/PROPOSAL-IDENTITY.md` — the frozen match model
 - `docs/prior-art/PROPOSAL-MATCHING.md` — baseline critique
 

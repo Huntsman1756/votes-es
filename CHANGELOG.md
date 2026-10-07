@@ -1,5 +1,42 @@
 # Changelog
 
+## [Unreleased] — G9-R: official-agenda anchoring
+
+- Canonical proposal identity is re-anchored to **issuer/official meeting
+  evidence** (BORME convocatoria, issuer AGM notices, CNMV OIR) instead of
+  pairwise reporter wording. Fixes the N-PX over-fragmentation defect:
+  Inditex 2025 had 35 wording clusters for an official agenda of 10 items.
+- `data/reference/official_agendas/` — curated, evidence-stamped corpus
+  covering all 26 MAPFRE×N-PX shared meetings: 435 agenda items
+  (418 votable, 17 information-only, 206 sub-items), each with
+  source_url/source_ref/retrieved_at. Builders: `scripts/fetch_borme.py`
+  (BORME/CNMV/PDF agenda extraction, cp1252-safe, ordinal+sub-item parser)
+  and `scripts/build_official_agendas.py` (transcribed items per meeting).
+- `src/votes_es/reconcile/anchor.py` — source wording → official agenda
+  item mapping. Methods: EXACT_OFFICIAL_ITEM / EXACT_OFFICIAL_TEXT /
+  RULE_HIGH_CONFIDENCE / AMBIGUOUS / UNMATCHED. Bundled register rows
+  anchor to their numbered primary item or stay AMBIGUOUS; Spanish
+  roman-numeral agenda items normalized; person-name signal inside a
+  meeting sharpens director elections; `ACCOUNTS_SOLO`/`ACCOUNTS_GROUP`
+  are never mutually compatible; concept compat (allocation↔dividend,
+  generic accounts) only counts when corroborated by the item number or
+  a unique official candidate.
+- `src/votes_es/reference/proposal_semantics.csv` — controlled concept
+  lexicon (EN patterns, ordered specific→generic); no synonym sprawl in
+  code.
+- `report_anchor.py` + `votes reconcile anchors` →
+  `reports/official_anchor_{mapfre,npx}.parquet` + review queue.
+  Results: MAPFRE 278/278 auto-anchored; N-PX 352 wordings → 258 auto /
+  82 ambiguous / 12 unmatched (custodian noise and genuinely bundled
+  wordings preserved as unresolved — never forced).
+- `scripts/g9_compare_anchors.py` — cross-source comparison on official
+  items: MAPFRE×BlackRock 298 pairs (297 same, 1 divergence), Vanguard
+  120 (was 0 under pairwise matching), State Street 96. Golden
+  regression: Inditex 2025 item 8 remuneration — MAPFRE FOR vs
+  BlackRock AGAINST — preserved.
+- 15 new golden tests (`tests/golden/test_anchor.py`), 72/72 pass.
+  Production v0.1.0 untouched; anchoring is sidecar-only.
+
 ## [Unreleased] — G8-C: MAPFRE AM adapter + source rights gates
 
 - New `mapfre_am` source adapter (`sources/mapfre_am/`): deterministic

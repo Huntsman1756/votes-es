@@ -1,0 +1,432 @@
+# G9-R — cross-source comparison on official agenda items
+
+Both reporters anchored to official agenda items (sidecar).
+
+Local-only; MAPFRE remains PERMISSION_REQUIRED.
+
+## MAPFRE vs N-PX reporter groups — same official item
+
+| group | n | same | diff | group vs-mgmt | mapfre vs-mgmt |
+|---|---|---|---|---|---|
+| BlackRock | 298 | 297 | 1 | 1 | 0 |
+| Vanguard | 120 | 120 | 0 | 0 | 0 |
+| AIM International Mutual Funds (Invesco International Mutual Funds) | 120 | 120 | 0 | 0 | 0 |
+| State Street | 96 | 96 | 0 | 0 | 0 |
+| DFA INVESTMENT DIMENSIONS GROUP INC | 72 | 72 | 0 | 0 | 0 |
+| EQ Advisors Trust | 72 | 72 | 0 | 0 | 0 |
+| AQR Funds | 72 | 72 | 0 | 0 | 0 |
+| JNL Series Trust | 64 | 64 | 0 | 0 | 0 |
+| AIM Variable Insurance Funds (Invesco Variable Insurance Funds) | 59 | 57 | 2 | 1 | 1 |
+| Advanced Series Trust | 56 | 56 | 0 | 0 | 0 |
+| FlexShares Trust | 48 | 48 | 0 | 0 | 0 |
+| Fidelity Salem Street Trust | 48 | 48 | 0 | 0 | 0 |
+| DBX ETF TRUST | 48 | 48 | 0 | 0 | 0 |
+| Russell Investment Co | 48 | 48 | 0 | 0 | 0 |
+| AMERICAN FUNDS INSURANCE SERIES | 40 | 40 | 0 | 0 | 0 |
+
+## Inditex 2025 item 8 (remuneration report) regression
+
+- 1290 FUNDS: MAPFRE=FOR vs 1290 FUNDS=FOR
+- 1290 FUNDS: MAPFRE=FOR vs 1290 FUNDS=FOR
+- AB Active ETFs, Inc.: MAPFRE=FOR vs AB Active ETFs, Inc.=FOR
+- AB TRUST: MAPFRE=FOR vs AB TRUST=FOR
+- AB VARIABLE PRODUCTS SERIES FUND, INC.: MAPFRE=FOR vs AB VARIABLE PRODUCTS SERIES FUND, INC.=FOR
+- AB VARIABLE PRODUCTS SERIES FUND, INC.: MAPFRE=FOR vs AB VARIABLE PRODUCTS SERIES FUND, INC.=FOR
+- AB VARIABLE PRODUCTS SERIES FUND, INC.: MAPFRE=FOR vs AB VARIABLE PRODUCTS SERIES FUND, INC.=FOR
+- ALPS ETF Trust: MAPFRE=FOR vs ALPS ETF Trust=FOR
+- AMERICAN FUNDS INSURANCE SERIES: MAPFRE=FOR vs AMERICAN FUNDS INSURANCE SERIES=FOR
+- AMERICAN FUNDS INSURANCE SERIES: MAPFRE=FOR vs AMERICAN FUNDS INSURANCE SERIES=FOR
+- AMERICAN FUNDS INSURANCE SERIES: MAPFRE=FOR vs AMERICAN FUNDS INSURANCE SERIES=FOR
+- AMERICAN FUNDS INSURANCE SERIES: MAPFRE=FOR vs AMERICAN FUNDS INSURANCE SERIES=FOR
+- AMERICAN FUNDS INSURANCE SERIES: MAPFRE=FOR vs AMERICAN FUNDS INSURANCE SERIES=FOR
+- APG Asset Management US Inc.: MAPFRE=FOR vs APG Asset Management US Inc.=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AQR Funds: MAPFRE=FOR vs AQR Funds=FOR
+- AUGUSTAR VARIABLE INSURANCE PRODUCTS FUND INC: MAPFRE=FOR vs AUGUSTAR VARIABLE INSURANCE PRODUCTS FUND INC=ABSTAIN
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Advanced Series Trust: MAPFRE=FOR vs Advanced Series Trust=FOR
+- Adviser Managed Trust: MAPFRE=FOR vs Adviser Managed Trust=FOR
+- Advisors' Inner Circle Fund III: MAPFRE=FOR vs Advisors' Inner Circle Fund III=FOR
+- Allianz Variable Insurance Products Trust: MAPFRE=FOR vs Allianz Variable Insurance Products Trust=FOR
+- Allianz Variable Insurance Products Trust: MAPFRE=FOR vs Allianz Variable Insurance Products Trust=FOR
+- Allianz Variable Insurance Products Trust: MAPFRE=FOR vs Allianz Variable Insurance Products Trust=FOR
+- Allspring Master Trust: MAPFRE=FOR vs Allspring Master Trust=FOR
+- American Beacon Funds: MAPFRE=FOR vs American Beacon Funds=FOR
+- American Century ETF Trust: MAPFRE=FOR vs American Century ETF Trust=FOR
+- American Century ETF Trust: MAPFRE=FOR vs American Century ETF Trust=FOR
+- American Century ETF Trust: MAPFRE=FOR vs American Century ETF Trust=FOR
+- American Funds Global Insight Fund: MAPFRE=FOR vs American Funds Global Insight Fund=FOR
+- American Funds International Vantage Fund: MAPFRE=FOR vs American Funds International Vantage Fund=FOR
+- Amplify ETF Trust: MAPFRE=FOR vs Amplify ETF Trust=FOR
+- Aspiriant Trust: MAPFRE=FOR vs Aspiriant Trust=FOR
+- BARON SELECT FUNDS: MAPFRE=FOR vs BARON SELECT FUNDS=FOR
+- BNY MELLON INDEX FUNDS, INC.: MAPFRE=FOR vs BNY MELLON INDEX FUNDS, INC.=FOR
+- BNY Mellon Advantage Funds, Inc.: MAPFRE=FOR vs BNY Mellon Advantage Funds, Inc.=FOR
+- BNY Mellon ETF Trust: MAPFRE=FOR vs BNY Mellon ETF Trust=FOR
+- BNY Mellon Investment Funds III: MAPFRE=FOR vs BNY Mellon Investment Funds III=FOR
+- BNY Mellon Strategic Funds, Inc.: MAPFRE=FOR vs BNY Mellon Strategic Funds, Inc.=FOR
+- BNY Mellon Strategic Funds, Inc.: MAPFRE=FOR vs BNY Mellon Strategic Funds, Inc.=FOR
+- BOSTON TRUST WALDEN FUNDS: MAPFRE=FOR vs BOSTON TRUST WALDEN FUNDS=FOR
+- Bernstein Fund Inc: MAPFRE=FOR vs Bernstein Fund Inc=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=AGAINST
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- BlackRock: MAPFRE=FOR vs BlackRock=FOR
+- Brighthouse Funds Trust I: MAPFRE=FOR vs Brighthouse Funds Trust I=FOR
+- Brighthouse Funds Trust I: MAPFRE=FOR vs Brighthouse Funds Trust I=FOR
+- Brighthouse Funds Trust I: MAPFRE=FOR vs Brighthouse Funds Trust I=FOR
+- Brighthouse Funds Trust I: MAPFRE=FOR vs Brighthouse Funds Trust I=FOR
+- Brighthouse Funds Trust II: MAPFRE=FOR vs Brighthouse Funds Trust II=FOR
+- Brighthouse Funds Trust II: MAPFRE=FOR vs Brighthouse Funds Trust II=FOR
+- Brinker Capital Destinations Trust: MAPFRE=FOR vs Brinker Capital Destinations Trust=FOR
+- Brinker Capital Destinations Trust: MAPFRE=FOR vs Brinker Capital Destinations Trust=FOR
+- CALAMOS ETF TRUST: MAPFRE=FOR vs CALAMOS ETF TRUST=FOR
+- CAPITAL INCOME BUILDER: MAPFRE=FOR vs CAPITAL INCOME BUILDER=FOR
+- CAPITAL WORLD GROWTH & INCOME FUND: MAPFRE=FOR vs CAPITAL WORLD GROWTH & INCOME FUND=FOR
+- CLEARWATER INVESTMENT TRUST: MAPFRE=FOR vs CLEARWATER INVESTMENT TRUST=FOR
+- COLLEGE RETIREMENT EQUITIES FUND: MAPFRE=FOR vs COLLEGE RETIREMENT EQUITIES FUND=FOR
+- COLLEGE RETIREMENT EQUITIES FUND: MAPFRE=FOR vs COLLEGE RETIREMENT EQUITIES FUND=FOR
+- Calvert Responsible Index Series, Inc.: MAPFRE=FOR vs Calvert Responsible Index Series, Inc.=FOR
+- Calvert Variable Trust, Inc.: MAPFRE=FOR vs Calvert Variable Trust, Inc.=FOR
+- Capital Group Dividend Growers ETF: MAPFRE=FOR vs Capital Group Dividend Growers ETF=FOR
+- Capital Group Global Equity ETF: MAPFRE=FOR vs Capital Group Global Equity ETF=FOR
+- Capital Group International Core Equity ETF: MAPFRE=FOR vs Capital Group International Core Equity ETF=FOR
+- Capital Group International Equity ETF: MAPFRE=FOR vs Capital Group International Equity ETF=FOR
+- Capital Group New Geography Equity ETF: MAPFRE=FOR vs Capital Group New Geography Equity ETF=FOR
+- Catholic Responsible Investments Funds: MAPFRE=FOR vs Catholic Responsible Investments Funds=FOR
+- Columbia Acorn Trust: MAPFRE=FOR vs Columbia Acorn Trust=FOR
+- Columbia Funds Series Trust I: MAPFRE=FOR vs Columbia Funds Series Trust I=FOR
+- Columbia Funds Series Trust I: MAPFRE=FOR vs Columbia Funds Series Trust I=FOR
+- Columbia Funds Variable Series Trust II: MAPFRE=FOR vs Columbia Funds Variable Series Trust II=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DBX ETF TRUST: MAPFRE=FOR vs DBX ETF TRUST=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- DFA INVESTMENT DIMENSIONS GROUP INC: MAPFRE=FOR vs DFA INVESTMENT DIMENSIONS GROUP INC=FOR
+- Dunham Funds: MAPFRE=FOR vs Dunham Funds=FOR
+- E TRADE Trust: MAPFRE=FOR vs E TRADE Trust=FOR
+- EATON VANCE GROWTH TRUST: MAPFRE=FOR vs EATON VANCE GROWTH TRUST=FOR
+- EATON VANCE GROWTH TRUST: MAPFRE=FOR vs EATON VANCE GROWTH TRUST=FOR
+- EATON VANCE MUTUAL FUNDS TRUST: MAPFRE=FOR vs EATON VANCE MUTUAL FUNDS TRUST=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- EQ Advisors Trust: MAPFRE=FOR vs EQ Advisors Trust=FOR
+- ETFis Series Trust I: MAPFRE=FOR vs ETFis Series Trust I=FOR
+- EUPAC FUND: MAPFRE=FOR vs EUPAC FUND=FOR
+- Elfun International Equity Fund: MAPFRE=FOR vs Elfun International Equity Fund=FOR
+- Empower Funds, Inc.: MAPFRE=FOR vs Empower Funds, Inc.=FOR
+- Empower Funds, Inc.: MAPFRE=FOR vs Empower Funds, Inc.=FOR
+- Empower Funds, Inc.: MAPFRE=FOR vs Empower Funds, Inc.=FOR
+- Exchange Listed Funds Trust: MAPFRE=FOR vs Exchange Listed Funds Trust=FOR
+- Federated Hermes Adviser Series: MAPFRE=FOR vs Federated Hermes Adviser Series=FOR
+- Fidelity Advisor Series VIII: MAPFRE=FOR vs Fidelity Advisor Series VIII=FOR
+- Fidelity Central Investment Portfolios LLC: MAPFRE=FOR vs Fidelity Central Investment Portfolios LLC=FOR
+- Fidelity Concord Street Trust: MAPFRE=FOR vs Fidelity Concord Street Trust=FOR
+- Fidelity Concord Street Trust: MAPFRE=FOR vs Fidelity Concord Street Trust=FOR
+- Fidelity Concord Street Trust: MAPFRE=FOR vs Fidelity Concord Street Trust=FOR
+- Fidelity Concord Street Trust: MAPFRE=FOR vs Fidelity Concord Street Trust=FOR
+- Fidelity Covington Trust: MAPFRE=FOR vs Fidelity Covington Trust=FOR
+- Fidelity Investment Trust: MAPFRE=FOR vs Fidelity Investment Trust=FOR
+- Fidelity Investment Trust: MAPFRE=FOR vs Fidelity Investment Trust=FOR
+- Fidelity Investment Trust: MAPFRE=FOR vs Fidelity Investment Trust=FOR
+- Fidelity Investment Trust: MAPFRE=FOR vs Fidelity Investment Trust=FOR
+- Fidelity Rutland Square Trust II: MAPFRE=FOR vs Fidelity Rutland Square Trust II=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- Fidelity Salem Street Trust: MAPFRE=FOR vs Fidelity Salem Street Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- FlexShares Trust: MAPFRE=FOR vs FlexShares Trust=FOR
+- Forethought Variable Insurance Trust: MAPFRE=FOR vs Forethought Variable Insurance Trust=FOR
+- Franklin Fund Allocator Series: MAPFRE=FOR vs Franklin Fund Allocator Series=FOR
+- Franklin Fund Allocator Series: MAPFRE=FOR vs Franklin Fund Allocator Series=FOR
+- Franklin Templeton ETF Trust: MAPFRE=FOR vs Franklin Templeton ETF Trust=FOR
+- Franklin Templeton ETF Trust: MAPFRE=FOR vs Franklin Templeton ETF Trust=FOR
+- Franklin Templeton ETF Trust: MAPFRE=FOR vs Franklin Templeton ETF Trust=FOR
+- Franklin Templeton Variable Insurance Products Trust: MAPFRE=FOR vs Franklin Templeton Variable Insurance Products Trust=FOR
+- GAM Holding AG: MAPFRE=FOR vs GAM Holding AG=FOR
+- GMO ETF Trust: MAPFRE=FOR vs GMO ETF Trust=FOR
+- GMO TRUST: MAPFRE=FOR vs GMO TRUST=FOR
+- GPS Funds I: MAPFRE=FOR vs GPS Funds I=FOR
+- GROUPAMA ASSET MANAGMENT: MAPFRE=FOR vs GROUPAMA ASSET MANAGMENT=FOR
+- Global X Funds: MAPFRE=FOR vs Global X Funds=FOR
+- Goldman Sachs ETF Trust: MAPFRE=FOR vs Goldman Sachs ETF Trust=FOR
+- Goldman Sachs ETF Trust II: MAPFRE=FOR vs Goldman Sachs ETF Trust II=FOR
+- Goldman Sachs Trust: MAPFRE=FOR vs Goldman Sachs Trust=FOR
+- Goldman Sachs Trust: MAPFRE=FOR vs Goldman Sachs Trust=FOR
+- Goldman Sachs Trust: MAPFRE=FOR vs Goldman Sachs Trust=FOR
+- Goldman Sachs Trust II: MAPFRE=FOR vs Goldman Sachs Trust II=FOR
+- Goldman Sachs Variable Insurance Trust: MAPFRE=FOR vs Goldman Sachs Variable Insurance Trust=FOR
+- Guardian Variable Products Trust: MAPFRE=FOR vs Guardian Variable Products Trust=FOR
+- Guardian Variable Products Trust: MAPFRE=FOR vs Guardian Variable Products Trust=FOR
+- Guardian Variable Products Trust: MAPFRE=FOR vs Guardian Variable Products Trust=FOR
+- GuideStone Funds: MAPFRE=FOR vs GuideStone Funds=FOR
+- HARBOR FUNDS: MAPFRE=FOR vs HARBOR FUNDS=FOR
+- HARTFORD MUTUAL FUNDS II, INC: MAPFRE=FOR vs HARTFORD MUTUAL FUNDS II, INC=FOR
+- HARTFORD MUTUAL FUNDS, INC: MAPFRE=FOR vs HARTFORD MUTUAL FUNDS, INC=FOR
+- HARTFORD MUTUAL FUNDS, INC: MAPFRE=FOR vs HARTFORD MUTUAL FUNDS, INC=FOR
+- HARTFORD MUTUAL FUNDS, INC: MAPFRE=FOR vs HARTFORD MUTUAL FUNDS, INC=FOR
+- HARTFORD MUTUAL FUNDS, INC: MAPFRE=FOR vs HARTFORD MUTUAL FUNDS, INC=FOR
+- HARTFORD SERIES FUND INC: MAPFRE=FOR vs HARTFORD SERIES FUND INC=FOR
+- HC CAPITAL TRUST: MAPFRE=FOR vs HC CAPITAL TRUST=FOR
+- HC CAPITAL TRUST: MAPFRE=FOR vs HC CAPITAL TRUST=FOR
+- HC CAPITAL TRUST: MAPFRE=FOR vs HC CAPITAL TRUST=FOR
+- INCOME FUND OF AMERICA: MAPFRE=FOR vs INCOME FUND OF AMERICA=FOR
+- INTERNATIONAL GROWTH & INCOME FUND: MAPFRE=FOR vs INTERNATIONAL GROWTH & INCOME FUND=FOR
+- Innovator ETFs Trust: MAPFRE=FOR vs Innovator ETFs Trust=FOR
+- Invesco Actively Managed Exchange-Traded Fund Trust: MAPFRE=FOR vs Invesco Actively Managed Exchange-Traded Fund Trust=FOR
+- Invesco Exchange-Traded Fund Trust II: MAPFRE=FOR vs Invesco Exchange-Traded Fund Trust II=FOR
+- Invesco Exchange-Traded Fund Trust II: MAPFRE=FOR vs Invesco Exchange-Traded Fund Trust II=FOR
+- Invesco Exchange-Traded Fund Trust II: MAPFRE=FOR vs Invesco Exchange-Traded Fund Trust II=FOR
+- Invesco Exchange-Traded Fund Trust II: MAPFRE=FOR vs Invesco Exchange-Traded Fund Trust II=FOR
+- Invesco Exchange-Traded Self-Indexed Fund Trust: MAPFRE=FOR vs Invesco Exchange-Traded Self-Indexed Fund Trust=FOR
+- J.P. Morgan Exchange-Traded Fund Trust: MAPFRE=FOR vs J.P. Morgan Exchange-Traded Fund Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JNL Series Trust: MAPFRE=FOR vs JNL Series Trust=FOR
+- JOHN HANCOCK EXCHANGE-TRADED FUND TRUST: MAPFRE=FOR vs JOHN HANCOCK EXCHANGE-TRADED FUND TRUST=FOR
+- JPMorgan Asset Management (UK) Ltd: MAPFRE=FOR vs JPMorgan Asset Management (UK) Ltd=FOR
+- JPMorgan Chase Bank, N.A.: MAPFRE=FOR vs JPMorgan Chase Bank, N.A.=FOR
+- JPMorgan Trust I: MAPFRE=FOR vs JPMorgan Trust I=FOR
+- JPMorgan Trust I: MAPFRE=FOR vs JPMorgan Trust I=FOR
+- JPMorgan Trust IV: MAPFRE=FOR vs JPMorgan Trust IV=FOR
+- John Hancock Diversified Income Fund: MAPFRE=FOR vs John Hancock Diversified Income Fund=FOR
+- John Hancock Diversified Income Fund: MAPFRE=FOR vs John Hancock Diversified Income Fund=FOR
+- John Hancock Funds III: MAPFRE=FOR vs John Hancock Funds III=FOR
+- John Hancock Variable Insurance Trust: MAPFRE=FOR vs John Hancock Variable Insurance Trust=FOR
+- John Hancock Variable Insurance Trust: MAPFRE=FOR vs John Hancock Variable Insurance Trust=FOR
+- LAZARD FUNDS INC: MAPFRE=FOR vs LAZARD FUNDS INC=FOR
+- LAZARD FUNDS INC: MAPFRE=FOR vs LAZARD FUNDS INC=FOR
+- LAZARD FUNDS INC: MAPFRE=FOR vs LAZARD FUNDS INC=FOR
+- LAZARD GLOBAL TOTAL RETURN & INCOME FUND INC: MAPFRE=FOR vs LAZARD GLOBAL TOTAL RETURN & INCOME FUND INC=FOR
+- LAZARD RETIREMENT SERIES INC: MAPFRE=FOR vs LAZARD RETIREMENT SERIES INC=FOR
+- LONGFELLOW INVESTMENT MANAGEMENT CO LLC: MAPFRE=FOR vs LONGFELLOW INVESTMENT MANAGEMENT CO LLC=FOR
+- LORD ABBETT SECURITIES TRUST: MAPFRE=FOR vs LORD ABBETT SECURITIES TRUST=FOR
+- LORD ABBETT TRUST I: MAPFRE=FOR vs LORD ABBETT TRUST I=FOR
+- Legg Mason Global Asset Management Trust: MAPFRE=FOR vs Legg Mason Global Asset Management Trust=FOR
+- Legg Mason Global Asset Management Trust: MAPFRE=FOR vs Legg Mason Global Asset Management Trust=FOR
+- Legg Mason Partners Investment Trust: MAPFRE=FOR vs Legg Mason Partners Investment Trust=FOR
+- Lincoln Variable Insurance Products Trust: MAPFRE=FOR vs Lincoln Variable Insurance Products Trust=FOR
+- Lincoln Variable Insurance Products Trust: MAPFRE=FOR vs Lincoln Variable Insurance Products Trust=FOR
+- Lincoln Variable Insurance Products Trust: MAPFRE=FOR vs Lincoln Variable Insurance Products Trust=FOR
+- Lincoln Variable Insurance Products Trust: MAPFRE=FOR vs Lincoln Variable Insurance Products Trust=FOR
+- Listed Funds Trust: MAPFRE=FOR vs Listed Funds Trust=FOR
+- MASSMUTUAL PREMIER FUNDS: MAPFRE=FOR vs MASSMUTUAL PREMIER FUNDS=FOR
+- Mercer Funds: MAPFRE=FOR vs Mercer Funds=FOR
+- MoA Funds Corp: MAPFRE=FOR vs MoA Funds Corp=FOR
+- Morgan Stanley ETF Trust: MAPFRE=FOR vs Morgan Stanley ETF Trust=FOR
+- Morgan Stanley Institutional Fund Trust: MAPFRE=FOR vs Morgan Stanley Institutional Fund Trust=FOR
+- Morgan Stanley Pathway Funds: MAPFRE=FOR vs Morgan Stanley Pathway Funds=FOR
+- Morgan Stanley Variable Insurance Fund Inc.: MAPFRE=FOR vs Morgan Stanley Variable Insurance Fund Inc.=FOR
+- NEUBERGER BERMAN EQUITY FUNDS: MAPFRE=FOR vs NEUBERGER BERMAN EQUITY FUNDS=FOR
+- NEW PERSPECTIVE FUND: MAPFRE=FOR vs NEW PERSPECTIVE FUND=FOR
+- NEW WORLD FUND INC: MAPFRE=FOR vs NEW WORLD FUND INC=FOR
+- Nationwide Mutual Funds: MAPFRE=FOR vs Nationwide Mutual Funds=FOR
+- Nationwide Mutual Funds: MAPFRE=FOR vs Nationwide Mutual Funds=FOR
+- Nationwide Variable Insurance Trust: MAPFRE=FOR vs Nationwide Variable Insurance Trust=FOR
+- New York Life Investments ETF Trust: MAPFRE=FOR vs New York Life Investments ETF Trust=FOR
+- New York Life Investments Funds Trust: MAPFRE=FOR vs New York Life Investments Funds Trust=FOR
+- New York Life Investments Funds Trust: MAPFRE=FOR vs New York Life Investments Funds Trust=FOR
+- Northern Funds: MAPFRE=FOR vs Northern Funds=FOR
+- Northern Funds: MAPFRE=FOR vs Northern Funds=FOR
+- OLD WESTBURY FUNDS INC: MAPFRE=FOR vs OLD WESTBURY FUNDS INC=FOR
+- OLD WESTBURY FUNDS INC: MAPFRE=FOR vs OLD WESTBURY FUNDS INC=FOR
+- PACE SELECT ADVISORS TRUST: MAPFRE=FOR vs PACE SELECT ADVISORS TRUST=FOR
+- PACE SELECT ADVISORS TRUST: MAPFRE=FOR vs PACE SELECT ADVISORS TRUST=FOR
+- PACIFIC SELECT FUND: MAPFRE=FOR vs PACIFIC SELECT FUND=FOR
+- PACIFIC SELECT FUND: MAPFRE=FOR vs PACIFIC SELECT FUND=FOR
+- PENN SERIES FUNDS INC: MAPFRE=FOR vs PENN SERIES FUNDS INC=FOR
+- PGIM ETF Trust: MAPFRE=FOR vs PGIM ETF Trust=FOR
+- PGIM ETF Trust: MAPFRE=FOR vs PGIM ETF Trust=FOR
+- PIMCO Equity Series: MAPFRE=FOR vs PIMCO Equity Series=FOR
+- PIMCO Equity Series: MAPFRE=FOR vs PIMCO Equity Series=FOR
+- PRAXIS FUNDS: MAPFRE=FOR vs PRAXIS FUNDS=FOR
+- Pacer Funds Trust: MAPFRE=FOR vs Pacer Funds Trust=FOR
+- Pacer Funds Trust: MAPFRE=FOR vs Pacer Funds Trust=FOR
+- Perpetual Americas Funds Trust: MAPFRE=FOR vs Perpetual Americas Funds Trust=ABSTAIN
+- Perpetual Americas Funds Trust: MAPFRE=FOR vs Perpetual Americas Funds Trust=AGAINST
+- Principal Funds, Inc.: MAPFRE=FOR vs Principal Funds, Inc.=FOR
+- Principal Funds, Inc.: MAPFRE=FOR vs Principal Funds, Inc.=FOR
+- Principal Variable Contracts Funds Inc: MAPFRE=FOR vs Principal Variable Contracts Funds Inc=FOR
+- Professionally Managed Portfolios: MAPFRE=FOR vs Professionally Managed Portfolios=FOR
+- Prudential Investment Portfolios 2: MAPFRE=FOR vs Prudential Investment Portfolios 2=FOR
+- Prudential Investment Portfolios 3: MAPFRE=FOR vs Prudential Investment Portfolios 3=FOR
+- Prudential Investment Portfolios 5: MAPFRE=FOR vs Prudential Investment Portfolios 5=FOR
+- Prudential Investment Portfolios, Inc.: MAPFRE=FOR vs Prudential Investment Portfolios, Inc.=FOR
+- Prudential Jennison Blend Fund, Inc.: MAPFRE=FOR vs Prudential Jennison Blend Fund, Inc.=FOR
+- Prudential Series Fund: MAPFRE=FOR vs Prudential Series Fund=FOR
+- Prudential World Fund, Inc.: MAPFRE=FOR vs Prudential World Fund, Inc.=FOR
+- Prudential World Fund, Inc.: MAPFRE=FOR vs Prudential World Fund, Inc.=FOR
+- Putnam Asset Allocation Funds: MAPFRE=FOR vs Putnam Asset Allocation Funds=FOR
+- Putnam Asset Allocation Funds: MAPFRE=FOR vs Putnam Asset Allocation Funds=FOR
+- Putnam Asset Allocation Funds: MAPFRE=FOR vs Putnam Asset Allocation Funds=FOR
+- Putnam Asset Allocation Funds: MAPFRE=FOR vs Putnam Asset Allocation Funds=FOR
+- Putnam Funds Trust: MAPFRE=FOR vs Putnam Funds Trust=FOR
+- Putnam Funds Trust: MAPFRE=FOR vs Putnam Funds Trust=FOR
+- Putnam Variable Trust: MAPFRE=FOR vs Putnam Variable Trust=FOR
+- RBB FUND, INC.: MAPFRE=FOR vs RBB FUND, INC.=FOR
+- RWC ASSET ADVISORS (US) LLC: MAPFRE=FOR vs RWC ASSET ADVISORS (US) LLC=FOR
+- RWC Asset Management LLP: MAPFRE=FOR vs RWC Asset Management LLP=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Co: MAPFRE=FOR vs Russell Investment Co=FOR
+- Russell Investment Funds: MAPFRE=FOR vs Russell Investment Funds=FOR
+- Russell Investments Exchange Traded Funds: MAPFRE=FOR vs Russell Investments Exchange Traded Funds=FOR
+- Russell Investments Exchange Traded Funds: MAPFRE=FOR vs Russell Investments Exchange Traded Funds=FOR
+- SEASONS SERIES TRUST: MAPFRE=FOR vs SEASONS SERIES TRUST=FOR
+- SEASONS SERIES TRUST: MAPFRE=FOR vs SEASONS SERIES TRUST=FOR
+- SEI Catholic Values Trust: MAPFRE=FOR vs SEI Catholic Values Trust=FOR
+- SEI Exchange Traded Funds: MAPFRE=FOR vs SEI Exchange Traded Funds=FOR
+- SEI Institutional International Trust: MAPFRE=FOR vs SEI Institutional International Trust=FOR
+- SEI Institutional Investments Trust: MAPFRE=FOR vs SEI Institutional Investments Trust=FOR
+- SEI Institutional Investments Trust: MAPFRE=FOR vs SEI Institutional Investments Trust=FOR
+- SEI Institutional Managed Trust: MAPFRE=FOR vs SEI Institutional Managed Trust=FOR
+- SUNAMERICA SERIES TRUST: MAPFRE=FOR vs SUNAMERICA SERIES TRUST=FOR
+- SUNAMERICA SERIES TRUST: MAPFRE=FOR vs SUNAMERICA SERIES TRUST=FOR
+- SUNAMERICA SERIES TRUST: MAPFRE=FOR vs SUNAMERICA SERIES TRUST=FOR
+- SUNAMERICA SERIES TRUST: MAPFRE=FOR vs SUNAMERICA SERIES TRUST=FOR
+- Schwab Capital Trust: MAPFRE=FOR vs Schwab Capital Trust=FOR
+- Schwab Capital Trust: MAPFRE=FOR vs Schwab Capital Trust=FOR
+- Schwab Capital Trust: MAPFRE=FOR vs Schwab Capital Trust=FOR
+- Schwab Strategic Trust: MAPFRE=FOR vs Schwab Strategic Trust=FOR
+- Schwab Strategic Trust: MAPFRE=FOR vs Schwab Strategic Trust=FOR
+- Segall Bryant & Hamill Trust: MAPFRE=FOR vs Segall Bryant & Hamill Trust=FOR
+- Six Circles Trust: MAPFRE=FOR vs Six Circles Trust=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- State Street: MAPFRE=FOR vs State Street=FOR
+- T. Rowe Price Exchange-Traded Funds, Inc.: MAPFRE=FOR vs T. Rowe Price Exchange-Traded Funds, Inc.=FOR
+- T. Rowe Price Exchange-Traded Funds, Inc.: MAPFRE=FOR vs T. Rowe Price Exchange-Traded Funds, Inc.=FOR
+- T. Rowe Price International Index Fund, Inc.: MAPFRE=FOR vs T. Rowe Price International Index Fund, Inc.=FOR
+- THRIVENT MUTUAL FUNDS: MAPFRE=FOR vs THRIVENT MUTUAL FUNDS=FOR
+- THRIVENT MUTUAL FUNDS: MAPFRE=FOR vs THRIVENT MUTUAL FUNDS=FOR
+- THRIVENT SERIES FUND INC: MAPFRE=FOR vs THRIVENT SERIES FUND INC=FOR
+- THRIVENT SERIES FUND INC: MAPFRE=FOR vs THRIVENT SERIES FUND INC=FOR
+- THRIVENT SERIES FUND INC: MAPFRE=FOR vs THRIVENT SERIES FUND INC=FOR
+- TIAA-CREF FUNDS: MAPFRE=FOR vs TIAA-CREF FUNDS=FOR
+- TIAA-CREF FUNDS: MAPFRE=FOR vs TIAA-CREF FUNDS=FOR
+- Thrivent Core Funds: MAPFRE=FOR vs Thrivent Core Funds=FOR
+- Thrivent ETF Trust: MAPFRE=FOR vs Thrivent ETF Trust=FOR
+- Transamerica Funds: MAPFRE=FOR vs Transamerica Funds=FOR
+- Transamerica Series Trust: MAPFRE=FOR vs Transamerica Series Trust=FOR
+- Transamerica Series Trust: MAPFRE=FOR vs Transamerica Series Trust=FOR
+- Transamerica Series Trust: MAPFRE=FOR vs Transamerica Series Trust=FOR
+- US Global Investors Funds: MAPFRE=FOR vs US Global Investors Funds=FOR
+- Union Investment Management GmbH: MAPFRE=FOR vs Union Investment Management GmbH=FOR
+- VALIC Co I: MAPFRE=FOR vs VALIC Co I=FOR
+- VALIC Co I: MAPFRE=FOR vs VALIC Co I=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Vanguard: MAPFRE=FOR vs Vanguard=FOR
+- Variable Insurance Products Fund II: MAPFRE=FOR vs Variable Insurance Products Fund II=FOR
+- Victory Portfolios II: MAPFRE=FOR vs Victory Portfolios II=FOR
+- Victory Portfolios III: MAPFRE=FOR vs Victory Portfolios III=FOR
+- Victory Portfolios III: MAPFRE=FOR vs Victory Portfolios III=FOR
+- Voya Mutual Funds: MAPFRE=FOR vs Voya Mutual Funds=FOR
+- Voya PARTNERS INC: MAPFRE=FOR vs Voya PARTNERS INC=FOR
+- Voya VARIABLE PORTFOLIOS INC: MAPFRE=FOR vs Voya VARIABLE PORTFOLIOS INC=FOR
+- Voya VARIABLE PORTFOLIOS INC: MAPFRE=FOR vs Voya VARIABLE PORTFOLIOS INC=FOR
+- Walter Scott & Partners Ltd: MAPFRE=FOR vs Walter Scott & Partners Ltd=FOR
+- William Blair Funds: MAPFRE=FOR vs William Blair Funds=FOR
+- Wilmington Funds: MAPFRE=FOR vs Wilmington Funds=FOR
+- Wilmington Funds: MAPFRE=FOR vs Wilmington Funds=FOR
+- WisdomTree Trust: MAPFRE=FOR vs WisdomTree Trust=FOR
+- WisdomTree Trust: MAPFRE=FOR vs WisdomTree Trust=FOR

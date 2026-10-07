@@ -79,3 +79,50 @@ AND margin >= 0.12
   that's intended.
 - Same-meeting dedup of N-PX variants is still greedy order-stable
   clustering in silver; the matcher sits on top and never writes back.
+
+## G9-R — official-agenda anchoring (supersedes pairwise canonicalization)
+
+G9 showed the pairwise N-PX clustering over-fragments: Inditex 2025
+carried 35 wording clusters against an official agenda of 10 items
+(1.a, 1.b, 2–9 votable + 10 information-only). Canonical proposal
+identity is therefore re-anchored to **issuer/official meeting evidence**
+(BORME convocatoria, issuer AGM notice, CNMV OIR) — never inferred from
+how two reporters happened to phrase an item.
+
+```text
+official_agenda_item   item from the issuer's own convocatoria —
+                       carries item_number, parent_item, order,
+                       votable_status and full provenance
+                       (source_url, source_ref, retrieved_at)
+source_wording         a distinct reporter phrasing (N-PX
+                       voteDescription, MAPFRE proposal text)
+anchor                 source_wording → official_agenda_item
+                       assertion with method/score/margin/evidence
+```
+
+What G9 called `canonical_proposal` was really `source proposal variants /
+wording clusters`; after G9-R, canonical proposals anchored on
+`official_agenda_item_id` are the only OFFICIAL_AGENDA-backed identities.
+
+### Anchor methods (src/votes_es/reconcile/anchor.py)
+
+```text
+EXACT_OFFICIAL_ITEM     source item number + concept agree
+EXACT_OFFICIAL_TEXT     normalized wording == official title
+RULE_HIGH_CONFIDENCE    concept-equal AND score >= bar AND margin >= bar,
+                        or the concept exists on exactly one agenda item
+AMBIGUOUS               unresolved between >=2 official items
+                        (bundled wordings, repeated concepts)
+UNMATCHED               noise / not on the official agenda
+```
+
+Key semantics: bundled rows (multi-concept segments, e.g. MAPFRE's
+`SECURITIES:`-separated blobs) anchor to their *numbered primary item*
+or stay AMBIGUOUS — never forced; `ACCOUNTS_SOLO` and `ACCOUNTS_GROUP`
+are never treated as compatible; director elections additionally use
+deterministic person-name signals inside the meeting.
+
+Corpus: `data/reference/official_agendas/` — 26 shared meetings, 435
+items, each item evidence-stamped (BORME/CNMV/issuer URL + ref +
+retrieved_at). Builder: `scripts/build_official_agendas.py`;
+BORME/CNMV fetcher: `scripts/fetch_borme.py`.
