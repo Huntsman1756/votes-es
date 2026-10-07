@@ -345,6 +345,22 @@ def reconcile_proposals() -> None:
         con.print(f"  {k}: {v}")
 
 
+@recon_app.command("anchors")
+def reconcile_anchors() -> None:
+    """Anchor MAPFRE lines and N-PX wordings to official agenda items."""
+    from votes_es.config import DUCKDB_PATH
+    from votes_es.reconcile.report_anchor import run
+    stats = run(DUCKDB_PATH, Path("reports"))
+    con.print(f"meetings={stats.meetings} with_agenda={stats.meetings_with_agenda} "
+              f"official_items={stats.agenda_items}")
+    con.print(f"MAPFRE: rows={stats.mapfre_rows} auto={stats.mapfre_auto} "
+              f"ambiguous={stats.mapfre_ambiguous} unmatched={stats.mapfre_unmatched}")
+    con.print(f"N-PX: wordings={stats.npx_wordings} auto={stats.npx_auto} "
+              f"ambiguous={stats.npx_ambiguous} unmatched={stats.npx_unmatched}")
+    for k, v in sorted(stats.by_method.items()):
+        con.print(f"  {k}: {v}")
+
+
 @app.command("proposal-match")
 def proposal_match_explain(match_key: str) -> None:
     """Explain a proposal match: mapfre_key format '<meeting_id>|mapfre:<pid>'."""
