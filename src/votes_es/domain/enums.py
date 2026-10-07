@@ -51,10 +51,12 @@ class MgmtAlignment(StrEnum):
 
 
 class AmendmentType(StrEnum):
-    """N-PX/A amendment semantics (primary_doc amendmentInfo)."""
+    """N-PX/A amendment semantics — actual `amendmentType` values observed
+    in the SEC schema (2026 season): RESTATEMENT replaces the prior report;
+    "NEW PROXY" adds new proxy-voting entries (additive)."""
     ORIGINAL = "ORIGINAL"                       # plain N-PX submission
     RESTATEMENT = "RESTATEMENT"                 # replaces the prior report
-    ADDS_NEW_PROXY_VOTING_ENTRIES = "ADDS_NEW_PROXY_VOTING_ENTRIES"
+    NEW_PROXY = "NEW PROXY"                     # additive entries
     OTHER = "OTHER"
 
 

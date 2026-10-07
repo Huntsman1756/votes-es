@@ -17,8 +17,11 @@ G6 bulk semantics           IN PROGRESS
     amendments              PASS (RESTATEMENT supersedes / ADDITIVE adds;
                                  unknown stays flagged)
     split votes             PASS (components kept + is_split flag)
-    joint reporting         CAPTURED (voting_managers + summary-page list)
-    bulk 2026               RUNNING (manifest 11,952 filings; resumable)
+    joint reporting         PASS (manager refs resolved to names;
+                                   series id→name from cover page)
+    bulk 2026               PASS (11,952 filings discovered, 5,623 voting
+                                   reports parsed = 25.48M components;
+                                   0 failures; 19.0GB)
     coverage QA             PASS (all checks; new semantic gates green)
     reuse gate              DOCUMENTED (VOTES_PUBLISH_VOTE_SOURCES;
                                        VDS rows excluded by default)

@@ -264,7 +264,7 @@ def build_silver(universe_path: Path, out_dir: Path,
 
     # ----------------------------------------------------- N-PX amendments
     # A RESTATEMENT filing supersedes every earlier filing for the same
-    # (filer CIK, period_of_report). ADDITIVE (ADDS_NEW_PROXY_VOTING_ENTRIES)
+    # (filer CIK, period_of_report). ADDITIVE (NEW PROXY)
     # filings add rows — earlier ones remain effective. Unknown/None
     # amendment_type on N-PX/A → keep rows but flag in stats.
     filings = bronze_io.load_filings("sec_npx")
@@ -558,16 +558,18 @@ def build_silver(universe_path: Path, out_dir: Path,
         stats.warnings.append(
             f"{n_superseded} bronze rows superseded by restatement filings")
 
-    # split votes: one unit voted >1 direction on the same proposal+observation
-    # (share splits across ballot lots). Every component row is kept and
-    # flagged — never collapsed to a single direction.
+    # split votes: one unit cast >1 *real* position on the same
+    # proposal+observation (share splits across ballot lots). Non-position
+    # values (OTHER/frequency junk, UNKNOWN, DO_NOT_VOTE) don't make a split.
+    # Every component row is kept — never collapsed to a single direction.
+    _POSITIONS = {"FOR", "AGAINST", "ABSTAIN", "WITHHOLD"}
     split_groups: dict[tuple, set] = {}
     for v in votes_out:
         k = (v["proposal_id"], v["reporting_unit_id"], v["source_observation_id"])
         split_groups.setdefault(k, set()).add(v["direction"])
     n_split = 0
     for k, dirs in split_groups.items():
-        if len(dirs) > 1:
+        if len(dirs & _POSITIONS) > 1:
             for v in votes_out:
                 if (v["proposal_id"], v["reporting_unit_id"],
                         v["source_observation_id"]) == k:

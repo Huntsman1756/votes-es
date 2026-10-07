@@ -66,7 +66,7 @@ BRONZE_FILINGS = pa.schema([
     ("reporting_person_lei", pa.string()),
     ("period_of_report", pa.string()),
     ("amendment_no", pa.int64()),
-    ("amendment_type", pa.string()),         # RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES
+    ("amendment_type", pa.string()),         # RESTATEMENT / NEW PROXY
     ("other_managers_json", pa.string()),    # joint-reporting manager list
     ("retrieved_at", pa.string()),
 ])

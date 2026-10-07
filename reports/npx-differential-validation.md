@@ -21,29 +21,72 @@ series×proposal block repeated with different `categoryType` — observed in
 BlackRock filings) are deduplicated before comparison, matching our silver
 `vote_id` semantics.
 
-## Result (interim — bulk run in progress)
+## Result (post bulk-2026 ingest — full overlap)
 
 ```
-panel rows:              303,130-303,589 (59 accessions)
-our filings overlapping: 7 accessions scanned in bronze
-matched keys:            32,720
+panel rows:              303,589 (59 accessions, seasons 2024-2026)
+our filings overlapping: 20 accessions parsed in bronze
+matched keys:            96,200  (accession × series × cusip × meeting_date
+                                  × normalized proposal)
 direction disagreements: 0
-shares disagreements:    0
-vs_mgmt disagreements:   0
-split disagreements:     0
+vs_mgmt disagreements:   3   (explained below — panel fallback heuristic)
+shares disagreements:    12,821 (all in Vanguard-type pass-through filings)
+split disagreements:     6,116  (same filings — panel drops real components)
 ```
 
-## Every disagreement found during development
+## Every disagreement found — investigated
 
-| Disagreement | Cause | Verdict |
-|---|---|---|
-| 69 × `ONE YEAR` vs `1 YEAR` | panel normalizes frequency values; we keep raw + canonical OTHER | expected — fixed in harness by shared normalization |
-| 27 × shares 2× | harness summed duplicate source blocks (same vote emitted twice under different categories) | expected — dedup at component level; our silver `vote_id` already collapses |
-| 16 × shares ≠ | identical proposal text at *two different meetings* collided in both datasets' keys | harness bug — added `meeting_date` to key; zero real diffs remain |
+### direction: 0 real diffs
+
+During development, 3 rows showed `TAKENOACTION` vs `TAKE NO ACTION`
+(panel normalizes; we keep raw) and 69 `ONE YEAR` vs `1 YEAR` — both
+normalized in the harness. **Zero semantic direction disagreements.**
+
+### shares + split: Vanguard pass-through sub-lots (our model is richer)
+
+Filings like `0001104659-26-101970` emit **the same (series, proposal)
+across multiple proxyTable blocks with different share amounts** —
+sub-lot/pass-through voting. Example (AFLAC "independent board chairman",
+series S000002839):
+
+```
+AGAINST 10,405,883  FOR    (main lot)
+AGAINST    22,772.8 FOR
+FOR        11,992.07 AGAINST
+FOR           115    AGAINST
+ABSTAIN         4    AGAINST
+AGAINST       485    FOR
+```
+
+The panel keeps only the first block per key (`seen` set) — losing 6 real
+components and misreporting split_vote=N. **We keep every component** and
+flag `is_split`. Every one of the 12,821 share diffs decomposes this way
+(sum of all lots vs first lot only). Verdict: panel data loss, not our bug.
+
+### vs_mgmt: 3 rows
+
+Main-direction component's `managementRecommendation` element is `NONE`
+(or absent) in the source; the panel falls back to another component's
+flag. We keep the component's own value (alignment is per-record). Verdict:
+ours is more faithful — no bug on either side.
+
+### dedup
+
+Some BlackRock filings emit the same block twice with different
+`categoryType` labels — identical vote components dedup'd in both
+(`vote_id` collapse covers it in silver).
 
 ## Interpretation
 
-Independently-implemented parsers agree **100%** on direction, shares,
-management-alignment and split detection on all 32,720 overlapping
-components so far. Will be re-run at full bulk coverage and the matched-key
-count updated here.
+On **96,200 overlapping vote components** across 20 shared accessions:
+
+- Direction: **100% agreement** after normalization.
+- Shares/split: all divergences are cases where **we preserve components the
+  panel silently drops** (pass-through sub-lots, category-dup blocks) —
+  our model is strictly more faithful; nothing lost on our side.
+- Management alignment: 100% on component-level values; the 3 residual diffs
+  are the panel's fallback heuristic vs our per-record fidelity.
+
+No bug found in votes-es; one real finding in the reference dataset (dropped
+sub-lot rows misreport split votes), which validates the component-level
+model choice.

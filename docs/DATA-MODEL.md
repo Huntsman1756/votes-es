@@ -68,13 +68,13 @@ match_method/review_status/match_evidence (identity evidence).
 
 `npx_filings` — one row per N-PX accession: submission_type (N-PX/N-PX/A),
 report_type, reporting_person(+lei), period_of_report, amendment_no,
-amendment_type (RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES),
+amendment_type (RESTATEMENT / NEW PROXY),
 other_managers_json (summary-page joint-reporting list),
 materialization = EFFECTIVE | SUPERSEDED (decided at silver build).
 
 Amendment materialization: within one (filer CIK, period_of_report), the
 latest RESTATEMENT supersedes every earlier filing (its bronze rows remain
-for audit but do not enter silver); ADDS_NEW_PROXY_VOTING_ENTRIES adds rows
+for audit but do not enter silver); NEW PROXY adds rows
 alongside; N-PX/A without a parseable amendment_type is kept as additive and
 flagged in build warnings.
 

@@ -216,7 +216,7 @@ class NpxFilingMeta(Strict):
     series_names: dict[str, str] = Field(default_factory=dict)  # id → name
     # N-PX/A amendment semantics (cover-page amendmentInfo block)
     amendment_no: int | None = None
-    amendment_type: str | None = None       # RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES
+    amendment_type: str | None = None       # RESTATEMENT / NEW PROXY
     # joint reporting (summary page): managers whose voting is included
     other_included_managers: list[dict] = Field(default_factory=list)
 

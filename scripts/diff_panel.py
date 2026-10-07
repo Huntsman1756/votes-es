@@ -30,7 +30,10 @@ def norm(s: str) -> str:
 _FREQ = {"1 YEAR": "FREQ1", "ONE YEAR": "FREQ1", "2 YEARS": "FREQ2",
          "TWO YEARS": "FREQ2", "3 YEARS": "FREQ3", "THREE YEARS": "FREQ3",
          "1.0": "FREQ1", "2.0": "FREQ2", "3.0": "FREQ3", "1": "FREQ1",
-         "2": "FREQ2", "3": "FREQ3"}
+         "2": "FREQ2", "3": "FREQ3", "TAKENOACTION": "TAKE NO ACTION"}
+
+# not real positions — excluded from split determination on both sides
+_NOT_A_POSITION = {"TAKE NO ACTION", "", "NONE"}
 
 
 def canon_dir(raw: str) -> str:
@@ -86,16 +89,17 @@ def main(csv_gz: Path) -> int:
         # vote component is identical, count it once.
         seen_comp: set[tuple] = set()
         by_dir: dict[str, float] = defaultdict(float)
+        n_blocks = 0
         for r in rows:
             comp = (canon_dir(r["how_voted_raw"] or ""),
                     r["shares_voted_raw"] or "")
-            if comp in seen_comp:
-                continue
-            seen_comp.add(comp)
-            try:
-                by_dir[comp[0]] += float(r["shares_voted_raw"] or 0)
-            except ValueError:
-                pass
+            if comp not in seen_comp:
+                seen_comp.add(comp)
+                try:
+                    by_dir[comp[0]] += float(r["shares_voted_raw"] or 0)
+                except ValueError:
+                    pass
+            n_blocks += 1
         if not by_dir:
             continue
         main = max(by_dir.items(), key=lambda kv: kv[1])[0]
@@ -103,13 +107,19 @@ def main(csv_gz: Path) -> int:
         if main != canon_dir(pr["vote"]):
             diffs["direction"].append((k, main, pr["vote"]))
         if abs(total - float(pr["shares_voted"] or 0)) > 0.5:
-            diffs["shares"].append((k, total, pr["shares_voted"]))
-        # alignment flag on the main-direction component
+            # filer emitted multiple blocks for the same key with different
+            # share lots — panel collapses to one; classify, don't hide
+            tag = "multi-block" if n_blocks > len(seen_comp) else "value"
+            diffs["shares"].append((k, total, pr["shares_voted"], tag))
+        # alignment flag on the main-direction component; panel falls back
+        # to any record's flag when the main record is empty/NONE — we keep
+        # the component's own value (more faithful); flag-only diffs tagged
         align = next((r["management_recommendation_raw"] for r in rows
-                      if (r["how_voted_raw"] or "").upper() == main), None)
+                      if canon_dir(r["how_voted_raw"] or "") == main), None)
         if align and pr["vs_mgmt"] and align.upper() != pr["vs_mgmt"].upper():
             diffs["vs_mgmt"].append((k, align, pr["vs_mgmt"]))
-        is_split = len(by_dir) > 1
+        positions = {d for d in by_dir if d not in _NOT_A_POSITION}
+        is_split = len(positions) > 1
         if is_split != (pr["split_vote"] == "Y"):
             diffs["split"].append((k, is_split, pr["split_vote"]))
         matched += 1

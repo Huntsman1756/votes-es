@@ -174,7 +174,7 @@ class TestAmendments:
 
         m2 = parse_primary_doc(FIX / "primary_doc_amendment_additive.xml",
                                accession="0000000000-26-000200")
-        assert m2.amendment_type == "ADDS_NEW_PROXY_VOTING_ENTRIES"
+        assert m2.amendment_type == "NEW PROXY"
 
     def test_restatement_supersedes(self, tmp_path, monkeypatch):
         """Original + RESTATEMENT: only restatement rows are effective."""
@@ -233,7 +233,7 @@ class TestAmendments:
             assert o["accession"] == "0000000000-26-000099"
 
     def test_additive_keeps_both(self, tmp_path, monkeypatch):
-        """Original + ADDS_NEW_PROXY_VOTING_ENTRIES: both effective."""
+        """Original + NEW PROXY: both effective."""
         import votes_es.config as cfg
         import votes_es.pipeline.ingest as ing
         import votes_es.storage.bronze as bz
@@ -262,7 +262,7 @@ class TestAmendments:
             "reporting_person": "AMEND TEST FUND", "submission_type": "N-PX/A",
             "report_type": "FUND VOTING REPORT", "period_of_report": "2026-06-30",
             "amendment_no": 1,
-            "amendment_type": "ADDS_NEW_PROXY_VOTING_ENTRIES"}))
+            "amendment_type": "NEW PROXY"}))
         assert ingest_npx_dir(d1).status == "OK"
         assert ingest_npx_dir(d2).status == "OK"
         build_silver(uni, tmp_path / "silver", use_oi=False)

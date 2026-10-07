@@ -59,7 +59,7 @@ def parse_primary_doc(path: Path, accession: str = "", cik: str = "") -> NpxFili
                         other_managers.append(mgr)
     amend_no = text.get("amendmentNo") or text.get("amendmentNumber")
     amend_type = (text.get("amendmentType") or text.get("amendmentTypeCode"))
-    # Deliberately no default: RESTATEMENT vs ADDS_NEW_PROXY_VOTING_ENTRIES
+    # Deliberately no default: RESTATEMENT vs NEW PROXY
     # have opposite materialization semantics — an unknown amendment must
     # stay UNKNOWN, not guessed.
     return NpxFilingMeta(
