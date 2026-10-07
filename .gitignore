@@ -5,6 +5,7 @@ data/raw/
 data/bronze/
 data/silver/
 data/gold/
+data/canonical/
 data/reference/universe.parquet
 *.tmp.js
 tools/sec-cli.zip

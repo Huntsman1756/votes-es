@@ -20,7 +20,7 @@ import pyarrow.parquet as pq
 
 from votes_es.reconcile.matcher import (
     MATCHER_VERSION,
-    CanonicalProposal,
+    SourceProposalCluster,
     SourceProposal,
     match_meeting,
 )
@@ -97,7 +97,7 @@ def run(gold_path: Path, out_dir: Path) -> RecStats:
             FROM proposals p JOIN proposal_instances pi USING (proposal_id)
             WHERE p.meeting_id=? AND pi.source_id='sec_npx'
             GROUP BY ALL ORDER BY n DESC, pi.text_raw""", [mid]).fetchall()
-        cp_map: dict[str, CanonicalProposal] = {}
+        cp_map: dict[str, SourceProposalCluster] = {}
         for pid, num, sponsor, text, _n in crows:
             if pid in cp_map:
                 cp_map[pid].raw_variants.append(text or "")
@@ -106,7 +106,7 @@ def run(gold_path: Path, out_dir: Path) -> RecStats:
             cats = {c[0] for c in con.execute(
                 "SELECT DISTINCT category FROM proposal_categories "
                 "WHERE proposal_id=? AND taxonomy='SEC'", [pid]).fetchall()}
-            cp_map[pid] = CanonicalProposal(
+            cp_map[pid] = SourceProposalCluster(
                 proposal_id=pid, raw_variants=[text or ""],
                 norm_variants=[normalize_for_match(text)],
                 norm_rep=normalize_for_match(text), ballot=num,

@@ -345,6 +345,54 @@ def reconcile_proposals() -> None:
         con.print(f"  {k}: {v}")
 
 
+@recon_app.command("canonical")
+def canonical_build() -> None:
+    """Build the canonical-proposal v2 layer + official agenda items."""
+    from votes_es.canonical.build import build
+    from votes_es.config import SILVER_DIR
+    stats = build(SILVER_DIR)
+    con.print(f"meetings with agenda={stats.meetings_with_agenda} "
+              f"agenda_items={stats.agenda_items} "
+              f"canonical={stats.canonical_proposals} "
+              f"(official={stats.official} consensus={stats.consensus} "
+              f"unresolved={stats.unresolved})")
+    con.print(f"links={stats.links}")
+
+
+@app.command("canonical-proposal")
+def canonical_explain(cpid: str) -> None:
+    """Explain a canonical proposal: agenda evidence + links + votes."""
+    import duckdb
+    from votes_es.config import DUCKDB_PATH
+    p = Path("data/canonical/canonical_proposals.parquet")
+    if not p.exists():
+        con.print("[red]run `votes reconcile canonical` first[/red]")
+        return
+    c = duckdb.connect()
+    q = f"'{str(p).replace(chr(92), '/')}'"
+    row = c.execute(f"SELECT * FROM {q} WHERE canonical_proposal_id=?",
+                    [cpid]).fetchone()
+    if row is None:
+        con.print(f"[red]no canonical proposal {cpid}[/red]")
+        return
+    cols = [d[0] for d in c.description]
+    d = dict(zip(cols, row, strict=True))
+    con.print(d)
+    lp = Path("data/canonical/proposal_anchor_links.parquet")
+    ql = f"'{str(lp).replace(chr(92), '/')}'"
+    links = c.execute(
+        f"SELECT * FROM {ql} WHERE canonical_proposal_id=?", [cpid]
+        ).fetchall()
+    cols = [d2[0] for d2 in c.description]
+    for r in links:
+        con.print(dict(zip(cols, r, strict=True)))
+    gold = duckdb.connect(str(DUCKDB_PATH), read_only=True)
+    n = gold.execute(
+        "SELECT count(*) FROM v_canonical_votes "
+        "WHERE canonical_proposal_id=?", [cpid]).fetchone()[0]
+    con.print(f"canonical votes (SAME-comparable): {n}")
+
+
 @recon_app.command("anchors")
 def reconcile_anchors() -> None:
     """Anchor MAPFRE lines and N-PX wordings to official agenda items."""

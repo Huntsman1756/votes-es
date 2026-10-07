@@ -170,6 +170,86 @@ def run_checks(silver_dir: Path | None = None) -> list[Check]:
 
     if has_table("meetings"):
         pass
+    checks += canonical_checks()
+    con.close()
+    return checks
+
+
+def canonical_checks(canonical_dir: Path | None = None) -> list[Check]:
+    """G10 canonical-layer checks — skipped silently if not built."""
+    cdir = canonical_dir or Path("data/canonical")
+    links_p = cdir / "proposal_anchor_links.parquet"
+    if not links_p.exists():
+        return []
+    con = duckdb.connect()
+    c = cdir.as_posix()
+    checks: list[Check] = []
+
+    def scalar(sql: str) -> int:
+        return int((con.execute(sql).fetchone() or (0,))[0])
+
+    # canonical proposals reference real meetings
+    bad = scalar(f"""SELECT count(*) FROM '{c}/canonical_proposals.parquet'
+                     WHERE meeting_id IS NULL""")
+    checks.append(Check("canonical_proposal_without_meeting",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    bad = scalar(f"""SELECT count(*) FROM '{c}/canonical_proposals.parquet'
+                     WHERE identity_basis IS NULL
+                        OR identity_basis NOT IN
+                        ('OFFICIAL_AGENDA','SOURCE_CONSENSUS','REVIEWED',
+                         'UNRESOLVED')""")
+    checks.append(Check("canonical_proposal_without_identity_basis",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    bad = scalar(f"""SELECT count(*) FROM '{c}/official_agenda_items.parquet'
+                     WHERE source_url IS NULL OR source_url=''""")
+    checks.append(Check("official_anchor_without_source",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    bad = scalar(f"""SELECT count(*) FROM
+                    (SELECT agenda_item_id FROM
+                     '{c}/official_agenda_items.parquet'
+                     GROUP BY ALL HAVING count(*)>1)""")
+    checks.append(Check("duplicate_official_item",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    bad = scalar(f"""SELECT count(*) FROM
+                    (SELECT meeting_id, item_number FROM
+                     '{c}/official_agenda_items.parquet'
+                     GROUP BY ALL HAVING count(*)>1)""")
+    checks.append(Check("votable_item_collision",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    # SAME is functional at proposal level: one legacy proposal -> max
+    # one proposal-level SAME target (vote-scoped links are separate
+    # rows by design for bundle attribution)
+    bad = scalar(f"""SELECT count(*) FROM
+                    (SELECT legacy_proposal_id, canonical_proposal_id FROM
+                     '{c}/proposal_anchor_links.parquet'
+                     WHERE relation_type='SAME' AND vote_id IS NULL
+                     GROUP BY ALL HAVING count(*)>1)""")
+    checks.append(Check("SAME_mapping_multiple_canonical",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    bad = scalar(f"""SELECT count(*) FROM
+                    (SELECT legacy_proposal_id FROM
+                     '{c}/proposal_anchor_links.parquet'
+                     WHERE relation_type='BUNDLES'
+                     GROUP BY ALL HAVING count(*)=1)""")
+    checks.append(Check("bundle_with_one_target",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
+
+    # every link's legacy proposal exists and every canonical link target
+    # exists (or is intentionally null)
+    bad = scalar(f"""SELECT count(*) FROM
+                     '{c}/proposal_anchor_links.parquet' l
+                     LEFT JOIN '{c}/canonical_proposals.parquet' c
+                     ON c.canonical_proposal_id=l.canonical_proposal_id
+                     WHERE l.canonical_proposal_id IS NOT NULL
+                       AND c.canonical_proposal_id IS NULL""")
+    checks.append(Check("anchor_link_orphan_canonical",
+                        "PASS" if bad == 0 else "FAIL", f"{bad}"))
     con.close()
     return checks
 

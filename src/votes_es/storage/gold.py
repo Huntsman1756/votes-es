@@ -66,7 +66,28 @@ def build_gold(silver_dir: Path | None = None,
             con.execute(
                 f"CREATE TABLE {name} AS SELECT * FROM "
                 f"'{str(silver / (name + '.parquet')).replace(chr(92), '/')}' LIMIT 0")
+    # canonical layer (G10) — derived artifacts if a canonical build exists
+    cdir = Path("data/canonical")
+    for name in ("official_agenda_items", "canonical_proposals",
+                 "proposal_anchor_links"):
+        p = cdir / f"{name}.parquet"
+        if p.exists():
+            sp = str(p).replace("\\", "/")
+            con.execute(f"CREATE OR REPLACE TABLE {name} "
+                        f"AS SELECT * FROM '{sp}'")
     con.execute(VIEWS)
+    con.execute("""CREATE OR REPLACE VIEW v_canonical_votes AS
+SELECT v.*, p.meeting_id, l.canonical_proposal_id, l.agenda_item_id,
+       l.relation_type, cp.canonical_number, cp.canonical_title,
+       cp.identity_basis, cp.votable_status AS canonical_votable_status
+FROM votes v
+JOIN proposals p ON p.proposal_id = v.proposal_id
+JOIN proposal_anchor_links l ON l.legacy_proposal_id = v.proposal_id
+    AND (l.vote_id IS NULL OR l.vote_id = v.vote_id)
+LEFT JOIN canonical_proposals cp
+       ON cp.canonical_proposal_id = l.canonical_proposal_id
+WHERE l.relation_type IN ('SAME','SUBITEM_OF')""" if
+        (cdir / "proposal_anchor_links.parquet").exists() else "SELECT 1")
     con.execute("CHECKPOINT")
     con.close()
     return out

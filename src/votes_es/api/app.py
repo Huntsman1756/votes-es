@@ -260,6 +260,48 @@ def meeting_votes(meeting_id: str, pivot: bool = False,
             "note": "absent cell = not observed / not disclosed"}
 
 
+@app.get("/api/v1/meetings/{meeting_id}/agenda")
+def meeting_agenda(meeting_id: str):
+    """Official agenda items + canonical proposals + coverage.
+
+    Additive endpoint — shows the canonical v2 layer when a canonical
+    build exists; otherwise returns an empty agenda with a note."""
+    con = db()
+    tables = {r[0] for r in con.execute(
+        "SELECT table_name FROM information_schema.tables").fetchall()}
+    if "official_agenda_items" not in tables:
+        con.close()
+        return {"meeting_id": meeting_id, "agenda": [],
+                "note": "canonical layer not built "
+                        "(run `votes reconcile canonical`)"}
+    agenda = rows(con, """
+        SELECT a.item_number, a.parent_item_number, a.item_order,
+               a.title_raw, a.votable_status, a.source_type, a.source_url,
+               c.canonical_proposal_id, c.identity_basis,
+               count(DISTINCT v.vote_id) votes,
+               count(DISTINCT v.reporting_unit_id) units
+        FROM official_agenda_items a
+        LEFT JOIN canonical_proposals c
+               ON c.official_agenda_item_id = a.agenda_item_id
+        LEFT JOIN proposal_anchor_links l
+               ON l.canonical_proposal_id = c.canonical_proposal_id
+              AND l.relation_type IN ('SAME','SUBITEM_OF')
+        LEFT JOIN votes v ON v.proposal_id = l.legacy_proposal_id
+        WHERE a.meeting_id = ?
+        GROUP BY ALL ORDER BY a.item_order""", [meeting_id])
+    stats = rows(con, """
+        SELECT relation_type, count(*) links
+        FROM proposal_anchor_links l JOIN proposals p
+          ON p.proposal_id = l.legacy_proposal_id
+        WHERE p.meeting_id = ? GROUP BY relation_type""", [meeting_id])
+    con.close()
+    return {"meeting_id": meeting_id, "agenda": agenda,
+            "link_relations": {r["relation_type"]: r["links"]
+                               for r in stats},
+            "note": "votes shown only through SAME/SUBITEM_OF links; "
+                    "MAPFRE rows are publication-gated"}
+
+
 # ----------------------------------------------------------------- reporters
 
 
@@ -398,6 +440,88 @@ def compare_reporters(a: str = Query(...), b: str = Query(...),
         "proposals": both,
         "caveat": ("Observed disclosed intersection only. Disclosure levels "
                    "differ; absence is not a vote."),
+    }
+
+
+@app.get("/api/v1/compare/canonical")
+def compare_canonical(a: str = Query(...), b: str = Query(...),
+                      season: int | None = None):
+    """Reporter comparison joined through canonical proposals — only
+    votes whose relation is SAME/SUBITEM_OF count. Bundles, ambiguous,
+    unmatched and noise are excluded and REPORTED, not silently dropped.
+    """
+    con = db()
+    tables = {r[0] for r in con.execute(
+        "SELECT table_name FROM information_schema.tables").fetchall()}
+    if "v_canonical_votes" not in tables:
+        con.close()
+        return {"error": "canonical layer not built "
+                "(run `votes reconcile canonical`)"}
+    season_clause = "AND year(m.meeting_date) = ?" if season else ""
+    params: list[Any] = [f"%{a}%", a, f"%{a}%", f"%{b}%", b, f"%{b}%"]
+    if season:
+        params.append(season)
+    out = rows(con, f"""
+        WITH ra AS (SELECT reporter_id FROM reporters
+                    WHERE canonical_name ILIKE ? OR reporter_id = ?
+                       OR parent_group ILIKE ?),
+             rb AS (SELECT reporter_id FROM reporters
+                    WHERE canonical_name ILIKE ? OR reporter_id = ?
+                       OR parent_group ILIKE ?),
+             mine AS (
+          SELECT v.canonical_proposal_id, v.meeting_id, v.reporter_id,
+                 v.direction, i.canonical_name issuer,
+                 v.canonical_title, m.meeting_date
+          FROM v_canonical_votes v
+          JOIN meetings m USING(meeting_id)
+          JOIN issuers i ON m.issuer_id = i.issuer_id
+          WHERE (v.reporter_id IN (SELECT * FROM ra)
+             OR v.reporter_id IN (SELECT * FROM rb))
+             {season_clause})
+        SELECT issuer, meeting_date, canonical_proposal_id,
+               canonical_title,
+               max(CASE WHEN reporter_id IN (SELECT * FROM ra)
+                        THEN direction END) AS vote_a,
+               max(CASE WHEN reporter_id IN (SELECT * FROM rb)
+                        THEN direction END) AS vote_b
+        FROM mine GROUP BY ALL""", params)
+    both = [r for r in out if r["vote_a"] and r["vote_b"]]
+    same = sum(1 for r in both if r["vote_a"] == r["vote_b"])
+    # coverage: proposals observed for either side but excluded from the
+    # comparable denominator by relation type
+    e_params: list[Any] = [f"%{a}%", a, f"%{a}%", f"%{b}%", b, f"%{b}%"]
+    if season:
+        e_params.append(season)
+    excl = rows(con, f"""
+        SELECT l.relation_type, count(*) links
+        FROM proposal_anchor_links l
+        JOIN proposals p ON p.proposal_id = l.legacy_proposal_id
+        JOIN votes v ON v.proposal_id = p.proposal_id
+        JOIN meetings m USING(meeting_id)
+        JOIN reporters r ON v.reporter_id = r.reporter_id
+        WHERE l.relation_type NOT IN ('SAME','SUBITEM_OF')
+          AND ((r.canonical_name ILIKE ? OR r.reporter_id = ?
+            OR r.parent_group ILIKE ?)
+           OR (r.canonical_name ILIKE ? OR r.reporter_id = ?
+            OR r.parent_group ILIKE ?))
+          {season_clause}
+        GROUP BY l.relation_type""", e_params)
+    con.close()
+    excl_map = {r["relation_type"]: r["links"] for r in excl}
+    return {
+        "a": a, "b": b, "season": season,
+        "common_canonical_proposals": len(both),
+        "same_direction": same, "different_direction": len(both) - same,
+        "observed_agreement": (same / len(both)) if both else None,
+        "possible_shared_proposals": len(out),
+        "coverage_rate": (len(both) / len(out)) if out else None,
+        "excluded_by_relation": excl_map,
+        "meetings_compared": len({r["meeting_date"] for r in both}),
+        "issuers_compared": len({r["issuer"] for r in both}),
+        "proposals": both,
+        "caveat": ("Same-official-item votes only (SAME/SUBITEM_OF). "
+                   "Bundle-level votes are never fanned out; excluded "
+                   "relations reported in excluded_by_relation."),
     }
 
 

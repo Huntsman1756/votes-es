@@ -9,7 +9,7 @@ from pathlib import Path
 
 from votes_es.reconcile.matcher import (
     SourceProposal,
-    CanonicalProposal,
+    SourceProposalCluster,
     match_meeting,
 )
 from votes_es.reconcile.normalize import normalize_for_match
@@ -25,7 +25,7 @@ def sp(key, raw, item=None, prop="Management", seq=None):
 
 def cp(pid, texts, ballot=None, prop="Management", seq=None):
     texts = texts if isinstance(texts, list) else [texts]
-    return CanonicalProposal(proposal_id=pid, raw_variants=texts,
+    return SourceProposalCluster(proposal_id=pid, raw_variants=texts,
                              norm_variants=[normalize_for_match(t) for t in texts],
                              norm_rep=normalize_for_match(texts[0]),
                              ballot=ballot, proponent=prop,

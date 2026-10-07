@@ -56,8 +56,11 @@ class SourceProposal:
 
 
 @dataclass
-class CanonicalProposal:
-    """An N-PX canonical cluster (one silver proposal_id)."""
+class SourceProposalCluster:
+    """An N-PX silver proposal cluster (one silver proposal_id).
+
+    After G9-R this is NOT a canonical proposal — it is a wording cluster
+    whose canonical identity is decided by the official-agenda bridge."""
     proposal_id: str
     raw_variants: list[str]
     norm_variants: list[str]    # normalized form of every variant
@@ -88,7 +91,7 @@ class MeetingResult:
 @dataclass
 class _Pair:
     mp: SourceProposal
-    cp: CanonicalProposal
+    cp: SourceProposalCluster
     score: float
     parts: dict[str, float]
     exact_item: bool
@@ -108,7 +111,7 @@ def _norm_ballot(b: str | None) -> str | None:
     return re.sub(r"[^0-9a-z]", "", b.lower()) or None
 
 
-def _score(mp: SourceProposal, cp: CanonicalProposal,
+def _score(mp: SourceProposal, cp: SourceProposalCluster,
            ) -> tuple[float, dict[str, float]]:
     """Component score — all signals transparent in the evidence dict.
 
@@ -128,7 +131,7 @@ def _score(mp: SourceProposal, cp: CanonicalProposal,
     return total, {"text": text, "cat": cat, "seq": seq}
 
 
-def _proponent_veto(mp: SourceProposal, cp: CanonicalProposal) -> bool:
+def _proponent_veto(mp: SourceProposal, cp: SourceProposalCluster) -> bool:
     if not mp.proponent or not cp.proponent:
         return False
     return (mp.proponent != cp.proponent
@@ -136,7 +139,7 @@ def _proponent_veto(mp: SourceProposal, cp: CanonicalProposal) -> bool:
 
 
 def match_meeting(mps: list[SourceProposal],
-                  cps: list[CanonicalProposal]) -> MeetingResult:
+                  cps: list[SourceProposalCluster]) -> MeetingResult:
     """Greedy one-to-one assignment inside ONE meeting.
 
     Pairs sorted by (rule strength, score, margin) descending; a canonical
