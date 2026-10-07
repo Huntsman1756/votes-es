@@ -57,15 +57,18 @@ def ingest_npx_season(season: int = 2026,
                       max_files: int | None = None,
                       max_rps: float = 3.0,
                       retry_failed: bool = True,
-                      keep_xml: bool = False) -> None:
+                      keep_xml: bool = False,
+                      workers: int = 4) -> None:
     """Full-season N-PX bulk: quarterly form.idx manifest → fair-access
-    per-filing fetch+parse. Resume-safe (manifest + per-accession bronze)."""
+    per-filing fetch+parse. Resume-safe (manifest + per-accession bronze).
+    workers = download concurrency; request RATE stays ≤ max_rps."""
     from votes_es.sources.sec_npx.bulk import FairClient, ingest_season
-    c = FairClient(rps=max_rps)
+    c = FairClient(rps=max_rps, workers=workers)
     try:
         stats = ingest_season(season, client=c, manifest_only=manifest_only,
                               max_files=max_files, retry_failed=retry_failed,
-                              keep_xml=keep_xml, progress=con.print)
+                              keep_xml=keep_xml, workers=workers,
+                              progress=con.print)
     finally:
         c.close()
     con.print(stats)

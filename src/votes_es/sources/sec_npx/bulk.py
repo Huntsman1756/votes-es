@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -40,22 +41,25 @@ FILINGS_DIR = RAW_DIR / "sec" / "filings"
 
 @dataclass
 class RateLimiter:
-    """Global min-interval limiter + backoff. Single-threaded on purpose —
-    SEC policy is about request RATE, not throughput."""
+    """Global min-interval limiter + backoff. SEC policy is about request
+    RATE, not throughput — thread-safe, shared across download workers."""
     rps: float = 3.0
     _min_interval: float = field(init=False, repr=False)
     _last: float = field(default=0.0, init=False, repr=False)
     _failures: int = field(default=0, init=False, repr=False)
+    _lock: threading.Lock = field(init=False, repr=False)
 
     def __post_init__(self):
+        self._lock = threading.Lock()
         self._min_interval = 1.0 / max(self.rps, 0.1)
 
     def wait(self) -> None:
-        now = time.monotonic()
-        if delta := self._min_interval - (now - self._last):
-            if delta > 0:
-                time.sleep(delta)
-        self._last = time.monotonic()
+        with self._lock:
+            now = time.monotonic()
+            if delta := self._min_interval - (now - self._last):
+                if delta > 0:
+                    time.sleep(delta)
+            self._last = time.monotonic()
 
     def backoff(self, retry_after: str | None = None) -> None:
         """Called on 403/429/5xx/network error. Exponential + Retry-After."""
@@ -69,14 +73,16 @@ class RateLimiter:
 
 
 class FairClient:
-    """httpx wrapper: declared UA, global rate limiting, resumable."""
+    """httpx wrapper: declared UA, global rate limiting, resumable.
+    httpx.Client is safe to share across worker threads; the shared
+    RateLimiter bounds request rate — concurrency only overlaps downloads."""
 
-    def __init__(self, rps: float = 3.0):
+    def __init__(self, rps: float = 3.0, workers: int = 4):
         self.limit = RateLimiter(rps)
         self.http = httpx.Client(
             headers={"User-Agent": edgar.UA, "Accept-Encoding": "gzip"},
             timeout=120.0, follow_redirects=True,
-            limits=httpx.Limits(max_connections=2))
+            limits=httpx.Limits(max_connections=workers + 2))
 
     def get(self, url: str, attempts: int = 5) -> httpx.Response | None:
         for _ in range(attempts):
@@ -222,18 +228,135 @@ def build_manifest(season: int, client: FairClient | None = None) -> Path:
     return path
 
 
+def _process_filing(entry: dict, c: FairClient, manifest: Path,
+                    stats: dict, lock, keep_xml: bool,
+                    progress, total: int, t0: float) -> None:
+    """One filing end-to-end. Mutates entry + stats under `lock` only for
+    shared structures; file writes are per-accession (no contention)."""
+    from votes_es.pipeline.ingest import ingest_npx_dir
+    from votes_es.sources.sec_npx.provider import filing_row
+    from votes_es.storage import bronze
+
+    acc_nodash = entry["accession"].replace("-", "")
+    ref = FilingRef(cik=entry["cik"], accession=entry["accession"],
+                    form=entry["form"],
+                    filing_date=date.fromisoformat(entry["filing_date"]),
+                    company_name=entry["company"])
+    fdir = FILINGS_DIR / acc_nodash
+    try:
+        pdoc = c.get(ref.folder_url + "primary_doc.xml")
+        if pdoc is None:
+            entry.update(status="FAILED", error="primary_doc fetch failed")
+            with lock:
+                stats["failed"] += 1
+                append_manifest(manifest, entry)
+            return
+        fdir.mkdir(parents=True, exist_ok=True)
+        (fdir / "primary_doc.xml").write_bytes(pdoc.content)
+        with lock:
+            stats["bytes"] += len(pdoc.content)
+        from votes_es.sources.sec_npx.filing import parse_primary_doc
+        meta = parse_primary_doc(fdir / "primary_doc.xml",
+                                 accession=entry["accession"], cik=ref.cik)
+        entry.update(
+            report_type=meta.report_type, amendment=meta.amendment_type,
+            submission_type=meta.submission_type,
+            reporting_person=meta.reporting_person,
+            period_of_report=(meta.period_of_report.isoformat()
+                              if meta.period_of_report else None),
+            size_bytes=len(pdoc.content))
+        sidecar = {
+            "accession": entry["accession"], "cik": ref.cik,
+            "report_type": meta.report_type,
+            "submission_type": meta.submission_type,
+            "amendment_no": meta.amendment_no,
+            "amendment_type": meta.amendment_type,
+            "reporting_person": meta.reporting_person,
+            "period_of_report": entry["period_of_report"],
+            "folder_url": ref.folder_url}
+
+        rt = (meta.report_type or "").upper()
+        if "VOTING" not in rt and "COMBINATION" not in rt:
+            entry["status"] = "NO_VOTE_TABLE"
+            bronze.append_filing(filing_row(meta), "sec_npx")
+            (fdir / "manifest.json").write_text(json.dumps(sidecar))
+            with lock:
+                stats["no_votes"] += 1
+                append_manifest(manifest, entry)
+            return
+
+        idx = c.get(ref.folder_url + "index.json")
+        docs = idx.json() if idx else {}
+        items = docs.get("directory", {}).get("item", [])
+        xmls = [i["name"] for i in items
+                if i["name"].lower().endswith(".xml")
+                and "primary_doc" not in i["name"].lower()]
+        if not xmls:
+            entry["status"] = "NO_VOTE_TABLE"
+            bronze.append_filing(filing_row(meta), "sec_npx")
+            with lock:
+                stats["no_votes"] += 1
+                append_manifest(manifest, entry)
+            return
+        with lock:
+            stats["downloaded"] += 1
+        ok = True
+        for name in xmls:
+            n = c.download(ref.folder_url + name, fdir / name)
+            if n is None:
+                entry.update(status="FAILED", error=f"download failed: {name}")
+                ok = False
+                break
+            with lock:
+                stats["bytes"] += n
+            entry["size_bytes"] += n
+        if not ok:
+            with lock:
+                stats["failed"] += 1
+                append_manifest(manifest, entry)
+            return
+        (fdir / "manifest.json").write_text(json.dumps(sidecar))
+        run = ingest_npx_dir(fdir, source_url=ref.folder_url)
+        if run.status == "OK":
+            entry.update(status="OK", vote_rows=run.records_parsed)
+            with lock:
+                stats["parsed"] += 1
+        else:
+            entry.update(status="FAILED", error=";".join(run.errors[:3]))
+            with lock:
+                stats["failed"] += 1
+        if not keep_xml:
+            for name in xmls:
+                (fdir / name).unlink(missing_ok=True)
+        with lock:
+            append_manifest(manifest, entry)
+    except Exception as e:  # noqa: BLE001 — one filing must not kill the job
+        entry.update(status="FAILED", error=f"{type(e).__name__}: {e}")
+        with lock:
+            stats["failed"] += 1
+            append_manifest(manifest, entry)
+    finally:
+        with lock:
+            stats["seen"] += 1
+            if stats["seen"] % 50 == 0:
+                elapsed = (time.time() - t0) / 60
+                progress(f"[{stats['seen']}/{total}] ok={stats['parsed']} "
+                         f"no_votes={stats['no_votes']} failed={stats['failed']} "
+                         f"{stats['bytes']/1e9:.2f}GB {elapsed:.0f}min")
+
+
 def ingest_season(season: int, client: FairClient | None = None,
                   manifest_only: bool = False, max_files: int | None = None,
                   retry_failed: bool = True, keep_xml: bool = False,
-                  progress=print) -> dict:
+                  workers: int = 4, progress=print) -> dict:
     """Phase 2: per filing — index.json → primary_doc → vote tables → bronze.
 
     Resume-safe: accessions already OK/NO_VOTE_TABLE are skipped unless
     retry_failed. Each filing's bronze file name = accession (idempotent).
+    `workers` bounds concurrency; the shared RateLimiter still caps request
+    RATE (SEC policy) — workers only overlap the download/parse time.
     """
-    from votes_es.pipeline.ingest import ingest_npx_dir
-    from votes_es.sources.sec_npx.provider import filing_row
-    from votes_es.storage import bronze
+    from concurrent.futures import ThreadPoolExecutor
 
     c = client or FairClient()
     path = manifest_path(season)
@@ -245,122 +368,27 @@ def ingest_season(season: int, client: FairClient | None = None,
 
     # reconcile with existing bronze (fast resume without re-fetch)
     done = {p.stem for p in (BRONZE_DIR / "sec_npx").glob("*.parquet")}
-    stats = {"seen": 0, "downloaded": 0, "parsed": 0, "failed": 0,
-             "no_votes": 0, "skipped_done": 0, "bytes": 0}
-    t0 = time.time()
-    for i, entry in enumerate(sorted(rows.values(),
-                                     key=lambda e: e["accession"])):
-        acc_nodash = entry["accession"].replace("-", "")
-        if acc_nodash in done and entry["status"] in ("OK", "NO_VOTE_TABLE"):
-            stats["skipped_done"] += 1
+    pending = []
+    skipped_done = 0
+    for e in sorted(rows.values(), key=lambda x: x["accession"]):
+        acc_nodash = e["accession"].replace("-", "")
+        if acc_nodash in done and e["status"] in ("OK", "NO_VOTE_TABLE"):
+            skipped_done += 1
             continue
-        if entry["status"] == "FAILED" and not retry_failed:
+        if e["status"] == "FAILED" and not retry_failed:
             continue
-        if max_files and stats["seen"] >= max_files:
+        pending.append(e)
+        if max_files and len(pending) >= max_files:
             break
-        stats["seen"] += 1
-        ref = FilingRef(cik=entry["cik"], accession=entry["accession"],
-                        form=entry["form"],
-                        filing_date=date.fromisoformat(entry["filing_date"]),
-                        company_name=entry["company"])
-        fdir = FILINGS_DIR / acc_nodash
-        try:
-            # primary_doc first (cheap): decides if worth downloading votes
-            pdoc = c.get(ref.folder_url + "primary_doc.xml")
-            if pdoc is None:
-                entry["status"] = "FAILED"
-                entry["error"] = "primary_doc fetch failed"
-                stats["failed"] += 1
-                upsert_manifest(path, entry)
-                continue
-            fdir.mkdir(parents=True, exist_ok=True)
-            (fdir / "primary_doc.xml").write_bytes(pdoc.content)
-            stats["bytes"] += len(pdoc.content)
-            from votes_es.sources.sec_npx.filing import parse_primary_doc
-            meta = parse_primary_doc(fdir / "primary_doc.xml",
-                                     accession=entry["accession"], cik=ref.cik)
-            entry["report_type"] = meta.report_type
-            entry["amendment"] = meta.amendment_type
-            entry["submission_type"] = meta.submission_type
-            entry["reporting_person"] = meta.reporting_person
-            entry["period_of_report"] = (meta.period_of_report.isoformat()
-                                         if meta.period_of_report else None)
-            entry["size_bytes"] = len(pdoc.content)
 
-            # NOTICE / non-voting reports have no vote table — record and stop
-            rt = (meta.report_type or "").upper()
-            if "VOTING" not in rt and "COMBINATION" not in rt:
-                entry["status"] = "NO_VOTE_TABLE"
-                stats["no_votes"] += 1
-                bronze.append_filing(filing_row(meta), "sec_npx")
-                (fdir / "manifest.json").write_text(json.dumps(
-                    {"accession": entry["accession"], "cik": ref.cik,
-                     "report_type": meta.report_type,
-                     "submission_type": meta.submission_type,
-                     "amendment_no": meta.amendment_no,
-                     "amendment_type": meta.amendment_type,
-                     "reporting_person": meta.reporting_person,
-                     "period_of_report": entry["period_of_report"],
-                     "folder_url": ref.folder_url}))
-                upsert_manifest(path, entry)
-                continue
-
-            idx = c.get(ref.folder_url + "index.json")
-            docs = idx.json() if idx else {}
-            items = docs.get("directory", {}).get("item", [])
-            xmls = [i["name"] for i in items
-                    if i["name"].lower().endswith(".xml")
-                    and "primary_doc" not in i["name"].lower()]
-            if not xmls:
-                entry["status"] = "NO_VOTE_TABLE"
-                stats["no_votes"] += 1
-                bronze.append_filing(filing_row(meta), "sec_npx")
-                upsert_manifest(path, entry)
-                continue
-            stats["downloaded"] += 1
-            entry["size_bytes"] = entry["size_bytes"] or 0
-            for name in xmls:
-                n = c.download(ref.folder_url + name, fdir / name)
-                if n is None:
-                    entry["status"] = "FAILED"
-                    entry["error"] = f"download failed: {name}"
-                    break
-                stats["bytes"] += n
-                entry["size_bytes"] += n
-            if entry["status"] == "FAILED":
-                stats["failed"] += 1
-                upsert_manifest(path, entry)
-                continue
-            (fdir / "manifest.json").write_text(json.dumps(
-                {"accession": entry["accession"], "cik": ref.cik,
-                 "report_type": meta.report_type,
-                 "submission_type": meta.submission_type,
-                 "amendment_no": meta.amendment_no,
-                 "amendment_type": meta.amendment_type,
-                 "reporting_person": meta.reporting_person,
-                 "period_of_report": entry["period_of_report"],
-                 "folder_url": ref.folder_url}))
-            run = ingest_npx_dir(fdir, source_url=ref.folder_url)
-            if run.status == "OK":
-                entry["status"] = "OK"
-                entry["vote_rows"] = run.records_parsed
-                stats["parsed"] += 1
-            else:
-                entry["status"] = "FAILED"
-                entry["error"] = ";".join(run.errors[:3])
-                stats["failed"] += 1
-            if not keep_xml:
-                for name in xmls:
-                    (fdir / name).unlink(missing_ok=True)
-            upsert_manifest(path, entry)
-        except Exception as e:  # noqa: BLE001 — never kill a 4-hour job on one filing
-            entry["status"] = "FAILED"
-            entry["error"] = f"{type(e).__name__}: {e}"
-            stats["failed"] += 1
-            upsert_manifest(path, entry)
-        if stats["seen"] % 50 == 0:
-            elapsed = (time.time() - t0) / 60
-            progress(f"[{stats['seen']}/{len(rows)}] ok={stats['parsed']} "
-                     f"no_votes={stats['no_votes']} failed={stats['failed']} "
-                     f"{stats['bytes']/1e9:.2f}GB {elapsed:.0f}min")
+    stats = {"seen": 0, "downloaded": 0, "parsed": 0, "failed": 0,
+             "no_votes": 0, "skipped_done": skipped_done, "bytes": 0}
+    lock = threading.Lock()
+    t0 = time.time()
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futs = [pool.submit(_process_filing, e, c, path, stats, lock,
+                            keep_xml, progress, len(pending), t0)
+                for e in pending]
+        for f in futs:
+            f.result()          # propagate worker crash (shouldn't happen)
     return {**stats, "manifest": str(path), "run_id": str(uuid.uuid4())}

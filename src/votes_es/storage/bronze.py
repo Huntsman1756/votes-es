@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import json
+import threading
 from pathlib import Path
+
+_APPEND_LOCK = threading.Lock()  # bulk ingest runs filing workers in parallel
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -20,7 +23,7 @@ def write_rows(rows: list[dict], schema: pa.Schema, path: Path) -> int:
 def append_observation(obs: dict, path: Path) -> None:
     """Observations are small; append as JSONL sidecar next to bronze files."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "a", encoding="utf-8") as f:
+    with _APPEND_LOCK, open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(obs, default=str) + "\n")
 
 

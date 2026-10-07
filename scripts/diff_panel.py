@@ -27,12 +27,24 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip().lower())
 
 
+_FREQ = {"1 YEAR": "FREQ1", "ONE YEAR": "FREQ1", "2 YEARS": "FREQ2",
+         "TWO YEARS": "FREQ2", "3 YEARS": "FREQ3", "THREE YEARS": "FREQ3",
+         "1.0": "FREQ1", "2.0": "FREQ2", "3.0": "FREQ3", "1": "FREQ1",
+         "2": "FREQ2", "3": "FREQ3"}
+
+
+def canon_dir(raw: str) -> str:
+    k = re.sub(r"\s+", " ", (raw or "").strip()).upper()
+    return _FREQ.get(k, k)
+
+
 def main(csv_gz: Path) -> int:
     # ---- panel rows, keyed by (acc, series, cusip, proposal)
     panel: dict[tuple, dict] = {}
     with gzip.open(csv_gz, "rt", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            k = (r["accession"], r["series_id"], r["cusip"], norm(r["proposal"]))
+            k = (r["accession"], r["series_id"], r["cusip"], r["meeting_date"],
+                 norm(r["proposal"]))
             panel[k] = r
     if not panel:
         print("panel csv empty"); return 1
@@ -45,13 +57,20 @@ def main(csv_gz: Path) -> int:
     n_files = 0
     for p in sorted(d.glob("*.parquet")):
         t = pq.read_table(p, schema=BRONZE_NPX)
-        accs_in = {a.replace("-", "") for a in t.column("accession").unique().to_pylist()}
+        accs_in = set(t.column("accession").unique().to_pylist())
         if not accs_in & accs:
             continue
         n_files += 1
         for row in t.to_pylist():
-            acc = row["accession"].replace("-", "")
-            k = (acc, row["vote_series"] or "", row["cusip"] or "",
+            acc = row["accession"]
+            # N-PX date = MM/DD/YYYY → ISO to match panel's meeting_date
+            mdr = row["meeting_date_raw"] or ""
+            try:
+                m, d, y = mdr.split("/")
+                mdr = f"{y}-{int(m):02d}-{int(d):02d}"
+            except ValueError:
+                pass
+            k = (acc, row["vote_series"] or "", row["cusip"] or "", mdr,
                  norm(row["proposal_text_raw"]))
             ours[k].append(row)
     overlap = set(panel) & set(ours)
@@ -62,19 +81,26 @@ def main(csv_gz: Path) -> int:
     for k in sorted(overlap):
         rows = ours[k]
         pr = panel[k]
-        # their vote = position with most shares; replicate for comparison
+        # Dedup identical components first: some filers emit the same
+        # (series, proposal) block twice with different categories — the
+        # vote component is identical, count it once.
+        seen_comp: set[tuple] = set()
         by_dir: dict[str, float] = defaultdict(float)
         for r in rows:
+            comp = (canon_dir(r["how_voted_raw"] or ""),
+                    r["shares_voted_raw"] or "")
+            if comp in seen_comp:
+                continue
+            seen_comp.add(comp)
             try:
-                by_dir[(r["how_voted_raw"] or "").upper()] += float(
-                    r["shares_voted_raw"] or 0)
+                by_dir[comp[0]] += float(r["shares_voted_raw"] or 0)
             except ValueError:
                 pass
         if not by_dir:
             continue
         main = max(by_dir.items(), key=lambda kv: kv[1])[0]
         total = sum(by_dir.values())
-        if main != pr["vote"].upper():
+        if main != canon_dir(pr["vote"]):
             diffs["direction"].append((k, main, pr["vote"]))
         if abs(total - float(pr["shares_voted"] or 0)) > 0.5:
             diffs["shares"].append((k, total, pr["shares_voted"]))
