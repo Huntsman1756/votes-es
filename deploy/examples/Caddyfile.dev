@@ -1,0 +1,15 @@
+# votes-es — DEV-ONLY edge example.
+# NOT used in production: votes.h1756.es is routed by the VPS Coolify
+# proxy (Traefik) via container labels — see docs/DEPLOY.md and
+# compose.production.yaml. This file exists only for a standalone
+# local/dev setup where you want TLS-terminating Caddy in front of :8000.
+
+votes.h1756.es {
+	reverse_proxy api:8000
+	encode gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Permissions-Policy
+	}
+}
