@@ -101,6 +101,7 @@ def filing_row(meta: NpxFilingMeta, retrieved_at: datetime | None = None) -> dic
         "amendment_type": meta.amendment_type,
         "other_managers_json": __import__("json").dumps(
             meta.other_included_managers),
+        "series_json": __import__("json").dumps(meta.series_names),
         "retrieved_at": (retrieved_at or datetime.now(UTC)).isoformat(),
     }
 

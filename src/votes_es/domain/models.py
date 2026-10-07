@@ -213,6 +213,7 @@ class NpxFilingMeta(Strict):
     report_calendar_year: int | None = None
     file_number: str | None = None
     series_ids: list[str] = Field(default_factory=list)
+    series_names: dict[str, str] = Field(default_factory=dict)  # id → name
     # N-PX/A amendment semantics (cover-page amendmentInfo block)
     amendment_no: int | None = None
     amendment_type: str | None = None       # RESTATEMENT / ADDS_NEW_PROXY_VOTING_ENTRIES

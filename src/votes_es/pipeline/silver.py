@@ -67,6 +67,20 @@ class BuildStats:
 # ------------------------------------------------------------------ helpers
 
 
+def _resolve_managers(raw: str | None, accession: str,
+                      mgr_names: dict[str, dict[str, str]]) -> str | None:
+    """otherManager refs are filing-local numbers → resolve to names via the
+    summary-page manager list; keep the number verbatim when unresolvable."""
+    if not raw:
+        return None
+    names = mgr_names.get(accession) or {}
+    out = []
+    for ref in raw.split("|"):
+        name = names.get(ref)
+        out.append(f"{ref}:{name}" if name else ref)
+    return "|".join(out)
+
+
 def _meeting_type(raw: str | None) -> MeetingType:
     t = (raw or "").strip().upper()
     if "ANNUAL/SPECIAL" in t or "ANNUAL SPECIAL" in t:
@@ -280,6 +294,17 @@ def build_silver(universe_path: Path, out_dir: Path,
                     "kept as additive (conservative: no rows dropped)")
             filings_out.append({**f, "materialization": eff})
 
+    # joint-reporting attribution: accession → {manager number → name};
+    # and series-id → display name (idOfSeries/nameOfSeries on cover page)
+    mgr_names: dict[str, dict[str, str]] = {}
+    series_names: dict[str, dict[str, str]] = {}
+    for f in filings:
+        lst = json.loads(f.get("other_managers_json") or "[]")
+        mgr_names[f["accession"]] = {
+            str(m.get("number") or ""): m.get("name") or "" for m in lst}
+        series_names[f["accession"]] = json.loads(
+            f.get("series_json") or "{}")
+
     # ------------------------------------------------------------- N-PX lane
     npx_bronze = bronze_io.load_bronze("sec_npx", BRONZE_NPX)
     vds_bronze_tables = {
@@ -333,7 +358,11 @@ def build_silver(universe_path: Path, out_dir: Path,
             "unit_id": uid, "reporter_id": rid,
             "unit_type": "FUND_SERIES" if row["vote_series"] else "REPORTER_SELF",
             "source_identifier": unit_key,
-            "canonical_name": row["vote_series"] or row["reporter_name_raw"] or row["cik"],
+            "canonical_name": (
+                series_names.get(row["accession"], {}).get(
+                    row["vote_series"] or "")
+                or row["vote_series"]
+                or row["reporter_name_raw"] or row["cik"]),
         })
 
         # proposal instance
@@ -353,7 +382,8 @@ def build_silver(universe_path: Path, out_dir: Path,
             "shares_voted": parse_number(row["shares_voted_raw"]),
             "shares_on_loan": parse_number(row["shares_on_loan_raw"]),
             "rationale": None,
-            "voting_managers": row["other_managers"] or None,
+            "voting_managers": _resolve_managers(row["other_managers"],
+                                               row["accession"], mgr_names),
             "source_observation_id": row["observation_id"],
             "source_id": "sec_npx",
             "report_type": row["report_type"],

@@ -5,12 +5,12 @@ import json
 import threading
 from pathlib import Path
 
-_APPEND_LOCK = threading.Lock()  # bulk ingest runs filing workers in parallel
-
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from votes_es.config import BRONZE_DIR, RAW_DIR
+
+_APPEND_LOCK = threading.Lock()  # bulk ingest runs filing workers in parallel
 
 
 def write_rows(rows: list[dict], schema: pa.Schema, path: Path) -> int:
