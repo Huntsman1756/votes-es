@@ -1,6 +1,6 @@
 # PROJECT-STATUS — votes-es
 
-Updated: 2026-10-07 · Phase: **G9-R official-agenda anchoring — core done**
+Updated: 2026-10-07 · Phase: **G10 canonical proposal model v2 — core done**
 
 ## Current state
 
@@ -21,6 +21,8 @@ G8-C MAPFRE adapter         PASS — mapfre_am ingested locally, gated OFF
 G9 reconciliation           DONE — matcher + golden corpus + review queue
 G9-R agenda anchoring       DONE — 26/26 official agendas sourced; canonical
                               identity = issuer agenda, not reporter wording
+G10 canonical model v2      DONE — official_agenda_items + canonical_proposals
+                              + proposal_anchor_links bridge; v0.1 IDs stable
 
 N-PX core                   FREEZE — maintenance only
 production                  MAINTENANCE — VOTES_PUBLISH_VOTE_SOURCES=sec_npx
@@ -41,6 +43,7 @@ NEXT                        v0.2.0 data layer when reuse unblocks MAPFRE
 | Official agenda corpus | 26 meetings / 435 items (BORME+CNMV+issuer) |
 | MAPFRE→official | 278/278 auto-anchored, 0 ambiguous, 0 unmatched |
 | N-PX→official | 352 wordings → 258 auto / 82 ambiguous / 12 unmatched |
+| Canonical v2 | 5,369 proposals (420 official / 4,862 consensus / 87 unresolved); schema 2 |
 
 ## Source rights model (four fields on `sources`)
 

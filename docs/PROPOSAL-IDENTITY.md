@@ -1,128 +1,139 @@
-# PROPOSAL-IDENTITY — votes-es (G9 model)
+# PROPOSAL-IDENTITY — votes-es (v2 model, post G9-R)
 
 How two differently-worded source descriptions become the same proposal.
 Precision-first: `UNMATCHED` is a valid, preferred outcome over any
 uncertain join.
 
-## Entities
+## The four concepts (never conflate them)
 
 ```text
-source_proposal        one source-native proposal description
-                       (N-PX voteDescription, VDS proposal text,
-                        MAPFRE agenda item)
-proposal_variant       a distinct wording of a proposal inside a source —
-                       N-PX filers phrase the same item differently
-canonical_proposal     the meeting's real agenda item — a silver
-                       `proposal_id` shared across sources by clustering
-proposal_match         an auditable assertion:
-                       source_proposal ↔ canonical_proposal
+source observation   raw vote row from a filing (N-PX, MAPFRE, VDS)
+source wording       a distinct reporter phrasing of a proposal —
+                     voteDescription / MAPFRE proposal text
+legacy proposal      silver proposal_id — the v0.1 wording-cluster
+                     identity. Stable, never rewritten; votes hang off it
+canonical proposal   the REAL meeting voting item, preferably anchored
+                     to official AGM agenda evidence
 ```
 
-Meetings are canonical on `(issuer_id, meeting_date)`. Source meeting
-blocks (MAPFRE prints several `Security` blocks on the same day; SEC
-filers each carry their own rows) are *evidence for* a canonical meeting,
-not meetings themselves. Two genuinely different juntas on the same day
-(different meeting types/securities) would need a distinguishing key —
-currently flagged manually rather than auto-split.
+A `distinct wording` is never a canonical proposal. What G9 called
+`CanonicalProposal` is now named `SourceProposalCluster` in code —
+it is wording-cluster identity, not real-world proposal identity.
 
-## Match methods
+## Official agenda item (authority)
 
 ```text
-EXACT_ITEM_AND_TEXT     ballot/item number + identical normalized text
-EXACT_ITEM              agenda item numbers agree (mapfre item ↔ ballot)
-EXACT_TEXT              identical normalized text
-RULE_HIGH_CONFIDENCE    composite score >= bar AND margin >= bar
-REVIEWED                a human/agent verified it (evidence recorded)
-AMBIGUOUS               above floor, below promotion bar — kept unresolved
-UNMATCHED               no candidate above the floor
+official_agenda_items   durable entity; the issuer's own convocatoria
+                        (BORME / CNMV OIR / issuer AGM notice), each row
+                        carrying item_number, parent_item, order,
+                        votable_status and source provenance
+agenda_item_id          hash(meeting_id, normalized item number,
+                        structural order) — title text is NOT in the ID
 ```
 
-Each match stores: `match_method`, `score`, `margin` (best −
-second-best), `evidence` (per-signal breakdown), `review_status`,
-`matcher_version`.
+`votable_status`: VOTABLE / INFORMATION_ONLY / NOT_PUT_TO_VOTE / UNKNOWN.
+An INFORMATION_ONLY item never becomes a votable canonical proposal —
+it gets one only when filers actually reported votes on it (e.g.
+Inditex 2025 item 10).
 
-## Scoring (transparent, no learned parameters)
+## Canonical proposal
 
 ```text
-text      = max over N-PX variants of max(token-Jaccard, containment)
-            on normalized wording
-category  = Jaccard over category sets when both sides declare them
-            (different taxonomies never produce a negative)
-proponent = hard veto on MANAGEMENT↔SHAREHOLDER mismatch
-sequence  = agenda-position agreement when both sides carry numbers
+canonical_proposals
+-------------------
+canonical_proposal_id   deterministic, independent of legacy IDs
+meeting_id
+official_agenda_item_id nullable
+canonical_number / canonical_title
+sponsor_type / votable_status
+identity_basis / identity_confidence
 ```
 
-Promotion requires absolute strength AND separation from the runner-up:
+`identity_basis`:
 
 ```text
-text >= 0.85                      (wording alone is convincing)
-    OR (score >= 0.72 AND text >= 0.60)
-AND margin >= 0.12
+OFFICIAL_AGENDA    anchored to issuer evidence (the goal for the 26
+                   G9-R meetings)
+SOURCE_CONSENSUS   meetings without an official agenda yet — the
+                   silver cluster stays the identity, clearly labelled
+REVIEWED           a reviewed override (recorded; never generalizes)
+UNRESOLVED         covered meeting, source proposal couldn't be
+                   anchored reliably — the vote is preserved but its
+                   official identity is unresolved
 ```
 
-## Source precedence and asymmetry
-
-- The N-PX cluster set derives from full-proxy-record reporters; 14A-only
-  (Section 14A scope) filers never shrink the canonical universe.
-- MAPFRE supplies agenda item numbers — a stronger signal than anything
-  N-PX offers, and the reason VDS ballots (also present in the shared
-  clusters) help bridge numbers.
-- Vote direction is NEVER a matching signal (circularity).
-- N-PX provides alignment only; MAPFRE provides the recommendation
-  direction. No comparison derives an N-PX recommendation direction.
-
-## Limitations
-
-- Recall is deliberately unoptimized: the corpus shows ~25% auto-match;
-  the rest stays AMBIGUOUS/UNMATCHED in the review queue.
-- Proposal texts in two languages or deep paraphrase stay unmatched —
-  that's intended.
-- Same-meeting dedup of N-PX variants is still greedy order-stable
-  clustering in silver; the matcher sits on top and never writes back.
-
-## G9-R — official-agenda anchoring (supersedes pairwise canonicalization)
-
-G9 showed the pairwise N-PX clustering over-fragments: Inditex 2025
-carried 35 wording clusters against an official agenda of 10 items
-(1.a, 1.b, 2–9 votable + 10 information-only). Canonical proposal
-identity is therefore re-anchored to **issuer/official meeting evidence**
-(BORME convocatoria, issuer AGM notice, CNMV OIR) — never inferred from
-how two reporters happened to phrase an item.
+## The bridge
 
 ```text
-official_agenda_item   item from the issuer's own convocatoria —
-                       carries item_number, parent_item, order,
-                       votable_status and full provenance
-                       (source_url, source_ref, retrieved_at)
-source_wording         a distinct reporter phrasing (N-PX
-                       voteDescription, MAPFRE proposal text)
-anchor                 source_wording → official_agenda_item
-                       assertion with method/score/margin/evidence
+proposal_anchor_links
+---------------------
+legacy_proposal_id     (v0.1 identity — preserved)
+canonical_proposal_id  nullable
+agenda_item_id         nullable
+relation_type
+match_method / score / margin / review_status / evidence /
+matcher_version
 ```
 
-What G9 called `canonical_proposal` was really `source proposal variants /
-wording clusters`; after G9-R, canonical proposals anchored on
-`official_agenda_item_id` are the only OFFICIAL_AGENDA-backed identities.
+`relation_type`:
 
-### Anchor methods (src/votes_es/reconcile/anchor.py)
+```text
+SAME          legacy proposal == the official item (one target)
+BUNDLES       source row covers several official items — one link per
+              target, vote is NOT fanned out
+SUBITEM_OF    source row is a sub-item of a canonical parent
+AMBIGUOUS     unresolved between >=2 official items
+UNMATCHED     no reliable official item
+NOISE         custodian/instruction rows filed as proposals
+```
+
+Rule for bundles: if a source declares one vote over a bundle covering
+`1.a + 1.b`, the vote stays at bundle level on the legacy proposal. It is
+NOT copied to both canonical proposals — that would fabricate
+granularity. Bundle-level votes are excluded from proposal-level
+comparisons.
+
+## Comparable view
+
+`v_canonical_votes` joins votes to canonical proposals only through
+`relation_type IN (SAME, SUBITEM_OF)` — the denominator for
+agreement/divergence metrics. BUNDLES / AMBIGUOUS / UNMATCHED / NOISE
+stay visible in the bridge but out of comparisons.
+
+## Match methods (anchor, G9-R)
 
 ```text
 EXACT_OFFICIAL_ITEM     source item number + concept agree
 EXACT_OFFICIAL_TEXT     normalized wording == official title
 RULE_HIGH_CONFIDENCE    concept-equal AND score >= bar AND margin >= bar,
                         or the concept exists on exactly one agenda item
-AMBIGUOUS               unresolved between >=2 official items
-                        (bundled wordings, repeated concepts)
-UNMATCHED               noise / not on the official agenda
+AMBIGUOUS / UNMATCHED   as above
 ```
 
-Key semantics: bundled rows (multi-concept segments, e.g. MAPFRE's
-`SECURITIES:`-separated blobs) anchor to their *numbered primary item*
-or stay AMBIGUOUS — never forced; `ACCOUNTS_SOLO` and `ACCOUNTS_GROUP`
-are never treated as compatible; director elections additionally use
-deterministic person-name signals inside the meeting.
+Matcher quality statement (honest): **0 strict concept mismatches
+observed among 536 automatically anchored relationships audited in the
+G9-R corpus.** Rules were iteratively refined on part of this corpus;
+this is not a fully independent estimate of future-sample precision.
+Validation will come from new meetings not seen during calibration —
+when they arrive, auto-anchors are audited before promotion, and rules
+are not recalibrated silently on production data.
 
-Corpus: `data/reference/official_agendas/` — 26 shared meetings, 435
-items, each item evidence-stamped (BORME/CNMV/issuer URL + ref +
-retrieved_at). Builder: `scripts/build_official_agendas.py`;
-BORME/CNMV fetcher: `scripts/fetch_borme.py`.
+## Backward compatibility (v0.1)
+
+```text
+votes.proposal_id        unchanged — legacy identity, stable forever
+/api/v1/*                unchanged semantics
+canonical fields         additive only (new endpoints/columns)
+```
+
+G10 adds `official_agenda_items`, `canonical_proposals`,
+`proposal_anchor_links` and `v_canonical_votes` as derived artifacts
+under `data/canonical/` + gold DuckDB. Nothing destructive.
+
+## Source precedence and asymmetry (unchanged)
+
+- N-PX full-proxy reporters define observed coverage; 14A-only filers
+  never shrink the universe.
+- MAPFRE item numbers are a stronger signal than N-PX phrasing but
+  anchor to OFFICIAL numbering, not to each other.
+- Vote direction is NEVER a matching signal (circularity).
