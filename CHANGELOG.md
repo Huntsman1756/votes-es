@@ -24,3 +24,23 @@
 - Ibercaja: summary-only image PDFs; not itemized.
 - Coverage probe: 62 ES issuers, 2,102 votes from 4 sampled filings.
 - Decision: GO_FULL.
+
+## 2026-10-07 — G6-NPX-BULK-SEMANTICS
+
+- Semantic fix (blocking): N-PX `managementRecommendation` is an alignment
+  flag, not the rec direction — new `management_alignment` column; N-PX
+  `management_recommendation` stays NULL; source-aware dissent (real dissent
+  on N-PX rose 3 → 9,275 with full semantics).
+- Amendments: `npx_filings` table; RESTATEMENT supersedes same-(CIK,period)
+  filings, "NEW PROXY" additive; unknown never flattened; 171 superseded.
+- Split votes: every component preserved + `is_split`; pass-through sub-lots
+  kept (validated vs proxy-voting-panel which drops them).
+- Joint reporting: `voting_managers` resolved number→name via summary-page
+  list; units named from `idOfSeries`/`nameOfSeries` map.
+- Bulk: quarterly `form.idx` manifest (11,952 filings), bounded-concurrency
+  resumable ingest, ~19GB, 0 failures, 25.48M components.
+- Differential validation vs proxy-voting-panel: 96,200 matched keys, 0
+  direction/alignment disagreements.
+- VDS reuse gate: `VOTES_PUBLISH_VOTE_SOURCES` filters served vote rows.
+- API+UI: alignment-aware labels, SPLIT chips, `/votes/:id` explain view.
+- 38 tests, ruff+mypy clean, all QA gates PASS.
