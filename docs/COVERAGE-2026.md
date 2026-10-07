@@ -4,7 +4,7 @@
 
 | Metric | Count |
 |---|---:|
-| Filings discovered (2026Q3–2027Q1 `form.idx`) | **11,952** |
+| Filings discovered (2026Q3+Q4 `form.idx`; Q4 still open) | **11,952** |
 | N-PX originals | 11,811 |
 | N-PX/A amendments | 141 (126 RESTATEMENT, 15 NEW PROXY) |
 | Voting/combination reports parsed | **5,623** |
@@ -42,6 +42,13 @@ materializes only Spanish-listed issuers (~0.8% of N-PX volume).
 CaixaBank AM vs BBVA AM on observed common proposals: **698 common,
 96.8% agreement** — consistent with the earlier 707/96.9% (delta from
 restatement supersession + proposal-cluster dedup).
+
+## Source cutoff
+
+Index cutoff: **2026-10-07**, covering `form.idx` 2026-Q3 and the open
+2026-Q4. The ordinary filing deadline (Aug 31) has passed; late filings and
+amendments may still arrive during Q4 and are picked up by incremental
+resumable re-runs — this is not a frozen-complete season claim.
 
 ## Caveats
 

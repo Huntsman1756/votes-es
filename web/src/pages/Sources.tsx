@@ -11,7 +11,7 @@ export default function Sources() {
         Reuse status is enforced on export.</div>
       <table>
         <thead><tr><th>source</th><th>type</th><th>votes</th>
-          <th>observations</th><th>last retrieved</th><th>reuse</th><th /></tr></thead>
+          <th>observations</th><th>last retrieved</th><th>reuse</th><th>published</th><th /></tr></thead>
         <tbody>{rows.map(s => (
           <tr key={s.source_id}>
             <td>{s.name}</td>
@@ -21,6 +21,7 @@ export default function Sources() {
             <td className="mono">{(s.last_retrieved ?? "—").slice(0, 10)}</td>
             <td><span className={`chip ${s.reuse_status.startsWith("OPEN") ? "for" : "abstain"}`}>
               {s.reuse_status}</span></td>
+            <td className="mono">{s.vote_rows_published ? "rows" : "metadata only"}</td>
             <td><a href={s.base_url} target="_blank" rel="noreferrer">source</a></td>
           </tr>))}
         </tbody>

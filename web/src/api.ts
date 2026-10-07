@@ -34,6 +34,7 @@ export type ReporterRow = {
     significance_criteria_documented: boolean; significance_criteria_text: string | null }[];
 };
 export type SourceRow = {
+  vote_rows_published: boolean;
   source_id: string; source_type: string; name: string; base_url: string;
   reuse_status: string; adapter_version: string;
   votes_ingested: number; last_retrieved: string | null; observations: number;

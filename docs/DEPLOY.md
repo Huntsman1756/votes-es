@@ -1,68 +1,71 @@
-# Deploy — votes.h1756.es (prepared, gated)
+# Deploy — votes.h1756.es
 
-**Gate status: BLOCKED until bulk 2026 + QA pass.** Do not deploy before
-`N-PX BULK 2026 PASS` in the exit report.
+## Baseline (verified 2026-10-07 against the live host)
 
-## Target environment (from `Huntsman1756/h1756-vps-ops` baseline)
+VPS H1756 (OVH): Ubuntu 26.04.1, Docker, **Coolify 4.3.23** + `coolify-proxy`
+(Traefik), wildcard `*.h1756.es` → 141.94.220.241. Public TCP: 22/80/443.
+Traefik uses the Docker provider with `exposedByDefault=false` plus a file
+provider under `/data/coolify/proxy/dynamic/`; Let's Encrypt HTTP challenge
+on :80.
 
-- VPS H1756 (OVH), Ubuntu, Coolify already installed + healthy, wildcard
-  `*.h1756.es` DNS resolves to the host.
-- Edge: Coolify's **Traefik** on 80/443 — our own Caddyfile is for standalone
-  dev only; on the VPS the app should be a Coolify service, not its own
-  edge proxy.
-- Ports: internal Docker ports are blocked externally by DOCKER-USER —
-  do not publish ports; attach to the Coolify network and let Traefik route
-  `votes.h1756.es`.
-- No changes to global VPS security (UFW/DOCKER-USER/Coolify config).
+Do NOT install another edge proxy (Caddy/nginx host-level), Postgres, Redis,
+K8s or systemd units. `votes-es` runs as a labeled container on the
+`coolify` Docker network — the Coolify proxy routes and terminates TLS.
 
-## Shape
+Note: Coolify API is disabled and the web UI is 2FA — the app is deployed
+as a compose stack with Traefik labels (equivalent routing to a
+Coolify-registered app); registering it inside the Coolify UI can be done
+later by an operator session.
 
-```
-Coolify service "votes-es" (docker compose):
-  votes-es-api  →  FastAPI on :8000 (internal only)
-                   serves /api/v1/* + built SPA from web/dist
-  volumes:
-    votes-gold:/srv/gold  (read-only dataset root)
-  env:
-    VOTES_PUBLISH_VOTE_SOURCES=sec_npx        # VDS vote rows not published
-```
-
-Traefik label: `votes.h1756.es` → :8000.
-
-## Atomic dataset publication
-
-Dataset root layout on the volume:
+## Layout on the VPS
 
 ```
-/srv/gold/
-  datasets/<run_id>/votes.duckdb   # staging build
-  datasets/<run_id>/manifest.json  # counts, checks, git sha, built_at
-  CURRENT -> datasets/<run_id>     # symlink switch (atomic)
-  datasets/<previous>/             # retained for rollback
+/data/votes-es/
+├── generations/<dataset_version>/
+│   ├── gold/votes.duckdb
+│   ├── manifest.json  coverage.json  quality.json  SHA256SUMS
+│   └── parquets/
+├── CURRENT -> generations/<dataset_version>     # atomic switch
+├── PREVIOUS                                     # retained generation
+├── compose.yml        (compose.production.yaml)
+└── image tag votes-es:0.1.0
 ```
 
-Publish procedure (manual or scheduled job):
+- Mount `/data/votes-es` read-only into the container; the app opens
+  `…/CURRENT/gold/votes.duckdb` **per request**, so a `CURRENT` switch is
+  effective without container restart.
+- Env: `VOTES_PUBLISH_VOTE_SOURCES=sec_npx` — VDS vote rows are never in
+  the published dataset.
+- Retention: keep CURRENT + PREVIOUS only (dataset ~15 MB per generation).
 
-```
-votes build            # silver → staging dir (not the served path)
-votes validate         # all checks must PASS; on failure DO NOT publish
-write manifest.json
-ln -sfn datasets/<run_id> CURRENT
-```
+## Publish a new generation (manual/weekly during 2026-Q4)
 
-The API opens `CURRENT/votes.duckdb` read-only per request, so a switch is
-instant and rollback is one symlink. Never build directly over the served
-file.
-
-## Refresh job
-
-N-PX season cadence is annual (due ~Aug 31) + late amendments. Manual or
-weekly-cron during filing season is sufficient:
-
-```
-votes ingest npx-season --season 2026 --retry-failed
-votes build && votes validate && coverage --season 2026
-# publish only if validate == PASS
+```bash
+# on the build host
+votes ingest npx-season --season 2026          # incremental, resumable
+votes build                                   # silver rebuild
+VOTES_PUBLISH_VOTE_SOURCES=sec_npx \
+    python scripts/release.py                 # → dist/generations/<id>/
+# ship
+scp -r dist/generations/<id> vps1:/data/votes-es/generations/
+ssh vps1 'cd /data/votes-es && sha256sum -c generations/<id>/SHA256SUMS \
+    && ln -sfn generations/<id> NEW_CURRENT && mv -T NEW_CURRENT CURRENT'
 ```
 
-Idempotent: manifest + per-accession bronze make re-runs free.
+`mv -T` on a prepared symlink = atomic switch. If QA fails the generation
+is never uploaded / never switched — the site keeps serving the previous
+dataset.
+
+## Image
+
+`Dockerfile` builds SPA + API in one image (`votes-es:<version>` and
+`votes-es:<sha>`). Non-root (uid 10001), `/api/v1/health` healthcheck,
+no data/tests/dev caches inside. Load on the VPS via
+`docker save votes-es:0.1.0 | ssh vps1 docker load` — or push to a registry
+if one is configured for the project later.
+
+## Failure mode
+
+If a candidate generation fails `votes validate` → it is not published.
+`CURRENT` keeps pointing at the last good generation; the site is never
+down because of a data build.

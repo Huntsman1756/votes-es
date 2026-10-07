@@ -12,11 +12,12 @@ from pathlib import Path
 from typing import Any
 
 import duckdb
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from votes_es import ADAPTER_VERSION, __version__
-from votes_es.config import DUCKDB_PATH
+from votes_es.config import DUCKDB_PATH, PUBLISH_VOTE_SOURCES
 
 PAGE_MAX = 500
 
@@ -47,6 +48,31 @@ def _paginate(limit: int, offset: int) -> tuple[int, int]:
     return max(1, min(limit, PAGE_MAX)), max(0, offset)
 
 
+@app.get("/api/v1/health")
+def health():
+    """Cheap liveness probe — no DB touch, no cache."""
+    return {"ok": True}
+
+
+@app.exception_handler(Exception)
+async def _unhandled(request: Request, exc: Exception):
+    """Never leak stack traces / filesystem paths to API clients."""
+    return JSONResponse(status_code=500,
+                        content={"error": "internal_error"})
+
+
+@app.middleware("http")
+async def _headers(request: Request, call_next):
+    resp = await call_next(request)
+    resp.headers["X-Content-Type-Options"] = "nosniff"
+    resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    if request.url.path.startswith("/api/"):
+        resp.headers.setdefault("Cache-Control", "no-cache")
+    elif request.url.path.startswith("/assets/"):
+        resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return resp
+
+
 # ------------------------------------------------------------------ status
 
 
@@ -61,6 +87,12 @@ def status():
                (SELECT count(DISTINCT source_id) FROM votes) sources""")
     r["software_version"] = __version__
     r["adapter_version"] = ADAPTER_VERSION
+    r["publication_vote_sources"] = sorted(PUBLISH_VOTE_SOURCES)
+    r["publication_note"] = (
+        "Vote rows are published only for sources in "
+        "publication_vote_sources. Sources with unclear reuse status are "
+        "referenced (metadata + original-link) but their vote rows are not "
+        "redistributed.")
     r["disclaimer"] = ("Observed public disclosures only; coverage differs by "
                        "reporter and source.")
     con.close()
@@ -399,26 +431,13 @@ def sources():
                (SELECT count(*) FROM observations o
                 WHERE o.source_id = s.source_id) AS observations
         FROM sources s ORDER BY s.source_id""")
+    for r in out:
+        r["vote_rows_published"] = (not PUBLISH_VOTE_SOURCES
+                                    or r["source_id"] in PUBLISH_VOTE_SOURCES)
     con.close()
     return {"sources": out}
 
 
-# Static frontend (production): serve web/dist if present. Registered AFTER
-# all /api/v1 routes so the SPA catch-all cannot shadow the API.
-_dist = Path(__file__).resolve().parents[3] / "web" / "dist"
-if _dist.exists():
-    from fastapi.responses import FileResponse
-    from fastapi.staticfiles import StaticFiles
-
-    app.mount("/assets", StaticFiles(directory=_dist / "assets"),
-              name="assets")
-
-    @app.get("/{full_path:path}", include_in_schema=False)
-    def spa(full_path: str):
-        f = _dist / full_path
-        if full_path and f.is_file():
-            return FileResponse(f)
-        return FileResponse(_dist / "index.html")
 
 
 @app.get("/api/v1/votes/{vote_id}")
@@ -460,3 +479,24 @@ def vote_explain(vote_id: str):
         else "VDS: management_recommendation is the direction declared in the "
              "register.")
     return v
+
+# Static frontend (production): serve web/dist if present. Registered AFTER
+# all /api/v1 routes so the SPA catch-all cannot shadow the API.
+_dist = (Path(os.environ["VOTES_ES_WEB"]) if os.environ.get("VOTES_ES_WEB")
+         else next((c for c in (
+             Path(__file__).resolve().parents[3] / "web" / "dist",  # repo dev
+             Path("/app/web/dist"))                               # image
+                    if c.exists()), None))
+if _dist and _dist.exists():
+    from fastapi.responses import FileResponse
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/assets", StaticFiles(directory=_dist / "assets"),
+              name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def spa(full_path: str):
+        f = _dist / full_path
+        if full_path and f.is_file():
+            return FileResponse(f)
+        return FileResponse(_dist / "index.html")

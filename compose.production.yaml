@@ -1,0 +1,43 @@
+# votes-es production — Coolify network + Traefik labels (no published ports).
+# Deployed on the VPS at /data/votes-es/compose.yml; dataset mounted from
+# /data/votes-es/generations (CURRENT symlink → active generation).
+services:
+  api:
+    image: votes-es:0.1.0
+    restart: unless-stopped
+    user: "10001:10001"
+    # mount the generations ROOT so CURRENT symlink switches apply per-request
+    # without container restart (DuckDB re-opens the file on each connection)
+    volumes:
+      - /data/votes-es:/data/votes-es:ro
+    environment:
+      - VOTES_ES_DB=/data/votes-es/CURRENT/gold/votes.duckdb
+      - VOTES_PUBLISH_VOTE_SOURCES=sec_npx
+    expose:
+      - "8000"
+    networks:
+      - coolify
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.votes-es-https.rule=Host(`votes.h1756.es`)
+      - traefik.http.routers.votes-es-https.entrypoints=https
+      - traefik.http.routers.votes-es-https.tls=true
+      - traefik.http.routers.votes-es-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.votes-es-https.service=votes-es
+      - traefik.http.routers.votes-es-http.rule=Host(`votes.h1756.es`)
+      - traefik.http.routers.votes-es-http.entrypoints=http
+      - traefik.http.routers.votes-es-http.middlewares=votes-es-redirect
+      - traefik.http.middlewares.votes-es-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.votes-es-redirect.redirectscheme.permanent=true
+      - traefik.http.services.votes-es.loadbalancer.server.port=8000
+    mem_limit: 1g
+    cpus: "1.0"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  coolify:
+    external: true
