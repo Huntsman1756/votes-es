@@ -69,4 +69,36 @@ button { font-family: var(--mono); font-size: 13px; padding: 6px 14px;
 .matrix td.dir { text-align: center; }
 .matrix td.dissent-cell { background: #fdf2e3; }
 .legend { font-size: 11.5px; color: var(--mute); margin-top: 8px; }
+/* ——— Anchura y móvil ———
+   Nada de la página debe empujar el documento a lo ancho: las tablas anchas
+   (la matriz propuestas × reporteros llega a miles de píxeles) scrollean
+   dentro de su propia caja en vez de estirar el layout. */
+main { min-width: 0; }            /* flex: sin esto el contenido estira main */
+main table {
+  display: block;                 /* la tabla pasa a ser su propia caja… */
+  overflow-x: auto;               /* …y scrollea en horizontal si no cabe */
+  max-width: 100%;
+}
+td, th { overflow-wrap: anywhere; }
+
+.compare-pickers { display: flex; gap: 10px; align-items: center; min-width: 0; }
+
+@media (max-width: 760px) {
+  .shell { flex-direction: column; }
+  nav {
+    width: 100%; height: auto; position: static;
+    border-right: 0; border-bottom: 1px solid var(--line);
+    padding: 14px 16px;
+  }
+  nav > div { display: flex; flex-wrap: wrap; gap: 2px 14px; }
+  nav a { display: inline-block; }
+  nav .foot { position: static; max-width: none; margin-top: 10px; }
+  main { padding: 18px 14px; max-width: 100%; }
+  h1 { font-size: 19px; }
+  .stats { gap: 14px 20px; }
+  input[type=text], input[type=search], select { width: 100%; max-width: 100%; }
+  .compare-pickers { flex-wrap: wrap; }
+  table { font-size: 12.5px; }
+}
+
 .prov { font-size: 11px; color: var(--mute); }

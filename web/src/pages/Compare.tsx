@@ -22,7 +22,7 @@ export default function Compare() {
         Observed intersection only: same meeting + proposal where both
         disclosed. Disclosure levels differ — this is not a ranking.
       </div>
-      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+      <div className="compare-pickers">
         <select value={a} onChange={e => setA(e.target.value)}>
           {reps.map(r => <option key={r.reporter_id}
             value={r.canonical_name}>{r.canonical_name}</option>)}
