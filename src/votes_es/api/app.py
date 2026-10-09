@@ -697,7 +697,15 @@ if _dist and _dist.exists():
     @app.api_route("/{full_path:path}", methods=["GET", "HEAD"],
                    include_in_schema=False)
     def spa(full_path: str):
-        f = _dist / full_path
-        if full_path and f.is_file():
+        from re import fullmatch
+
+        f = (_dist / full_path).resolve()
+        if full_path and f.is_relative_to(_dist.resolve()) and f.is_file():
             return FileResponse(f)
-        return FileResponse(_dist / "index.html")
+        # Mirror main.tsx: unknown pages render the useful client 404 while
+        # retaining its HTTP status for crawlers and monitors.
+        known = fullmatch(
+            r"(?:|issuers(?:/[^/]+)?|reporters(?:/[^/]+)?|meetings/[^/]+|"
+            r"votes/[^/]+|compare|sources|methodology)/?", full_path
+        )
+        return FileResponse(_dist / "index.html", status_code=200 if known else 404)
