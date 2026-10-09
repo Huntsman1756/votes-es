@@ -25,7 +25,7 @@ export default function VoteExplain() {
         <Chip d={v.direction} raw={v.vote_raw} />
         {v.is_split ? <span className="chip abstain" style={{ marginLeft: 8 }}>SPLIT</span> : null}
       </p>
-      <table className="kv">
+      <div className="table-scroll" tabIndex={0}><table className="kv">
         <tbody>
           <tr><td>reporter</td><td>{v.reporter} <span className="dim">({v.reporter_type})</span></td></tr>
           <tr><td>reporting unit</td><td>{v.unit} <span className="dim">[{v.unit_type} {v.source_identifier}]</span></td></tr>
@@ -46,11 +46,11 @@ export default function VoteExplain() {
           <tr><td>parser version</td><td>{v.parser_version}</td></tr>
           <tr><td>content hash</td><td className="dim" style={{ fontSize: 12 }}>{v.content_hash}</td></tr>
         </tbody>
-      </table>
+      </table></div>
       {split.length ? (
         <>
           <h3>Split components</h3>
-          <table>
+          <div className="table-scroll" tabIndex={0}><table>
             <thead><tr><th>direction</th><th>raw</th><th>shares</th><th>vote</th></tr></thead>
             <tbody>
               {split.map((s: any) => (
@@ -62,7 +62,7 @@ export default function VoteExplain() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </>
       ) : null}
       <p className="dim">{v.semantics_note}</p>

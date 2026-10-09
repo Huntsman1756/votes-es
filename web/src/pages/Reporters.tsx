@@ -10,7 +10,7 @@ export default function Reporters() {
       <h1>Reporters</h1>
       <div className="sub">Institutional disclosers — not a ranking.
         Different disclosure levels make raw counts incomparable.</div>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>reporter</th><th>type</th><th>group</th>
           <th>disclosure</th><th>units</th><th>meetings</th><th>votes</th>
           <th>dissent</th></tr></thead>
@@ -29,7 +29,7 @@ export default function Reporters() {
             <td className="num">{r.dissent_votes ?? 0}</td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
       <div className="legend">
         * significance policy documented in source memo — the reporter only
         publishes votes meeting stated thresholds (SRD II).

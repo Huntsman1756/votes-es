@@ -16,7 +16,7 @@ export default function Issuers() {
       <input type="search" placeholder="search name, ISIN, ticker…"
         value={q} onChange={e => setQ(e.target.value)} />
       <p />
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>issuer</th><th>isins</th><th>meetings</th>
           <th>reporters observed</th><th>votes</th><th>latest</th></tr></thead>
         <tbody>{rows.map(i => (
@@ -29,7 +29,7 @@ export default function Issuers() {
             <td className="mono">{i.latest_meeting ?? "—"}</td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
       <div className="legend">No rows for an issuer = no observed disclosures, not no meetings.</div>
     </>
   );

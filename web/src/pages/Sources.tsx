@@ -9,7 +9,7 @@ export default function Sources() {
       <h1>Sources</h1>
       <div className="sub">Every fact links back to its source record.
         Reuse status is enforced on export.</div>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>source</th><th>type</th><th>votes</th>
           <th>observations</th><th>last retrieved</th><th>reuse</th><th>published</th><th /></tr></thead>
         <tbody>{rows.map(s => (
@@ -25,7 +25,7 @@ export default function Sources() {
             <td><a href={s.base_url} target="_blank" rel="noreferrer">source</a></td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
     </>
   );
 }

@@ -47,7 +47,7 @@ export default function MeetingDetail() {
         source ids: {m.source_meeting_ids}
       </div>
       <h2>Proposals × reporters</h2>
-      <table className="matrix">
+      <div className="table-scroll" tabIndex={0}><table className="matrix">
         <thead><tr><th style={{ width: 40 }}>#</th><th>proposal</th>
           <th>category</th>{reporters.map(r => <th key={r}>{r}</th>)}</tr></thead>
         <tbody>{proposals.map(([pid, p]) => (
@@ -72,7 +72,7 @@ export default function MeetingDetail() {
             })}
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
       <div className="legend">
         “·” = not observed / not disclosed (never read as “did not vote”).
         Shaded cell = disclosed vote against the disclosed management

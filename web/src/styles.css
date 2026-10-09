@@ -74,12 +74,11 @@ button { font-family: var(--mono); font-size: 13px; padding: 6px 14px;
    (la matriz propuestas × reporteros llega a miles de píxeles) scrollean
    dentro de su propia caja en vez de estirar el layout. */
 main { min-width: 0; }            /* flex: sin esto el contenido estira main */
-main table {
-  display: block;                 /* la tabla pasa a ser su propia caja… */
-  overflow-x: auto;               /* …y scrollea en horizontal si no cabe */
-  max-width: 100%;
-}
-td, th { overflow-wrap: anywhere; }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+main table { min-width: 600px; }
+main table.kv { min-width: 0; }
+.matrix { width: max-content; min-width: 100%; }
+.sub { overflow-wrap: anywhere; }
 
 .compare-pickers { display: flex; gap: 10px; align-items: center; min-width: 0; }
 

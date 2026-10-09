@@ -62,7 +62,7 @@ export default function Compare() {
           </div>
           <div className="note">{res.caveat}</div>
           <h2>Divergences</h2>
-          <table>
+          <div className="table-scroll" tabIndex={0}><table>
             <thead><tr><th>issuer</th><th>date</th><th>proposal</th>
               <th>{a}</th><th>{b}</th></tr></thead>
             <tbody>
@@ -75,7 +75,7 @@ export default function Compare() {
                   <td><span className="chip dissent">{p.vote_b}</span></td>
                 </tr>))}
             </tbody>
-          </table>
+          </table></div>
         </>
       )}
     </>

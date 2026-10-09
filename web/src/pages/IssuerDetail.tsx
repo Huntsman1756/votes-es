@@ -24,7 +24,7 @@ export default function IssuerDetail() {
             [x.isin, x.cusip, x.ticker].filter(Boolean).join(" / ")).join(" · ")}
         </div>)}
       <h2>Meetings</h2>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>date</th><th>type</th><th>proposals</th>
           <th>reporters</th><th>votes</th><th>dissent</th><th /></tr></thead>
         <tbody>{meetings.map(m => (
@@ -38,7 +38,7 @@ export default function IssuerDetail() {
             <td><Link to={`/meetings/${m.meeting_id}`}>pivot</Link></td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
       {meetings.length === 0 &&
         <div className="note">No observed meetings — disclosures may simply not exist yet.</div>}
     </>

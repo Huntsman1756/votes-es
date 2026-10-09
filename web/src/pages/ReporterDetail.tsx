@@ -16,7 +16,7 @@ export default function ReporterDetail() {
       </div>
 
       <h2>Disclosure profile</h2>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>season</th><th>level</th><th>significance criteria</th>
           <th>documented</th></tr></thead>
         <tbody>{(r.disclosure_seasons ?? []).map((d: any) => (
@@ -28,10 +28,10 @@ export default function ReporterDetail() {
             <td>{d.significance_criteria_documented ? "yes" : "no"}</td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
 
       <h2>Category breakdown (VOTES_ES taxonomy)</h2>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>category</th><th>votes</th><th>dissent</th></tr></thead>
         <tbody>{(r.category_breakdown ?? []).map((c: any) => (
           <tr key={c.category}>
@@ -40,10 +40,10 @@ export default function ReporterDetail() {
             <td className="num">{c.dissent}</td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
 
       <h2>Reporting units ({(r.units ?? []).length})</h2>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>unit</th><th>type</th><th>source id</th></tr></thead>
         <tbody>{(r.units ?? []).map((u: any) => (
           <tr key={u.unit_id}>
@@ -52,7 +52,7 @@ export default function ReporterDetail() {
             <td className="mono">{u.source_identifier}</td>
           </tr>))}
         </tbody>
-      </table>
+      </table></div>
     </>
   );
 }

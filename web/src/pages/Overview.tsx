@@ -22,14 +22,14 @@ export default function Overview() {
         <div className="stat"><div className="v">{s.sources}</div><div className="k">sources</div></div>
       </div>
       <h2>Seasons (meeting year)</h2>
-      <table>
+      <div className="table-scroll" tabIndex={0}><table>
         <thead><tr><th>season</th><th>meetings</th><th>observed votes</th><th>reporters</th></tr></thead>
         <tbody>{seasons.map(x => (
           <tr key={x.season}><td className="mono">{x.season}</td>
             <td className="num">{x.meetings}</td><td className="num">{x.votes.toLocaleString()}</td>
             <td className="num">{x.reporters}</td></tr>))}
         </tbody>
-      </table>
+      </table></div>
       <div className="note">
         This is observed disclosure, not total voting behaviour. Managers that
         do not publish itemized records simply do not appear. See{" "}
