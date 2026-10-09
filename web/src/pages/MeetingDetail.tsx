@@ -43,9 +43,12 @@ export default function MeetingDetail() {
     <>
       <h1>{m.issuer}</h1>
       <div className="sub mono">
-        {m.meeting_date} · {m.meeting_type} · {m.meeting_id} ·
-        source ids: {m.source_meeting_ids}
+        {m.meeting_date} · {m.meeting_type} · {m.meeting_id}
       </div>
+      <details className="meeting-sources">
+        <summary>Source meeting identifiers</summary>
+        <div className="mono">{m.source_meeting_ids}</div>
+      </details>
       <h2>Proposals × reporters</h2>
       <div className="table-scroll" tabIndex={0}><table className="matrix">
         <thead><tr><th style={{ width: 40 }}>#</th><th>proposal</th>

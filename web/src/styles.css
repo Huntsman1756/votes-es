@@ -79,6 +79,9 @@ main table { min-width: 600px; }
 main table.kv { min-width: 0; }
 .matrix { width: max-content; min-width: 100%; }
 .sub { overflow-wrap: anywhere; }
+.meeting-sources { margin-top: 10px; font-size: 12px; color: var(--mute); }
+.meeting-sources summary { cursor: pointer; }
+.meeting-sources > div { max-height: 12rem; overflow: auto; overflow-wrap: anywhere; padding: 8px; }
 
 .compare-pickers { display: flex; gap: 10px; align-items: center; min-width: 0; }
 
